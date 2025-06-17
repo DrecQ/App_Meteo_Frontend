@@ -3,7 +3,7 @@
     <div class="container">
       <div class="nav-right">
         <div class="logo-mobile">
-          <nuxt-link to="/">EduMétéo</nuxt-link>
+          <nuxt-link to="/">METEO-BENIN</nuxt-link>
         </div>
         <div class="nav-actions">
           <div class="language-switcher">
@@ -20,7 +20,7 @@
               </button>
             </div>
           </div>
-          <div class="auth-buttons">
+          <div class="auth-buttons" v-if="!isLoggedIn">
             <NuxtLink to="/login" class="btn-login">Connexion</NuxtLink>
           </div>
           <button class="mobile-menu-btn" @click="toggleMobileMenu" :class="{ 'active': isMobileMenuOpen }" :aria-label="isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'">
@@ -35,12 +35,18 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
 const route = useRoute();
+const authStore = useAuthStore();
 const currentLang = ref('fr');
 const isMobileMenuOpen = ref(false);
 const isScrolled = ref(false);
 const isLanguageDropdownOpen = ref(false);
+
+const isLoggedIn = computed(() => {
+  return authStore.isAuthenticated;
+});
 
 const currentLanguageName = computed(() => {
   const lang = languages.find(l => l.code === currentLang.value);
@@ -117,7 +123,7 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
   top: 0;
   left: 0;
   right: 0;
-  z-index: 50;
+  z-index: 100;
   transition: transform 0.3s ease;
 }
 
@@ -262,8 +268,12 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
 }
 
 @media (max-width: 768px) {
+  .top-navbar {
+    padding: 0.5rem 0;
+  }
+
   .container {
-    padding: 0.5rem 1rem;
+    padding: 0 1rem;
   }
 
   .nav-right {
@@ -278,16 +288,37 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
     gap: 1rem;
   }
 
-  .mobile-menu-btn {
-    display: block;
-  }
-  
   .language-switcher {
     display: none;
   }
 
   .auth-buttons {
-    display: none;
+    display: flex;
+  }
+
+  .btn-login {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu-btn:hover,
+  .mobile-menu-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
   }
 }
 </style>

@@ -32,7 +32,7 @@
               </div>
               <div class="info-content">
                 <h3>Email</h3>
-                <p>contact@edumeteo.com</p>
+                <p>contact@meteo-benin.com</p>
               </div>
             </div>
             

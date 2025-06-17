@@ -11,10 +11,10 @@
       <div class="register-header">
         <div class="logo">
           <i class="fas fa-cloud-sun-rain"></i>
-          <span>METEO-BENIN</span>
+          <NuxtLink to="/" class="logo-link">METEO-BENIN</NuxtLink>
         </div>
         <h1>Inscription</h1>
-        <p>Rejoignez la communauté des météorologues du Bénin</p>
+        <p>Créez votre compte pour commencer à apprendre</p>
       </div>
 
       <!-- Formulaire -->
@@ -205,6 +205,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'auth'
+});
+
 import { ref, computed } from 'vue';
 
 const form = ref({
@@ -291,7 +295,7 @@ const signInWithGoogle = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 4rem 2rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   position: relative;
   overflow: hidden;
@@ -336,18 +340,20 @@ const signInWithGoogle = () => {
 
 .register-container {
   width: 100%;
-  max-width: 520px;
+  max-width: 600px;
   background: white;
-  padding: 2.5rem;
+  padding: 3rem;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: relative;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .register-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .logo {
@@ -742,5 +748,14 @@ const signInWithGoogle = () => {
   .role-options {
     grid-template-columns: 1fr;
   }
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover {
+  color: #3498db;
 }
 </style>

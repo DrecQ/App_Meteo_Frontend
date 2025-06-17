@@ -7,8 +7,6 @@
 <style scoped>
 .auth-layout {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 6rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 </style> 

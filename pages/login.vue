@@ -11,7 +11,7 @@
       <div class="auth-header">
         <div class="logo">
           <i class="fas fa-cloud-sun-rain"></i>
-          <span>EduMétéo</span>
+          <NuxtLink to="/" class="logo-link">METEO-BENIN</NuxtLink>
         </div>
         <h1>Bienvenue</h1>
         <p>Connectez-vous pour accéder à votre espace</p>
@@ -140,6 +140,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'auth'
+});
+
 import { ref, computed } from 'vue';
 
 const activeTab = ref('credentials'); // 'credentials' ou 'google'
@@ -196,7 +200,7 @@ const signInWithGoogle = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 4rem 2rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   position: relative;
   overflow: hidden;
@@ -243,16 +247,18 @@ const signInWithGoogle = () => {
   width: 100%;
   max-width: 480px;
   background: white;
-  padding: 2.5rem;
+  padding: 3rem;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: relative;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .logo {
@@ -623,5 +629,14 @@ const signInWithGoogle = () => {
   .auth-header h1 {
     font-size: 1.5rem;
   }
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover {
+  color: #3498db;
 }
 </style>

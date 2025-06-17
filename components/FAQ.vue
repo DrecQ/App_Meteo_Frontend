@@ -2,8 +2,8 @@
     <section class="faq-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">{{ sectionTitle }}</h2>
-          <p class="section-description">{{ sectionDescription }}</p>
+          <h2 class="section-title">Questions Fréquentes</h2>
+          <p class="section-subtitle">Trouvez rapidement des réponses à vos questions</p>
           
           <!-- Barre de progression -->
           <div class="progress-container">
@@ -119,7 +119,7 @@
   
   <style scoped>
   .faq-section {
-    padding: 5rem 1rem;
+    padding: 5rem 0;
     background: linear-gradient(to bottom, #f8f9ff 0%, #ffffff 100%);
     position: relative;
     overflow: hidden;
@@ -138,9 +138,9 @@
   
   .section-title {
     font-size: 2.5rem;
-    font-weight: 700;
     color: #1a1a2e;
     margin-bottom: 1rem;
+    font-weight: 700;
     position: relative;
     display: inline-block;
   }
@@ -157,12 +157,12 @@
     border-radius: 2px;
   }
   
-  .section-description {
-    font-size: 1.1rem;
+  .section-subtitle {
+    font-size: 1.2rem;
     color: #6b7280;
-    line-height: 1.6;
     max-width: 600px;
-    margin: 0 auto 2rem;
+    margin: 0 auto;
+    line-height: 1.6;
   }
   
   /* Barre de progression */
@@ -378,7 +378,7 @@
       font-size: 1.8rem;
     }
     
-    .section-description {
+    .section-subtitle {
       font-size: 1rem;
     }
     
@@ -399,4 +399,4 @@
       font-size: 0.8rem;
     }
   }
-  </style>v
+  </style>

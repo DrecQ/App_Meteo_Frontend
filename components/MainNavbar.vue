@@ -6,7 +6,7 @@
   }">
     <div class="container">
       <div class="logo">
-        <nuxt-link to="/">EduMétéo</nuxt-link>
+        <nuxt-link to="/">METEO-BENIN</nuxt-link>
       </div>
       <div class="nav-links">
         <NuxtLink to="/" class="nav-link">Accueil</NuxtLink>
@@ -14,6 +14,32 @@
         <NuxtLink to="/teachers" class="nav-link">Enseignants</NuxtLink>
         <NuxtLink to="/about" class="nav-link">À propos</NuxtLink>
         <NuxtLink to="/contact" class="nav-link">Contact</NuxtLink>
+      </div>
+    </div>
+
+    <!-- Menu mobile -->
+    <div class="mobile-menu" :class="{ 'open': isMobileMenuOpen }">
+      <div class="mobile-nav-links">
+        <NuxtLink to="/" class="mobile-nav-link" @click="closeMobileMenu">Accueil</NuxtLink>
+        <NuxtLink to="/courses" class="mobile-nav-link" @click="closeMobileMenu">Cours</NuxtLink>
+        <NuxtLink to="/teachers" class="mobile-nav-link" @click="closeMobileMenu">Enseignants</NuxtLink>
+        <NuxtLink to="/about" class="mobile-nav-link" @click="closeMobileMenu">À propos</NuxtLink>
+        <NuxtLink to="/contact" class="mobile-nav-link" @click="closeMobileMenu">Contact</NuxtLink>
+      </div>
+      <div class="mobile-language-switcher">
+        <button class="mobile-language-btn" @click="toggleLanguageDropdown">
+          <i class="fas fa-globe"></i>
+          <span>{{ currentLanguageName }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="mobile-language-dropdown" v-if="isLanguageDropdownOpen">
+          <button v-for="lang in languages" 
+                  :key="lang.code" 
+                  @click="changeLanguage(lang.code)"
+                  :class="{ active: currentLang === lang.code }">
+            {{ lang.name }}
+          </button>
+        </div>
       </div>
     </div>
   </nav>
@@ -48,7 +74,8 @@ const isRegisterPage = computed(() => {
 const languages = [
   { code: 'fr', name: 'Français' },
   { code: 'en', name: 'English' },
-  { code: 'ar', name: 'العربية' }
+  { code: 'yo', name: 'Yoruba' },
+  { code: 'fon', name: 'Fon' }
 ];
 
 const currentLanguageName = computed(() => {
@@ -126,6 +153,8 @@ const changeLanguage = (lang) => {
 
 .logo {
   margin-right: 3rem;
+  position: relative;
+  z-index: 40;
 }
 
 .logo a {
@@ -286,41 +315,11 @@ const changeLanguage = (lang) => {
   }
 
   .logo {
-    margin-right: 0;
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-
-  .logo a {
-    font-size: 1.8rem;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-    text-align: center;
-  }
-
-  .nav-link {
-    font-size: 1.2rem;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  .nav-link:last-child {
-    border-bottom: none;
-  }
-
-  .nav-link.router-link-active::after,
-  .nav-link::after {
     display: none;
   }
 
-  .nav-link.router-link-active {
-    background: rgba(52, 152, 219, 0.1);
-    border-radius: 4px;
-    padding: 0.8rem;
+  .nav-links {
+    display: none;
   }
 
   .nav-content {
@@ -364,6 +363,138 @@ const changeLanguage = (lang) => {
   .btn-register {
     width: 100%;
     text-align: center;
+  }
+}
+
+/* Styles pour le menu mobile */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 0;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  padding: 2rem 0;
+  position: relative;
+  top: 2rem;
+}
+
+.mobile-nav-link {
+  color: #2c3e50;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mobile-nav-link:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.router-link-active {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.mobile-language-switcher {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  top: 2rem;
+}
+
+.mobile-language-btn {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(248, 249, 250, 0.6);
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-language-btn:hover {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+.mobile-language-dropdown {
+  margin-top: 0.8rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  width: 100%;
+}
+
+.mobile-language-dropdown button {
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  border: none;
+  background: none;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mobile-language-dropdown button:last-child {
+  border-bottom: none;
+}
+
+.mobile-language-dropdown button:hover,
+.mobile-language-dropdown button.active {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
   }
 }
 </style>

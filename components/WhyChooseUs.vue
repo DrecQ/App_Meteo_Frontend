@@ -177,7 +177,15 @@
     
     .reasons-grid {
       grid-template-columns: 1fr;
-      max-width: 400px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 1rem;
+    }
+    
+    .reason-card {
+      width: 100%;
+      max-width: 500px;
       margin: 0 auto;
     }
   }

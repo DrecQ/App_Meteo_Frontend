@@ -2,7 +2,7 @@
   <nav class="admin-navbar">
     <div class="navbar-header">
       <i class="fas fa-cloud-sun-rain logo-icon"></i>
-      <h1>EduMeteo</h1>
+      <h1>METEO-BENIN</h1>
     </div>
 
     <div class="navbar-content">

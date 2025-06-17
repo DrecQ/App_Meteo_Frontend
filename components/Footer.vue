@@ -53,7 +53,7 @@
         <div class="footer-column">
           <h4 class="column-title">Contact</h4>
           <div class="contact-info">
-            <p><i class="fas fa-envelope"></i> contact@edumeteo.com</p>
+            <p><i class="fas fa-envelope"></i> contact@meteo-benin.com</p>
             <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
           </div>
           <div class="social-links">
@@ -150,6 +150,7 @@ const subscribeNewsletter = () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .btn-subscribe:hover {
@@ -280,6 +281,18 @@ const subscribeNewsletter = () => {
   
   .newsletter-form {
     flex-direction: column;
+    padding: 0 1rem;
+  }
+  
+  .newsletter-input {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .btn-subscribe {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem 1rem;
   }
   
   .footer-grid {

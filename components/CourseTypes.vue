@@ -374,11 +374,16 @@
     
     .courses-grid {
       grid-template-columns: 1fr;
-      gap: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 1rem;
     }
     
     .course-card {
-      max-width: 320px;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
     }
   }
   
