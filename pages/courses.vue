@@ -67,45 +67,12 @@
 
         <!-- Grille de cours -->
         <div class="courses-grid">
-          <!-- Cours d'introduction (accessible sans connexion) -->
-          <div class="course-card introduction">
-            <div class="course-header">
-              <div class="course-level debutant">
-                Débutant
-              </div>
-              <h3 class="course-title">Introduction à la Météorologie</h3>
-            </div>
-            
-            <p class="course-description">
-              Découvrez les bases de la météorologie à travers 5 leçons interactives. 
-              Comprendre les phénomènes météorologiques quotidiens, les instruments de mesure 
-              et les prévisions météo. Un cours parfait pour débuter votre voyage dans le monde 
-              fascinant de la météorologie.
-            </p>
-            
-            <div class="course-meta">
-              <div class="meta-item">
-                <i class="fas fa-clock"></i>
-                <span>1h 30min</span>
-              </div>
-              <div class="meta-item">
-                <i class="fas fa-book"></i>
-                <span>5 leçons</span>
-              </div>
-            </div>
-
-            <div class="course-instructor">
-              <i class="fas fa-user"></i>
-              <span>Dr. Jean Dupont</span>
-            </div>
-
-            <NuxtLink to="/course/introduction-meteo" class="course-button free">
-              Commencer
-            </NuxtLink>
-          </div>
-
-          <!-- Autres cours (nécessitent une connexion) -->
-          <div v-for="course in filteredCourses" :key="course.id" class="course-card">
+          <div 
+            v-for="course in filteredCourses" 
+            :key="course.id" 
+            class="course-card"
+            @click="viewCourse(course.id)"
+          >
             <div class="course-header">
               <div class="course-level" :class="course.level.toLowerCase()">
                 {{ course.level }}
@@ -131,15 +98,16 @@
               <span>{{ course.instructor }}</span>
             </div>
 
-            <div v-if="isLoggedIn && course.progress > 0" class="course-progress">
+            <!-- Barre de progression uniquement pour les utilisateurs connectés qui ont commencé le cours -->
+            <div v-if="isUserLoggedIn && course.progress > 0" class="course-progress">
               <div class="progress-bar">
                 <div class="progress" :style="{ width: `${course.progress}%` }"></div>
               </div>
               <span class="progress-text">{{ course.progress }}% complété</span>
             </div>
 
-            <NuxtLink :to="`/course/${course.id}`" class="course-button" :class="{ 'locked': !isLoggedIn }">
-              {{ isLoggedIn && course.progress > 0 ? 'Continuer' : 'Commencer' }}
+            <NuxtLink :to="`/course/${course.id}`" class="course-button">
+              {{ isUserLoggedIn && course.progress > 0 ? 'Continuer' : 'Commencer' }}
             </NuxtLink>
           </div>
         </div>
@@ -154,8 +122,8 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// Simuler l'état de connexion (à remplacer par votre logique d'authentification)
-const isLoggedIn = ref(false);
+// Simuler l'état de connexion de l'utilisateur (à remplacer par votre logique d'authentification)
+const isUserLoggedIn = ref(false);
 
 // Données des cours
 const courses = ref([
@@ -273,17 +241,9 @@ const resetFilters = () => {
   sortOption.value = 'popular';
 };
 
-// Ajouter les données du cours d'introduction
-const introductionCourse = {
-  id: 'introduction-meteo',
-  title: 'Introduction à la Météorologie',
-  description: 'Découvrez les bases de la météorologie à travers 5 leçons interactives. Comprendre les phénomènes météorologiques quotidiens, les instruments de mesure et les prévisions météo.',
-  duration: '1h 30min',
-  level: 'Débutant',
-  instructor: 'Dr. Jean Dupont',
-  lessons: 5,
-  progress: 0,
-  isPublic: true
+// Fonction pour simuler la connexion (à remplacer par votre logique d'authentification)
+const toggleLogin = () => {
+  isUserLoggedIn.value = !isUserLoggedIn.value;
 };
 </script>
 
@@ -438,7 +398,7 @@ const introductionCourse = {
 /* Grille de cours */
 .courses-grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
 }
 
@@ -525,7 +485,7 @@ const introductionCourse = {
 
 .course-progress {
   margin-bottom: 1.5rem;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
   border-top: 1px solid #eee;
 }
 
@@ -566,53 +526,7 @@ const introductionCourse = {
   transform: translateY(-2px);
 }
 
-.introduction {
-  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
-  border: 2px solid #4CAF50;
-}
-
-.course-lessons-preview {
-  display: none;
-}
-
-.course-button.locked {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.course-button.locked:hover {
-  background: #ccc;
-  transform: none;
-}
-
-.course-button.free {
-  background: #4CAF50;
-  position: relative;
-  overflow: hidden;
-}
-
-.course-button.free::before {
-  content: 'Gratuit';
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: #45a049;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.7rem;
-  border-radius: 0 8px 0 8px;
-}
-
 /* Responsive */
-@media (max-width: 1200px) {
-  .courses-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .introduction {
-    grid-column: 1 / -1;
-  }
-}
-
 @media (max-width: 768px) {
   .page-banner {
     padding: 3rem 0 2rem;
