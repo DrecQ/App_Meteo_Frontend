@@ -3,7 +3,7 @@
     <div class="container">
       <div class="nav-right">
         <div class="logo-mobile">
-          <nuxt-link to="/">METEO-BENIN</nuxt-link>
+          <Logo />
         </div>
         <div class="nav-actions">
           <div class="language-switcher">
@@ -36,6 +36,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import Logo from './Logo.vue';
 
 const route = useRoute();
 const authStore = useAuthStore();

@@ -67,37 +67,80 @@
 
         <!-- Grille de cours -->
         <div class="courses-grid">
-          <div 
-            v-for="course in filteredCourses" 
-            :key="course.id" 
-            class="course-card"
-            @click="viewCourse(course.id)"
-          >
-            <div class="course-badge" :class="course.level">
-              {{ course.levelLabel }}
-            </div>
-            <div class="course-image" :style="{ backgroundImage: `url(${course.image})` }">
-              <div class="category-tag">{{ course.category }}</div>
-            </div>
-            <div class="course-content">
-              <div class="course-header">
-                <h3>{{ course.title }}</h3>
-                <div class="course-rating">
-                  <i class="fas fa-star"></i>
-                  {{ course.rating }}
-                </div>
+          <!-- Cours d'introduction (accessible sans connexion) -->
+          <div class="course-card introduction">
+            <div class="course-header">
+              <div class="course-level debutant">
+                Débutant
               </div>
-              <p class="course-description">{{ course.description }}</p>
-              
-              <div class="course-meta">
-                <span><i class="fas fa-clock"></i> {{ course.duration }}</span>
-                <span><i class="fas fa-users"></i> {{ course.students }}</span>
-              </div>
-              
-              <NuxtLink :to="`/course/${course.id}`" class="btn-enroll">
-                Commencer
-              </NuxtLink>
+              <h3 class="course-title">Introduction à la Météorologie</h3>
             </div>
+            
+            <p class="course-description">
+              Découvrez les bases de la météorologie à travers 5 leçons interactives. 
+              Comprendre les phénomènes météorologiques quotidiens, les instruments de mesure 
+              et les prévisions météo. Un cours parfait pour débuter votre voyage dans le monde 
+              fascinant de la météorologie.
+            </p>
+            
+            <div class="course-meta">
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>1h 30min</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-book"></i>
+                <span>5 leçons</span>
+              </div>
+            </div>
+
+            <div class="course-instructor">
+              <i class="fas fa-user"></i>
+              <span>Dr. Jean Dupont</span>
+            </div>
+
+            <NuxtLink to="/course/introduction-meteo" class="course-button free">
+              Commencer
+            </NuxtLink>
+          </div>
+
+          <!-- Autres cours (nécessitent une connexion) -->
+          <div v-for="course in filteredCourses" :key="course.id" class="course-card">
+            <div class="course-header">
+              <div class="course-level" :class="course.level.toLowerCase()">
+                {{ course.level }}
+              </div>
+              <h3 class="course-title">{{ course.title }}</h3>
+            </div>
+            
+            <p class="course-description">{{ course.description }}</p>
+            
+            <div class="course-meta">
+              <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>{{ course.duration }}</span>
+              </div>
+              <div class="meta-item">
+                <i class="fas fa-book"></i>
+                <span>{{ course.lessons }} leçons</span>
+              </div>
+            </div>
+
+            <div class="course-instructor">
+              <i class="fas fa-user"></i>
+              <span>{{ course.instructor }}</span>
+            </div>
+
+            <div v-if="isLoggedIn && course.progress > 0" class="course-progress">
+              <div class="progress-bar">
+                <div class="progress" :style="{ width: `${course.progress}%` }"></div>
+              </div>
+              <span class="progress-text">{{ course.progress }}% complété</span>
+            </div>
+
+            <NuxtLink :to="`/course/${course.id}`" class="course-button" :class="{ 'locked': !isLoggedIn }">
+              {{ isLoggedIn && course.progress > 0 ? 'Continuer' : 'Commencer' }}
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -111,43 +154,54 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+// Simuler l'état de connexion (à remplacer par votre logique d'authentification)
+const isLoggedIn = ref(false);
+
 // Données des cours
 const courses = ref([
   {
-    id: 1,
-    title: "Introduction à la Météorologie",
-    description: "Maîtrisez les concepts fondamentaux de la météorologie moderne",
-    category: "Météorologie",
-    level: "debutant",
-    levelLabel: "Débutant",
-    duration: "4h 30min",
-    students: "245 étudiants",
-    rating: 4.8,
-    image: "/images/course-meteo.jpg"
+    id: 'secrets-du-ciel',
+    title: 'Les Secrets du Ciel',
+    description: 'Découvrez les mystères du ciel bleu et des nuages. Comprendre pourquoi le ciel est bleu et comment se forment les différents types de nuages.',
+    duration: '30 minutes',
+    level: 'Débutant',
+    image: '/images/courses/ciel.jpg',
+    instructor: 'Dr. Marie Dubois',
+    lessons: 2,
+    progress: 0
   },
   {
-    id: 2,
-    title: "Climatologie Avancée",
-    description: "Analyse des systèmes climatiques et modélisation",
-    category: "Climatologie",
-    level: "avance",
-    levelLabel: "Avancé",
-    duration: "8h 15min",
-    students: "87 étudiants",
-    rating: 4.9,
-    image: "/images/course-climat.jpg"
+    id: 'instruments-meteo',
+    title: 'Les Instruments Météo',
+    description: 'Apprenez à utiliser les instruments météorologiques essentiels. Du thermomètre à l\'anémomètre, maîtrisez les outils de mesure du temps.',
+    duration: '45 minutes',
+    level: 'Intermédiaire',
+    image: '/images/courses/instruments.jpg',
+    instructor: 'Prof. Pierre Martin',
+    lessons: 2,
+    progress: 0
   },
   {
-    id: 3,
-    title: "Prévisions Météorologiques",
-    description: "Techniques modernes de prévision du temps et outils d'analyse",
-    category: "Prévisions",
-    level: "intermediaire",
-    levelLabel: "Intermédiaire",
-    duration: "6h",
-    students: "156 étudiants",
-    rating: 4.7,
-    image: "/images/course-previsions.jpg"
+    id: 'saisons',
+    title: 'Les Saisons',
+    description: 'Explorez les caractéristiques météorologiques de chaque saison. Comprendre les changements climatiques et leurs impacts sur la nature.',
+    duration: '40 minutes',
+    level: 'Débutant',
+    image: '/images/courses/saisons.jpg',
+    instructor: 'Dr. Sophie Bernard',
+    lessons: 4,
+    progress: 0
+  },
+  {
+    id: 'phenomenes-meteo',
+    title: 'Les Phénomènes Météo',
+    description: 'Découvrez les phénomènes météorologiques fascinants. Des orages aux arc-en-ciel, explorez la magie de la météo.',
+    duration: '50 minutes',
+    level: 'Intermédiaire',
+    image: '/images/courses/phenomenes.jpg',
+    instructor: 'Dr. Thomas Leroy',
+    lessons: 3,
+    progress: 0
   }
 ]);
 
@@ -217,6 +271,19 @@ const resetFilters = () => {
   selectedDuration.value = '';
   searchQuery.value = '';
   sortOption.value = 'popular';
+};
+
+// Ajouter les données du cours d'introduction
+const introductionCourse = {
+  id: 'introduction-meteo',
+  title: 'Introduction à la Météorologie',
+  description: 'Découvrez les bases de la météorologie à travers 5 leçons interactives. Comprendre les phénomènes météorologiques quotidiens, les instruments de mesure et les prévisions météo.',
+  duration: '1h 30min',
+  level: 'Débutant',
+  instructor: 'Dr. Jean Dupont',
+  lessons: 5,
+  progress: 0,
+  isPublic: true
 };
 </script>
 
@@ -371,135 +438,181 @@ const resetFilters = () => {
 /* Grille de cours */
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: 1.5fr 1fr 1fr;
   gap: 2rem;
 }
 
 .course-card {
   background: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-  transition: all 0.3s ease;
-  cursor: pointer;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e0e0e0;
 }
 
 .course-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-}
-
-.course-badge {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  z-index: 2;
-}
-
-.course-badge.debutant {
-  background: #2ecc71;
-  color: white;
-}
-
-.course-badge.intermediaire {
-  background: #f39c12;
-  color: white;
-}
-
-.course-badge.avance {
-  background: #e74c3c;
-  color: white;
-}
-
-.course-image {
-  height: 180px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-
-.category-tag {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-  background: rgba(52, 152, 219, 0.9);
-  color: white;
-  padding: 0.3rem 0.8rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
-.course-content {
-  padding: 1.5rem;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .course-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
-.course-header h3 {
-  font-size: 1.3rem;
-  margin: 0;
-  color: #2c3e50;
-  flex: 1;
-}
-
-.course-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  color: #f39c12;
+.course-level {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: white;
+}
+
+.course-level.débutant {
+  background: #4CAF50;
+}
+
+.course-level.intermédiaire {
+  background: #2196F3;
+}
+
+.course-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  line-height: 1.3;
 }
 
 .course-description {
-  color: #7f8c8d;
-  line-height: 1.6;
-  margin-bottom: 1.2rem;
+  color: #666;
   font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .course-meta {
   display: flex;
   gap: 1.5rem;
-  color: #95a5a6;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
-.course-meta span {
+.meta-item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
 }
 
-.btn-enroll {
+.course-instructor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.course-progress {
+  margin-bottom: 1.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eee;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress {
+  height: 100%;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.course-button {
+  display: block;
   width: 100%;
   padding: 0.8rem;
-  background: #3498db;
+  background: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: block;
   text-align: center;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
-.btn-enroll:hover {
-  background: #2980b9;
+.course-button:hover {
+  background: #45a049;
   transform: translateY(-2px);
 }
 
+.introduction {
+  background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+  border: 2px solid #4CAF50;
+}
+
+.course-lessons-preview {
+  display: none;
+}
+
+.course-button.locked {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.course-button.locked:hover {
+  background: #ccc;
+  transform: none;
+}
+
+.course-button.free {
+  background: #4CAF50;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-button.free::before {
+  content: 'Gratuit';
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #45a049;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  border-radius: 0 8px 0 8px;
+}
+
 /* Responsive */
+@media (max-width: 1200px) {
+  .courses-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .introduction {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 768px) {
   .page-banner {
     padding: 3rem 0 2rem;
@@ -542,6 +655,10 @@ const resetFilters = () => {
 
   .courses-grid {
     grid-template-columns: 1fr;
+  }
+
+  .courses-container {
+    padding: 1rem;
   }
 }
 

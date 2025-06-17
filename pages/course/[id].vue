@@ -234,73 +234,193 @@ const videoPlayer = ref(null);
 const audioPlayer = ref(null);
 const isPlaying = ref(false);
 
-// État du cours
-const course = ref({
-  id: courseId,
-  title: 'Introduction à la Météorologie',
-  instructor: 'Dr. Jean Dupont',
-  duration: '8 heures',
-  resources: [
-    { id: 1, title: 'PDF du cours', url: '/resources/course.pdf' },
-    { id: 2, title: 'Fiche mémo', url: '/resources/cheatsheet.pdf' }
-  ],
-  lessons: [
-    {
-      id: 1,
-      title: 'Introduction à la Météorologie',
-      duration: '45 min',
-      videoUrl: '/videos/lesson1.mp4',
-      audioUrl: '/audio/lesson1.mp3',
-      content: `
-        <h3>Bienvenue dans ce cours d'introduction à la météorologie</h3>
-        <p>La météorologie est la science qui étudie les phénomènes atmosphériques et les prévisions du temps.</p>
-        
-        <h4>Objectifs du cours</h4>
-        <ul>
-          <li>Comprendre les bases de la météorologie</li>
-          <li>Apprendre à lire les cartes météo</li>
-          <li>Découvrir les instruments météorologiques</li>
-        </ul>
-        
-        <h4>Concepts clés</h4>
-        <p>Nous aborderons les concepts fondamentaux comme la pression atmosphérique, l'humidité et les masses d'air.</p>
-      `,
-      completed: false
-    },
-    {
-      id: 2,
-      title: 'Les instruments météorologiques',
-      duration: '35 min',
-      videoUrl: '/videos/lesson2.mp4',
-      content: `
-        <h3>Les outils du météorologue</h3>
-        <p>Découvrez les principaux instruments utilisés pour mesurer les conditions atmosphériques.</p>
-      `,
-      completed: false
-    },
-    {
-      id: 3,
-      title: 'Lecture des cartes météo',
-      duration: '50 min',
-      videoUrl: '/videos/lesson3.mp4',
-      content: `
-        <h3>Déchiffrer les cartes météorologiques</h3>
-        <p>Apprenez à interpréter les symboles et les données présentées sur les cartes météo.</p>
-      `,
-      completed: false
-    },
-    {
-      id: 4,
-      title: 'Prévisions météorologiques',
-      duration: '40 min',
-      videoUrl: '/videos/lesson4.mp4',
-      content: `
-        <h3>Comment sont faites les prévisions</h3>
-        <p>Explorez les méthodes et modèles utilisés pour prédire le temps.</p>
-      `,
-      completed: false
-    }
-  ]
+// Données des cours
+const coursesData = {
+  'secrets-du-ciel': {
+    id: 'secrets-du-ciel',
+    title: 'Les Secrets du Ciel',
+    instructor: 'Dr. Marie Dubois',
+    duration: '30 minutes',
+    resources: [
+      { id: 1, title: 'Guide des phénomènes célestes', url: '/resources/secrets-du-ciel.pdf' },
+      { id: 2, title: 'Fiche mémo des couleurs du ciel', url: '/resources/ciel-cheatsheet.pdf' }
+    ],
+    lessons: [
+      {
+        id: 1,
+        title: 'Le Mystère du Ciel Bleu',
+        duration: '15 min',
+        videoUrl: '/videos/ciel-bleu.mp4',
+        content: `
+          <h3>Pourquoi le ciel est-il bleu ?</h3>
+          <p>Le ciel nous apparaît bleu à cause d'un phénomène appelé diffusion de Rayleigh. La lumière du soleil, qui est blanche, est composée de toutes les couleurs de l'arc-en-ciel.</p>
+          
+          <h4>Points clés à retenir</h4>
+          <ul>
+            <li>La lumière du soleil est blanche</li>
+            <li>Les molécules de l'air diffusent la lumière</li>
+            <li>La couleur bleue est plus diffusée que les autres</li>
+          </ul>
+        `,
+        completed: false
+      },
+      {
+        id: 2,
+        title: 'Les Nuages et leurs Formes',
+        duration: '15 min',
+        videoUrl: '/videos/nuages.mp4',
+        content: `
+          <h3>Les différents types de nuages</h3>
+          <p>Les nuages sont classés selon leur forme et leur altitude. Chaque type de nuage nous donne des informations sur le temps qu'il va faire.</p>
+        `,
+        completed: false
+      }
+    ]
+  },
+  'instruments-meteo': {
+    id: 'instruments-meteo',
+    title: 'Les Instruments Météo',
+    instructor: 'Prof. Pierre Martin',
+    duration: '45 minutes',
+    resources: [
+      { id: 1, title: 'Guide des instruments météo', url: '/resources/instruments.pdf' },
+      { id: 2, title: 'Tableau de mesures', url: '/resources/mesures.pdf' }
+    ],
+    lessons: [
+      {
+        id: 1,
+        title: 'Le Thermomètre',
+        duration: '20 min',
+        videoUrl: '/videos/thermometre.mp4',
+        content: `
+          <h3>Comment fonctionne un thermomètre ?</h3>
+          <p>Le thermomètre est l'instrument le plus connu pour mesurer la température. Découvrez son fonctionnement et son histoire.</p>
+        `,
+        completed: false
+      },
+      {
+        id: 2,
+        title: 'L\'Anémomètre',
+        duration: '25 min',
+        videoUrl: '/videos/anemometre.mp4',
+        content: `
+          <h3>Mesurer la vitesse du vent</h3>
+          <p>L'anémomètre est l'instrument qui nous permet de mesurer la vitesse du vent. Apprenez à l'utiliser et à interpréter ses mesures.</p>
+        `,
+        completed: false
+      }
+    ]
+  },
+  'saisons': {
+    id: 'saisons',
+    title: 'Les Saisons',
+    instructor: 'Dr. Sophie Bernard',
+    duration: '40 minutes',
+    resources: [
+      { id: 1, title: 'Guide des saisons', url: '/resources/saisons.pdf' },
+      { id: 2, title: 'Calendrier météorologique', url: '/resources/calendrier.pdf' }
+    ],
+    lessons: [
+      {
+        id: 1,
+        title: 'Le Printemps',
+        duration: '10 min',
+        videoUrl: '/videos/printemps.mp4',
+        content: `
+          <h3>Le réveil de la nature</h3>
+          <p>Le printemps est la saison du renouveau. Découvrez les changements météorologiques qui caractérisent cette période.</p>
+        `,
+        completed: false
+      },
+      {
+        id: 2,
+        title: 'L\'Été',
+        duration: '10 min',
+        videoUrl: '/videos/ete.mp4',
+        content: `
+          <h3>Les journées ensoleillées</h3>
+          <p>L'été est la saison la plus chaude. Apprenez à comprendre les phénomènes météorologiques estivaux.</p>
+        `,
+        completed: false
+      },
+      {
+        id: 3,
+        title: 'L\'Automne',
+        duration: '10 min',
+        videoUrl: '/videos/automne.mp4',
+        content: `
+          <h3>Les couleurs de l'automne</h3>
+          <p>L'automne est la saison des changements. Découvrez les particularités météorologiques de cette période.</p>
+        `,
+        completed: false
+      },
+      {
+        id: 4,
+        title: 'L\'Hiver',
+        duration: '10 min',
+        videoUrl: '/videos/hiver.mp4',
+        content: `
+          <h3>Le froid et la neige</h3>
+          <p>L'hiver est la saison la plus froide. Apprenez à comprendre les phénomènes météorologiques hivernaux.</p>
+        `,
+        completed: false
+      }
+    ]
+  },
+  'phenomenes-meteo': {
+    id: 'phenomenes-meteo',
+    title: 'Les Phénomènes Météo',
+    instructor: 'Dr. Thomas Leroy',
+    duration: '50 minutes',
+    resources: [
+      { id: 1, title: 'Guide des phénomènes météo', url: '/resources/phenomenes.pdf' },
+      { id: 2, title: 'Fiche de sécurité', url: '/resources/securite.pdf' }
+    ],
+    lessons: [
+      {
+        id: 1,
+        title: 'Les Orages',
+        duration: '15 min',
+        videoUrl: '/videos/orages.mp4',
+        content: `
+          <h3>Comprendre les orages</h3>
+          <p>Les orages sont des phénomènes météorologiques spectaculaires. Découvrez leur formation et leurs caractéristiques.</p>
+        `,
+        completed: false
+      },
+      {
+        id: 2,
+        title: 'Les Arc-en-ciel',
+        duration: '15 min',
+        videoUrl: '/videos/arc-en-ciel.mp4',
+        content: `
+          <h3>La magie des arc-en-ciel</h3>
+          <p>Les arc-en-ciel sont de magnifiques phénomènes optiques. Apprenez comment ils se forment et pourquoi nous voyons leurs couleurs.</p>
+        `,
+        completed: false
+      },
+      {
+        id: 3,
+        title: 'La Neige',
+        duration: '20 min',
+        videoUrl: '/videos/neige.mp4',
+        content: `
+          <h3>La formation de la neige</h3>
+          <p>La neige est un phénomène météorologique fascinant. Découvrez comment se forment les flocons et pourquoi chaque flocon est unique.</p>
+        `,
+        completed: false
+      }
+    ]
+  }
+};
+
+// Récupérer le cours correspondant à l'ID
+const course = computed(() => {
+  return coursesData[courseId] || {
+    title: 'Cours non trouvé',
+    description: 'Le cours que vous recherchez n\'existe pas.',
+    lessons: []
+  }
 });
 
 const currentLesson = ref(course.value.lessons[0]);
