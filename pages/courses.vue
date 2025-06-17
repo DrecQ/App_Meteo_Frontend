@@ -77,6 +77,9 @@
               <div class="course-level" :class="course.level.toLowerCase()">
                 {{ course.level }}
               </div>
+              <div v-if="course.isFree" class="course-badge-free">
+                Gratuit
+              </div>
               <h3 class="course-title">{{ course.title }}</h3>
             </div>
             
@@ -128,6 +131,18 @@ const isUserLoggedIn = ref(false);
 // Données des cours
 const courses = ref([
   {
+    id: 'introduction-meteo',
+    title: 'Introduction à la Météorologie',
+    description: 'Découvrez les bases de la météorologie. Un cours gratuit pour comprendre les phénomènes météorologiques quotidiens et apprendre à lire les prévisions météo.',
+    duration: '20 minutes',
+    level: 'Débutant',
+    image: '/images/courses/ciel.jpg',
+    instructor: 'Dr. Jean Dupont',
+    lessons: 2,
+    progress: 0,
+    isFree: true
+  },
+  {
     id: 'secrets-du-ciel',
     title: 'Les Secrets du Ciel',
     description: 'Découvrez les mystères du ciel bleu et des nuages. Comprendre pourquoi le ciel est bleu et comment se forment les différents types de nuages.',
@@ -136,7 +151,8 @@ const courses = ref([
     image: '/images/courses/ciel.jpg',
     instructor: 'Dr. Marie Dubois',
     lessons: 2,
-    progress: 0
+    progress: 0,
+    isFree: false
   },
   {
     id: 'instruments-meteo',
@@ -147,7 +163,8 @@ const courses = ref([
     image: '/images/courses/instruments.jpg',
     instructor: 'Prof. Pierre Martin',
     lessons: 2,
-    progress: 0
+    progress: 0,
+    isFree: false
   },
   {
     id: 'saisons',
@@ -158,7 +175,8 @@ const courses = ref([
     image: '/images/courses/saisons.jpg',
     instructor: 'Dr. Sophie Bernard',
     lessons: 4,
-    progress: 0
+    progress: 0,
+    isFree: false
   },
   {
     id: 'phenomenes-meteo',
@@ -169,7 +187,8 @@ const courses = ref([
     image: '/images/courses/phenomenes.jpg',
     instructor: 'Dr. Thomas Leroy',
     lessons: 3,
-    progress: 0
+    progress: 0,
+    isFree: false
   }
 ]);
 
@@ -418,6 +437,10 @@ const toggleLogin = () => {
 
 .course-header {
   margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .course-level {
@@ -524,6 +547,17 @@ const toggleLogin = () => {
 .course-button:hover {
   background: #45a049;
   transform: translateY(-2px);
+}
+
+.course-badge-free {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #FFD700;
+  color: #000;
+  margin-left: 0.5rem;
 }
 
 /* Responsive */
