@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "weather": "الطقس",
+    "education": "التعليم",
+    "about": "حول",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب"
+  },
+  "courses": {
+    "title": "دوراتنا",
+    "description": "اكتشف دوراتنا في الأرصاد الجوية",
+    "search": "البحث عن دورة...",
+    "filters": {
+      "category": "الفئة",
+      "level": "المستوى",
+      "duration": "المدة"
+    },
+    "sort": {
+      "title": "ترتيب حسب",
+      "popular": "الشعبية",
+      "newest": "الأحدث",
+      "rating": "التقييم"
+    },
+    "start": "ابدأ",
+    "lessons": "دروس",
+    "students": "طلاب",
+    "rating": "تقييم"
+  }
+} 

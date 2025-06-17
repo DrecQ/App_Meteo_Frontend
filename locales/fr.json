@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "weather": "Météo",
+    "education": "Éducation",
+    "about": "À propos",
+    "login": "Connexion",
+    "register": "Inscription"
+  },
+  "courses": {
+    "title": "Nos Cours",
+    "description": "Découvrez nos cours sur la météorologie",
+    "search": "Rechercher un cours...",
+    "filters": {
+      "category": "Catégorie",
+      "level": "Niveau",
+      "duration": "Durée"
+    },
+    "sort": {
+      "title": "Trier par",
+      "popular": "Popularité",
+      "newest": "Plus récent",
+      "rating": "Note"
+    },
+    "start": "Commencer",
+    "lessons": "leçons",
+    "students": "étudiants",
+    "rating": "note"
+  }
+} 

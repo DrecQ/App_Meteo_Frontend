@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "home": "Home",
+    "weather": "Weather",
+    "education": "Education",
+    "about": "About",
+    "login": "Login",
+    "register": "Register"
+  },
+  "courses": {
+    "title": "Our Courses",
+    "description": "Discover our meteorology courses",
+    "search": "Search for a course...",
+    "filters": {
+      "category": "Category",
+      "level": "Level",
+      "duration": "Duration"
+    },
+    "sort": {
+      "title": "Sort by",
+      "popular": "Popularity",
+      "newest": "Newest",
+      "rating": "Rating"
+    },
+    "start": "Start",
+    "lessons": "lessons",
+    "students": "students",
+    "rating": "rating"
+  }
+} 
