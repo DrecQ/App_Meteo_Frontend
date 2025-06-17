@@ -16,7 +16,11 @@
         <span class="sidebar-title">Espace Membre</span>
       </div>
       <nav class="sidebar-nav">
-        <NuxtLink to="/user" class="sidebar-link" exact-active-class="active" @click="closeSidebar">
+        <button @click="handleHomeClick" class="sidebar-link home-link">
+          <i class="fas fa-home"></i> Retour à l'accueil
+        </button>
+        <div class="sidebar-divider"></div>
+        <NuxtLink to="/user" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-tachometer-alt"></i> Tableau de bord
         </NuxtLink>
         <NuxtLink to="/user/courses" class="sidebar-link" active-class="active" @click="closeSidebar">
@@ -28,7 +32,7 @@
         <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-user"></i> Profil
         </NuxtLink>
-        <NuxtLink to="/logout" class="sidebar-link logout" @click="closeSidebar">
+        <NuxtLink to="/logout" class="sidebar-link logout" @click="handleLogout">
           <i class="fas fa-sign-out-alt"></i> Déconnexion
         </NuxtLink>
       </nav>
@@ -85,24 +89,51 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useAuthStore } from '~/stores/auth';
+import { useRouter } from 'vue-router';
 
 definePageMeta({
-  layout: 'user'
+  layout: 'user',
+  middleware: ['user']
 });
 
+const authStore = useAuthStore();
+const router = useRouter();
 const isSidebarOpen = ref(false);
 const searchQuery = ref('');
 const selectedFilter = ref('all');
 
+// Vérifier si l'utilisateur est connecté
+if (!authStore.isAuthenticated) {
+  navigateTo('/login');
+}
+
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
-  document.body.style.overflow = isSidebarOpen.value ? 'hidden' : '';
+  if (isSidebarOpen.value) {
+    document.body.classList.add('sidebar-open');
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.classList.remove('sidebar-open');
+    document.body.style.overflow = '';
+  }
 };
 
 const closeSidebar = () => {
   isSidebarOpen.value = false;
+  document.body.classList.remove('sidebar-open');
   document.body.style.overflow = '';
+};
+
+const handleHomeClick = () => {
+  closeSidebar();
+  router.push('/');
+};
+
+const handleLogout = () => {
+  authStore.logout();
+  router.push('/login');
 };
 
 const certificates = ref([
@@ -165,6 +196,12 @@ const viewCertificate = (certificate) => {
 const downloadCertificate = (certificate) => {
   console.log('Télécharger le certificat:', certificate);
 };
+
+// Nettoyer les classes lors du démontage du composant
+onUnmounted(() => {
+  document.body.classList.remove('sidebar-open');
+  document.body.style.overflow = '';
+});
 </script>
 
 <style scoped>
@@ -188,6 +225,7 @@ const downloadCertificate = (certificate) => {
   left: 0;
   bottom: 0;
   z-index: 1000;
+  transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -213,6 +251,26 @@ const downloadCertificate = (certificate) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.home-link {
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+}
+
+.home-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffe082;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.5rem 0;
 }
 
 .sidebar-link {
@@ -530,11 +588,13 @@ const downloadCertificate = (certificate) => {
 
   .user-sidebar {
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    width: 280px;
   }
 
   .user-sidebar.open {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open .user-sidebar {
     transform: translateX(0);
   }
 

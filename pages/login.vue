@@ -13,52 +13,30 @@
           <i class="fas fa-cloud-sun-rain"></i>
           <NuxtLink to="/" class="logo-link">METEO-BENIN</NuxtLink>
         </div>
-        <h1>Bienvenue</h1>
+        <h1>Connexion</h1>
         <p>Connectez-vous pour accéder à votre espace</p>
       </div>
 
-      <!-- Onglets de connexion -->
-      <div class="auth-tabs">
-        <button 
-          class="tab-btn" 
-          :class="{ active: activeTab === 'credentials' }"
-          @click="activeTab = 'credentials'"
-        >
-          <i class="fas fa-user"></i> Identifiants
-        </button>
-        <button 
-          class="tab-btn" 
-          :class="{ active: activeTab === 'google' }"
-          @click="activeTab = 'google'"
-        >
-          <i class="fab fa-google"></i> Google
-        </button>
+      <form @submit.prevent="handleSubmit" class="auth-form">
+        <div v-if="authStore.error" class="error-message">
+          {{ authStore.error }}
       </div>
 
-      <!-- Formulaire par identifiants -->
-      <form 
-        v-if="activeTab === 'credentials'" 
-        @submit.prevent="handleSubmit" 
-        class="auth-form"
-      >
-        <!-- Champ Email/Téléphone -->
         <div class="form-group">
-          <label for="login">Email ou numéro de téléphone</label>
+          <label for="email">Email</label>
           <div class="input-group">
-            <i class="fas fa-user input-icon"></i>
+            <i class="fas fa-envelope input-icon"></i>
             <input
-              type="text"
-              id="login"
-              v-model="form.login"
-              placeholder="email@exemple.com ou +33..."
+              type="email"
+              id="email"
+              v-model="form.email"
+              placeholder="Votre email"
               required
-              @input="detectInputType"
             >
           </div>
         </div>
 
-        <!-- Champ Mot de passe (visible seulement si email valide ou numéro) -->
-        <div class="form-group" v-if="showPasswordField">
+        <div class="form-group">
           <label for="password">Mot de passe</label>
           <div class="input-group">
             <i class="fas fa-lock input-icon"></i>
@@ -73,14 +51,12 @@
               type="button" 
               class="toggle-password" 
               @click="showPassword = !showPassword"
-              :aria-label="showPassword ? 'Cacher le mot de passe' : 'Afficher le mot de passe'"
             >
               <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
             </button>
           </div>
         </div>
 
-        <!-- Options -->
         <div class="form-options">
           <label class="checkbox-container">
             <input type="checkbox" v-model="form.rememberMe">
@@ -92,26 +68,21 @@
           </NuxtLink>
         </div>
 
-        <!-- Bouton de soumission -->
         <button 
           type="submit" 
           class="btn-submit" 
-          :disabled="loading || !showPasswordField"
+          :disabled="loading"
         >
           <span v-if="!loading">Se connecter</span>
           <span v-else class="loading">
             <i class="fas fa-spinner fa-spin"></i> Connexion...
           </span>
         </button>
-      </form>
 
-      <!-- Connexion Google -->
-      <div v-if="activeTab === 'google'" class="social-auth">
-        <div class="auth-description">
-          <i class="fab fa-google social-icon"></i>
-          <h3>Connexion avec Google</h3>
-          <p>Utilisez votre compte Google pour vous connecter</p>
+        <div class="auth-divider">
+          <span>ou</span>
         </div>
+
         <button 
           type="button" 
           class="btn-google"
@@ -120,18 +91,8 @@
           <i class="fab fa-google"></i>
           <span>Continuer avec Google</span>
         </button>
-        <div class="auth-divider">
-          <span>ou</span>
-        </div>
-        <button 
-          class="btn-switch-method" 
-          @click="activeTab = 'credentials'"
-        >
-          <i class="fas fa-user"></i> Se connecter avec mes identifiants
-        </button>
-      </div>
+      </form>
 
-      <!-- Pied de page -->
       <div class="auth-footer">
         <p>Pas encore de compte ? <NuxtLink to="/register">Créer un compte</NuxtLink></p>
       </div>
@@ -140,58 +101,51 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: 'auth'
-});
+import { ref } from 'vue'
+import { useAuthStore } from '~/stores/auth'
+import { useRouter } from 'vue-router'
 
-import { ref, computed } from 'vue';
-
-const activeTab = ref('credentials'); // 'credentials' ou 'google'
+const router = useRouter()
+const authStore = useAuthStore()
 
 const form = ref({
-  login: '',
+  email: '',
   password: '',
   rememberMe: false
-});
+})
 
-const showPassword = ref(false);
-const loading = ref(false);
-const inputType = ref(null); // 'email' ou 'phone'
-
-const showPasswordField = computed(() => {
-  return inputType.value === 'email' || 
-         (inputType.value === 'phone' && form.value.login.length >= 8);
-});
-
-const detectInputType = () => {
-  const value = form.value.login;
-  if (/^\+?[0-9\s-]+$/.test(value)) {
-    inputType.value = 'phone';
-  } else if (value.includes('@')) {
-    inputType.value = 'email';
-  } else {
-    inputType.value = null;
-  }
-};
+const showPassword = ref(false)
+const loading = ref(false)
 
 const handleSubmit = async () => {
-  loading.value = true;
+  loading.value = true
   try {
-    console.log('Tentative de connexion avec:', {
-      type: inputType.value,
-      ...form.value
-    });
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    // Logique de connexion à implémenter
+    // Simuler une requête API
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    // Vérifier les identifiants (à remplacer par votre logique d'API)
+    if (form.value.email && form.value.password) {
+      // Simuler une connexion réussie
+      authStore.setUser({
+        email: form.value.email,
+        name: 'Utilisateur Test'
+      })
+      authStore.setToken('test-token')
+      
+      // Rediriger vers la page d'accueil
+      router.push('/')
+    }
+  } catch (error) {
+    console.error('Erreur de connexion:', error)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const signInWithGoogle = () => {
-  console.log('Connexion avec Google');
-  // Implémenter la logique OAuth
-};
+  // Implémenter la connexion Google
+  console.log('Connexion avec Google')
+}
 </script>
 
 <style scoped>
@@ -285,44 +239,6 @@ const signInWithGoogle = () => {
 .auth-header p {
   color: #7f8c8d;
   font-size: 1rem;
-}
-
-.auth-tabs {
-  display: flex;
-  border-bottom: 1px solid #e0e6ed;
-  margin-bottom: 1.5rem;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 1rem;
-  background: none;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #7f8c8d;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.3s;
-  position: relative;
-}
-
-.tab-btn.active {
-  color: #3498db;
-  font-weight: 600;
-}
-
-.tab-btn.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: #3498db;
 }
 
 .auth-form {
@@ -638,5 +554,15 @@ const signInWithGoogle = () => {
 
 .logo-link:hover {
   color: #3498db;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
 }
 </style>

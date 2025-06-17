@@ -21,8 +21,17 @@
             </div>
           </div>
           <div class="auth-buttons" v-if="!isLoggedIn">
-            <NuxtLink to="/login" class="btn-login">Connexion</NuxtLink>
+            <NuxtLink to="/login" class="btn-login">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>Connexion</span>
+            </NuxtLink>
           </div>
+          <template v-else>
+            <NuxtLink to="/user" class="btn-login">
+              <i class="fas fa-user"></i>
+              <span>{{ authStore.currentUser?.name }}</span>
+            </NuxtLink>
+          </template>
           <button class="mobile-menu-btn" @click="toggleMobileMenu" :class="{ 'active': isMobileMenuOpen }" :aria-label="isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'">
             <i class="fas" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
           </button>
@@ -288,7 +297,7 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
   .nav-actions {
     gap: 1rem;
   }
-
+  
   .language-switcher {
     display: none;
   }

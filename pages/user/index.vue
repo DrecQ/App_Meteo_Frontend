@@ -16,6 +16,10 @@
         <span class="sidebar-title">Espace Membre</span>
       </div>
       <nav class="sidebar-nav">
+        <button @click="handleHomeClick" class="sidebar-link home-link">
+          <i class="fas fa-home"></i> Retour à l'accueil
+        </button>
+        <div class="sidebar-divider"></div>
         <NuxtLink to="/user" class="sidebar-link" exact-active-class="active" @click="closeSidebar">
           <i class="fas fa-tachometer-alt"></i> Tableau de bord
         </NuxtLink>
@@ -28,95 +32,60 @@
         <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-user"></i> Profil
         </NuxtLink>
-        <NuxtLink to="/logout" class="sidebar-link logout" @click="closeSidebar">
+        <button @click="handleLogout" class="sidebar-link logout">
           <i class="fas fa-sign-out-alt"></i> Déconnexion
-        </NuxtLink>
+        </button>
       </nav>
     </aside>
+
     <div class="user-dashboard-content">
       <div class="dashboard-header">
         <h1>Tableau de bord</h1>
-        <div class="header-actions">
-          <button class="refresh-btn" @click="refreshData">
-            <i class="fas fa-sync-alt"></i>
-            Actualiser
-          </button>
-        </div>
+        <p>Bienvenue, {{ authStore.currentUser?.name }}</p>
       </div>
 
       <div class="dashboard-content">
+        <!-- Statistiques -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon">
               <i class="fas fa-book"></i>
             </div>
             <div class="stat-info">
-              <h3>Cours suivis</h3>
-              <p class="stat-value">12</p>
+              <h3>0</h3>
+              <p>Cours suivis</p>
             </div>
           </div>
-
           <div class="stat-card">
             <div class="stat-icon">
               <i class="fas fa-certificate"></i>
             </div>
             <div class="stat-info">
-              <h3>Certificats</h3>
-              <p class="stat-value">3</p>
+              <h3>0</h3>
+              <p>Certificats</p>
             </div>
           </div>
-
           <div class="stat-card">
             <div class="stat-icon">
               <i class="fas fa-clock"></i>
             </div>
             <div class="stat-info">
-              <h3>Heures d'apprentissage</h3>
-              <p class="stat-value">24h</p>
-            </div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="stat-info">
-              <h3>Points</h3>
-              <p class="stat-value">450</p>
+              <h3>0h</h3>
+              <p>Temps d'apprentissage</p>
             </div>
           </div>
         </div>
 
-        <div class="dashboard-sections">
-          <div class="section">
-            <h2>Cours en cours</h2>
-            <div class="course-list">
-              <div class="course-card" v-for="course in currentCourses" :key="course.id">
-                <div class="course-info">
-                  <h3>{{ course.title }}</h3>
-                  <p>{{ course.description }}</p>
-                  <div class="progress-bar">
-                    <div class="progress" :style="{ width: course.progress + '%' }"></div>
-                  </div>
-                  <p class="progress-text">{{ course.progress }}% complété</p>
-                </div>
-                <button class="continue-btn">Continuer</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h2>Activités récentes</h2>
-            <div class="activity-list">
-              <div class="activity-item" v-for="activity in recentActivities" :key="activity.id">
-                <div class="activity-icon">
-                  <i :class="activity.icon"></i>
-                </div>
-                <div class="activity-info">
-                  <p class="activity-text">{{ activity.text }}</p>
-                  <p class="activity-time">{{ activity.time }}</p>
-                </div>
-              </div>
+        <!-- Cours récents -->
+        <div class="recent-courses">
+          <h2>Cours récents</h2>
+          <div class="courses-grid">
+            <div class="empty-state">
+              <i class="fas fa-book-open"></i>
+              <p>Vous n'avez pas encore commencé de cours</p>
+              <NuxtLink to="/courses" class="btn-primary">
+                Découvrir les cours
+              </NuxtLink>
             </div>
           </div>
         </div>
@@ -126,70 +95,56 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '~/stores/auth'
+import { useRouter } from 'vue-router'
 
 definePageMeta({
-  layout: 'user'
-});
+  layout: 'user',
+  middleware: ['user']
+})
 
-const currentCourses = ref([
-  {
-    id: 1,
-    title: 'Introduction à la météorologie',
-    description: 'Les bases de la météorologie et du climat',
-    progress: 75
-  },
-  {
-    id: 2,
-    title: 'Instruments météorologiques',
-    description: 'Apprentissage des outils de mesure',
-    progress: 45
-  },
-  {
-    id: 3,
-    title: 'Prévisions météo',
-    description: 'Techniques de prévision météorologique',
-    progress: 30
-  }
-]);
+const authStore = useAuthStore()
+const router = useRouter()
+const isSidebarOpen = ref(false)
 
-const recentActivities = ref([
-  {
-    id: 1,
-    icon: 'fas fa-book',
-    text: 'Vous avez terminé le chapitre 3 de "Introduction à la météorologie"',
-    time: 'Il y a 2 heures'
-  },
-  {
-    id: 2,
-    icon: 'fas fa-certificate',
-    text: 'Vous avez obtenu un certificat en "Instruments météorologiques"',
-    time: 'Il y a 1 jour'
-  },
-  {
-    id: 3,
-    icon: 'fas fa-star',
-    text: 'Vous avez gagné 50 points en complétant un quiz',
-    time: 'Il y a 2 jours'
-  }
-]);
-
-const isSidebarOpen = ref(false);
+// Vérifier si l'utilisateur est connecté
+if (!authStore.isAuthenticated) {
+  navigateTo('/login')
+}
 
 const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-  // Empêcher le défilement du body quand la sidebar est ouverte
-  document.body.style.overflow = isSidebarOpen.value ? 'hidden' : '';
-};
+  isSidebarOpen.value = !isSidebarOpen.value
+  if (isSidebarOpen.value) {
+    document.body.classList.add('sidebar-open')
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.classList.remove('sidebar-open')
+    document.body.style.overflow = ''
+  }
+}
 
 const closeSidebar = () => {
-  isSidebarOpen.value = false;
-  document.body.style.overflow = '';
-};
+  isSidebarOpen.value = false
+  document.body.classList.remove('sidebar-open')
+  document.body.style.overflow = ''
+}
 
-const refreshData = () => {
-  console.log('Rafraîchissement des données...');
-};
+const handleHomeClick = () => {
+  closeSidebar()
+  router.push('/')
+}
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/login')
+}
+
+// Nettoyer les classes lors du démontage du composant
+onUnmounted(() => {
+  document.body.classList.remove('sidebar-open')
+  document.body.style.overflow = ''
+})
 </script>
 
 <style scoped>
@@ -199,6 +154,7 @@ const refreshData = () => {
   background: #f8f9fc;
 }
 
+/* Styles de la sidebar */
 .user-sidebar {
   width: 250px;
   background: linear-gradient(135deg, #4e73df 60%, #224abe 100%);
@@ -212,6 +168,7 @@ const refreshData = () => {
   left: 0;
   bottom: 0;
   z-index: 1000;
+  transition: transform 0.3s ease;
 }
 
 .sidebar-header {
@@ -237,6 +194,26 @@ const refreshData = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.home-link {
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.5rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+}
+
+.home-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffe082;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.5rem 0;
 }
 
 .sidebar-link {
@@ -269,13 +246,15 @@ const refreshData = () => {
   justify-content: center;
   border-radius: 6px;
   padding: 1rem;
+  border: none;
+  cursor: pointer;
 }
 
 .sidebar-link.logout:hover {
   background: #c0392b;
-  color: #fff;
 }
 
+/* Styles du contenu principal */
 .user-dashboard-content {
   flex: 1;
   margin-left: 250px;
@@ -283,43 +262,21 @@ const refreshData = () => {
 }
 
 .dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 2rem;
 }
 
 .dashboard-header h1 {
   font-size: 1.8rem;
   color: #2c3e50;
+  margin: 0 0 0.5rem;
+}
+
+.dashboard-header p {
+  color: #7f8c8d;
   margin: 0;
 }
 
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.refresh-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: #4e73df;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.refresh-btn:hover {
-  background: #224abe;
-  transform: translateY(-2px);
-}
-
+/* Statistiques */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -328,174 +285,90 @@ const refreshData = () => {
 }
 
 .stat-card {
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: transform 0.3s;
 }
 
 .stat-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
 }
 
 .stat-icon {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   background: #4e73df;
-  border-radius: 10px;
+  color: white;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   font-size: 1.5rem;
 }
 
 .stat-info h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: #6c757d;
-}
-
-.stat-value {
-  margin: 0.5rem 0 0;
+  margin: 0 0 0.25rem;
   font-size: 1.5rem;
-  font-weight: bold;
   color: #2c3e50;
 }
 
-.dashboard-sections {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
+.stat-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #7f8c8d;
 }
 
-.section {
+/* Cours récents */
+.recent-courses {
   background: white;
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.section h2 {
+.recent-courses h2 {
+  font-size: 1.4rem;
+  color: #2c3e50;
   margin: 0 0 1.5rem;
-  color: #2c3e50;
-  font-size: 1.3rem;
 }
 
-.course-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #7f8c8d;
 }
 
-.course-card {
-  background: #f8f9fc;
-  border-radius: 8px;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #bdc3c7;
 }
 
-.course-info {
-  flex: 1;
+.empty-state p {
+  margin: 0 0 1.5rem;
 }
 
-.course-info h3 {
-  margin: 0 0 0.5rem;
-  color: #2c3e50;
-  font-size: 1.1rem;
-}
-
-.course-info p {
-  margin: 0 0 0.5rem;
-  color: #6c757d;
-  font-size: 0.9rem;
-}
-
-.progress-bar {
-  height: 6px;
-  background: #e9ecef;
-  border-radius: 3px;
-  overflow: hidden;
-  margin: 0.5rem 0;
-}
-
-.progress {
-  height: 100%;
-  background: #4e73df;
-  border-radius: 3px;
-  transition: width 0.3s;
-}
-
-.progress-text {
-  font-size: 0.8rem;
-  color: #6c757d;
-  margin: 0;
-}
-
-.continue-btn {
-  padding: 0.5rem 1rem;
+.btn-primary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
   background: #4e73df;
   color: white;
-  border: none;
+  text-decoration: none;
   border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s;
+  font-weight: 500;
+  transition: background 0.3s;
 }
 
-.continue-btn:hover {
+.btn-primary:hover {
   background: #224abe;
 }
 
-.activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f8f9fc;
-  border-radius: 8px;
-}
-
-.activity-icon {
-  width: 40px;
-  height: 40px;
-  background: #4e73df;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.activity-info {
-  flex: 1;
-}
-
-.activity-text {
-  margin: 0;
-  color: #2c3e50;
-  font-size: 0.9rem;
-}
-
-.activity-time {
-  margin: 0.25rem 0 0;
-  color: #6c757d;
-  font-size: 0.8rem;
-}
-
-/* Styles pour le menu hamburger */
+/* Menu hamburger */
 .hamburger-menu {
   display: none;
   position: fixed;
@@ -547,22 +420,7 @@ const refreshData = () => {
   z-index: 999;
 }
 
-/* Modifications pour le responsive */
-@media (max-width: 1200px) {
-  .user-dashboard-content {
-    padding: 1.5rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .dashboard-sections {
-    gap: 1.5rem;
-  }
-}
-
+/* Media queries */
 @media (max-width: 1024px) {
   .hamburger-menu {
     display: flex;
@@ -574,11 +432,13 @@ const refreshData = () => {
 
   .user-sidebar {
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    width: 280px;
   }
 
   .user-sidebar.open {
+    transform: translateX(0);
+  }
+
+  body.sidebar-open .user-sidebar {
     transform: translateX(0);
   }
 
@@ -587,53 +447,12 @@ const refreshData = () => {
     padding: 1rem;
     padding-top: 4rem;
   }
-
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .dashboard-sections {
-    grid-template-columns: 1fr;
-  }
-
-  .course-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .continue-btn {
-    width: 100%;
-    margin-top: 1rem;
-  }
 }
 
 @media (max-width: 768px) {
   .user-sidebar {
     width: 100%;
     max-width: 280px;
-  }
-
-  .hamburger-menu {
-    top: 0.5rem;
-    left: 0.5rem;
-  }
-
-  .dashboard-header h1 {
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
-    color: #2c3e50;
-    font-weight: 600;
   }
 
   .stats-grid {
@@ -647,65 +466,17 @@ const refreshData = () => {
   }
 
   .dashboard-header h1 {
-    font-size: 1.2rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .refresh-btn {
-    width: 100%;
-    justify-content: center;
+    font-size: 1.4rem;
   }
 
   .stat-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.5rem;
+    padding: 1rem;
   }
 
   .stat-icon {
-    margin: 0 auto;
-  }
-
-  .course-card {
-    padding: 0.8rem;
-  }
-
-  .course-info h3 {
-    font-size: 1rem;
-  }
-
-  .course-info p {
-    font-size: 0.85rem;
-  }
-
-  .activity-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.5rem;
-  }
-
-  .activity-icon {
-    margin: 0 auto;
-  }
-}
-
-/* Améliorations des transitions */
-.user-sidebar,
-.hamburger-menu,
-.stat-card,
-.course-card,
-.activity-item {
-  transition: all 0.3s ease;
-}
-
-/* Optimisation des performances */
-@media (prefers-reduced-motion: reduce) {
-  .user-sidebar,
-  .hamburger-menu,
-  .stat-card,
-  .course-card,
-  .activity-item {
-    transition: none;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
   }
 }
 </style>

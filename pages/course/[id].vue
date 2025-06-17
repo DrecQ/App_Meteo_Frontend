@@ -116,7 +116,7 @@
                 Leçon terminée !
               </div>
             </transition>
-
+            
             <!-- Navigation entre les leçons -->
             <div class="lesson-navigation">
               <button 
@@ -269,9 +269,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 const course = ref(null)
 const currentLesson = ref(null)
 const isPlaying = ref(false)
@@ -279,34 +281,38 @@ const videoPlayer = ref(null)
 const audioPlayer = ref(null)
 const showProgressNotification = ref(false)
 
+definePageMeta({
+  middleware: ['auth']
+})
+
 // Données des cours
 const coursesData = {
   'introduction-meteo': {
     id: 'introduction-meteo',
-    title: 'Introduction à la Météorologie',
-    instructor: 'Dr. Jean Dupont',
+  title: 'Introduction à la Météorologie',
+  instructor: 'Dr. Jean Dupont',
     duration: '20 minutes',
-    resources: [
+  resources: [
       { id: 1, title: 'Guide de base météo', url: '/resources/intro-meteo.pdf' },
       { id: 2, title: 'Lexique météorologique', url: '/resources/lexique.pdf' }
-    ],
-    lessons: [
-      {
-        id: 1,
+  ],
+  lessons: [
+    {
+      id: 1,
         title: 'Les Bases de la Météorologie',
         duration: '10 min',
         videoUrl: '/videos/intro-meteo.mp4',
         audioUrl: '/audio/intro-meteo.mp3',
-        content: `
+      content: `
           <h3>Qu'est-ce que la météorologie ?</h3>
-          <p>La météorologie est la science qui étudie les phénomènes atmosphériques et les prévisions du temps.</p>
-          
+        <p>La météorologie est la science qui étudie les phénomènes atmosphériques et les prévisions du temps.</p>
+        
           <h4>Points clés à retenir</h4>
           <ul>
             <li>Définition de la météorologie</li>
             <li>Importance des prévisions météo</li>
             <li>Instruments de base</li>
-          </ul>
+        </ul>
         `,
         completed: false
       },
@@ -349,19 +355,19 @@ const coursesData = {
             <li>Les molécules de l'air diffusent la lumière</li>
             <li>La couleur bleue est plus diffusée que les autres</li>
           </ul>
-        `,
-        completed: false
-      },
-      {
-        id: 2,
+      `,
+      completed: false
+    },
+    {
+      id: 2,
         title: 'Les Nuages et leurs Formes',
         duration: '15 min',
         videoUrl: '/videos/nuages.mp4',
-        content: `
+      content: `
           <h3>Les différents types de nuages</h3>
           <p>Les nuages sont classés selon leur forme et leur altitude. Chaque type de nuage nous donne des informations sur le temps qu'il va faire.</p>
-        `,
-        completed: false
+      `,
+      completed: false
       }
     ]
   },
@@ -430,30 +436,30 @@ const coursesData = {
           <p>L'été est la saison la plus chaude. Apprenez à comprendre les phénomènes météorologiques estivaux.</p>
         `,
         completed: false
-      },
-      {
-        id: 3,
+    },
+    {
+      id: 3,
         title: 'L\'Automne',
         duration: '10 min',
         videoUrl: '/videos/automne.mp4',
-        content: `
+      content: `
           <h3>Les couleurs de l'automne</h3>
           <p>L'automne est la saison des changements. Découvrez les particularités météorologiques de cette période.</p>
-        `,
-        completed: false
-      },
-      {
-        id: 4,
+      `,
+      completed: false
+    },
+    {
+      id: 4,
         title: 'L\'Hiver',
         duration: '10 min',
         videoUrl: '/videos/hiver.mp4',
-        content: `
+      content: `
           <h3>Le froid et la neige</h3>
           <p>L'hiver est la saison la plus froide. Apprenez à comprendre les phénomènes météorologiques hivernaux.</p>
-        `,
-        completed: false
-      }
-    ]
+      `,
+      completed: false
+    }
+  ]
   },
   'phenomenes-meteo': {
     id: 'phenomenes-meteo',
@@ -654,6 +660,11 @@ onMounted(() => {
     // Trouver la première leçon non complétée ou prendre la dernière
     const firstIncompleteLesson = course.value.lessons.find(lesson => !lesson.completed);
     currentLesson.value = firstIncompleteLesson || course.value.lessons[course.value.lessons.length - 1];
+  }
+
+  // Vérifier l'accès au cours
+  if (courseId !== 'introduction' && !authStore.isAuthenticated) {
+    router.push('/login')
   }
 });
 </script>

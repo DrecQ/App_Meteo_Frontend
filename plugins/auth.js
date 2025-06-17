@@ -1,8 +1,10 @@
 import { useAuthStore } from '~/stores/auth'
 
-export default defineNuxtPlugin(async (nuxtApp) => {
+export default defineNuxtPlugin(async () => {
   const authStore = useAuthStore()
   
   // Vérifier l'authentification au démarrage
-  await authStore.checkAuth()
+  if (process.client) {
+    authStore.checkAuth()
+  }
 }) 
