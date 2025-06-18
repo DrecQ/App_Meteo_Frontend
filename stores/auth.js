@@ -11,23 +11,31 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.token,
+    isAuthenticated: (state) => {
+      if (process.client) {
+        return !!state.token && !!localStorage.getItem('auth_token')
+      }
+      return !!state.token
+    },
     currentUser: (state) => state.user
   },
 
   actions: {
     setUser(user) {
       this.user = user
+      if (process.client && user) {
+        localStorage.setItem('user_data', JSON.stringify(user))
+      }
     },
 
     setToken(token) {
       this.token = token
-      // Vérifier si localStorage est disponible (côté client uniquement)
       if (process.client) {
         if (token) {
           localStorage.setItem('auth_token', token)
         } else {
           localStorage.removeItem('auth_token')
+          localStorage.removeItem('user_data')
         }
       }
     },
@@ -111,6 +119,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = null
       if (process.client) {
         localStorage.removeItem('auth_token')
+        localStorage.removeItem('user_data')
       }
     },
 
@@ -120,10 +129,14 @@ export const useAuthStore = defineStore('auth', {
         const token = localStorage.getItem('auth_token')
         if (token) {
           this.token = token
-          // Dans un vrai système, il faudrait récupérer les données utilisateur depuis l'API
           const userData = localStorage.getItem('user_data')
           if (userData) {
-            this.user = JSON.parse(userData)
+            try {
+              this.user = JSON.parse(userData)
+            } catch (e) {
+              console.error('Erreur lors du parsing des données utilisateur:', e)
+              this.logout()
+            }
           }
         }
       }

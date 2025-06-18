@@ -58,30 +58,14 @@
 
       <div class="dashboard-content">
         <div class="certificates-grid">
-          <div v-for="certificate in filteredCertificates" :key="certificate.id" class="certificate-card">
-            <div class="certificate-header">
-              <i class="fas fa-certificate certificate-icon"></i>
-              <div class="certificate-status" :class="certificate.status">
-                {{ getStatusText(certificate.status) }}
-              </div>
-            </div>
-            <div class="certificate-info">
-              <h3>{{ certificate.title }}</h3>
-              <p>{{ certificate.description }}</p>
-              <div class="certificate-meta">
-                <span><i class="fas fa-calendar"></i> Obtenu le {{ certificate.issueDate }}</span>
-                <span><i class="fas fa-clock"></i> Expire le {{ certificate.expiryDate }}</span>
-              </div>
-            </div>
-            <div class="certificate-actions">
-              <button class="view-btn" @click="viewCertificate(certificate)">
-                <i class="fas fa-eye"></i> Voir
-              </button>
-              <button class="download-btn" @click="downloadCertificate(certificate)">
-                <i class="fas fa-download"></i> Télécharger
-              </button>
-            </div>
-          </div>
+          <CertificationCard
+            v-for="certificate in filteredCertificates"
+            :key="certificate.id"
+            :certificate="certificate"
+            @obtain="handleObtainCertificate"
+            @view="viewCertificate"
+            @download="downloadCertificate"
+          />
         </div>
       </div>
     </div>
@@ -92,6 +76,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useRouter } from 'vue-router';
+import CertificationCard from '~/components/CertificationCard.vue';
 
 definePageMeta({
   layout: 'user',
@@ -143,7 +128,26 @@ const certificates = ref([
     description: 'Maîtrise des concepts fondamentaux de la météorologie',
     issueDate: '15/03/2024',
     expiryDate: '15/03/2027',
-    status: 'valid'
+    status: 'valid',
+    obtained: false,
+    conditions: [
+      {
+        text: 'Compléter tous les modules du cours de météorologie de base',
+        met: false
+      },
+      {
+        text: 'Obtenir une note minimale de 70% à l\'examen final',
+        met: false
+      },
+      {
+        text: 'Participer à au moins 80% des sessions pratiques',
+        met: false
+      },
+      {
+        text: 'Réussir le projet final de prévision météorologique',
+        met: false
+      }
+    ]
   },
   {
     id: 2,
@@ -151,7 +155,30 @@ const certificates = ref([
     description: 'Compétences avancées en prévisions météorologiques',
     issueDate: '01/02/2024',
     expiryDate: '01/02/2026',
-    status: 'valid'
+    status: 'valid',
+    obtained: false,
+    conditions: [
+      {
+        text: 'Posséder le Certificat en Météorologie de Base',
+        met: false
+      },
+      {
+        text: 'Compléter le cours avancé de prévisions météorologiques',
+        met: false
+      },
+      {
+        text: 'Obtenir une note minimale de 80% à l\'examen pratique',
+        met: false
+      },
+      {
+        text: 'Réaliser avec succès 50 prévisions météorologiques',
+        met: false
+      },
+      {
+        text: 'Participer à un stage pratique de 2 semaines',
+        met: false
+      }
+    ]
   },
   {
     id: 3,
@@ -159,7 +186,30 @@ const certificates = ref([
     description: 'Expertise en analyse climatique et études environnementales',
     issueDate: '10/01/2023',
     expiryDate: '10/01/2025',
-    status: 'expiring'
+    status: 'expiring',
+    obtained: false,
+    conditions: [
+      {
+        text: 'Avoir suivi le cours de climatologie avancée',
+        met: false
+      },
+      {
+        text: 'Réaliser une étude climatique complète',
+        met: false
+      },
+      {
+        text: 'Obtenir une note minimale de 85% à l\'examen final',
+        met: false
+      },
+      {
+        text: 'Présenter un mémoire de recherche en climatologie',
+        met: false
+      },
+      {
+        text: 'Participer à une conférence sur le climat',
+        met: false
+      }
+    ]
   },
   {
     id: 4,
@@ -167,7 +217,30 @@ const certificates = ref([
     description: 'Maîtrise des outils et instruments de mesure météorologique',
     issueDate: '20/12/2022',
     expiryDate: '20/12/2024',
-    status: 'expired'
+    status: 'expired',
+    obtained: false,
+    conditions: [
+      {
+        text: 'Compléter la formation technique sur les instruments météorologiques',
+        met: false
+      },
+      {
+        text: 'Réussir l\'examen pratique d\'étalonnage des instruments',
+        met: false
+      },
+      {
+        text: 'Effectuer 100 heures de pratique sur le terrain',
+        met: false
+      },
+      {
+        text: 'Réaliser un rapport technique sur l\'utilisation des instruments',
+        met: false
+      },
+      {
+        text: 'Obtenir une certification de sécurité en manipulation d\'équipements',
+        met: false
+      }
+    ]
   }
 ]);
 
@@ -195,6 +268,44 @@ const viewCertificate = (certificate) => {
 
 const downloadCertificate = (certificate) => {
   console.log('Télécharger le certificat:', certificate);
+};
+
+const handleObtainCertificate = async (certificate) => {
+  try {
+    // Ici, vous pouvez ajouter la logique pour obtenir le certificat
+    // Par exemple, appeler une API pour mettre à jour le statut
+    console.log('Obtenir le certificat:', certificate);
+    
+    // Mettre à jour le statut localement
+    const index = certificates.value.findIndex(c => c.id === certificate.id);
+    if (index !== -1) {
+      certificates.value[index] = {
+        ...certificate,
+        obtained: true,
+        status: 'valid',
+        issueDate: new Date().toLocaleDateString('fr-FR')
+      };
+    }
+  } catch (error) {
+    console.error('Erreur lors de l\'obtention du certificat:', error);
+  }
+};
+
+// Fonction pour mettre à jour l'état d'une condition
+const updateConditionStatus = (certificateId, conditionIndex, met) => {
+  const certificate = certificates.value.find(c => c.id === certificateId);
+  if (certificate) {
+    certificate.conditions[conditionIndex].met = met;
+  }
+};
+
+// Fonction pour vérifier si toutes les conditions sont remplies
+const checkAllConditionsMet = (certificateId) => {
+  const certificate = certificates.value.find(c => c.id === certificateId);
+  if (certificate) {
+    return certificate.conditions.every(condition => condition.met);
+  }
+  return false;
 };
 
 // Nettoyer les classes lors du démontage du composant
