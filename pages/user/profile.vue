@@ -10,33 +10,12 @@
     <!-- Overlay pour fermer la sidebar sur mobile -->
     <div v-if="isSidebarOpen" class="sidebar-overlay" @click="toggleSidebar"></div>
 
-    <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
-      <div class="sidebar-header">
-        <i class="fas fa-user-circle sidebar-logo"></i>
-        <span class="sidebar-title">Espace Membre</span>
-      </div>
-      <nav class="sidebar-nav">
-        <button @click="handleHomeClick" class="sidebar-link home-link">
-          <i class="fas fa-home"></i> Retour à l'accueil
-        </button>
-        <div class="sidebar-divider"></div>
-        <NuxtLink to="/user" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-tachometer-alt"></i> Tableau de bord
-        </NuxtLink>
-        <NuxtLink to="/user/courses" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-book"></i> Mes cours
-        </NuxtLink>
-        <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-certificate"></i> Certificats
-        </NuxtLink>
-        <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-user"></i> Profil
-        </NuxtLink>
-        <button @click="handleLogout" class="sidebar-link logout">
-          <i class="fas fa-sign-out-alt"></i> Déconnexion
-        </button>
-      </nav>
-    </aside>
+    <UserSidebar
+      :is-sidebar-open="isSidebarOpen"
+      @close="closeSidebar"
+      @home-click="handleHomeClick"
+      @logout="handleLogout"
+    />
 
     <div class="user-dashboard-content">
       <div class="dashboard-header">
@@ -46,11 +25,6 @@
 
       <div class="dashboard-content">
         <div class="profile-container">
-          <div class="profile-header">
-            <h1>Mon Profil</h1>
-            <p>Gérez vos informations personnelles</p>
-          </div>
-
           <div class="profile-content">
             <div class="profile-card">
               <div class="profile-avatar">
@@ -74,9 +48,8 @@
                     type="text"
                     id="firstName"
                     v-model="formData.firstName"
-                    :class="{ 'error': errors.firstName }"
+                    required
                   />
-                  <span class="error-message" v-if="errors.firstName">{{ errors.firstName }}</span>
                 </div>
 
                 <div class="form-group">
@@ -85,9 +58,8 @@
                     type="text"
                     id="lastName"
                     v-model="formData.lastName"
-                    :class="{ 'error': errors.lastName }"
+                    required
                   />
-                  <span class="error-message" v-if="errors.lastName">{{ errors.lastName }}</span>
                 </div>
 
                 <div class="form-group">
@@ -96,9 +68,8 @@
                     type="email"
                     id="email"
                     v-model="formData.email"
-                    :class="{ 'error': errors.email }"
+                    required
                   />
-                  <span class="error-message" v-if="errors.email">{{ errors.email }}</span>
                 </div>
 
                 <div class="form-group">
@@ -107,9 +78,7 @@
                     type="tel"
                     id="phone"
                     v-model="formData.phone"
-                    :class="{ 'error': errors.phone }"
                   />
-                  <span class="error-message" v-if="errors.phone">{{ errors.phone }}</span>
                 </div>
 
                 <div class="form-group">
@@ -118,43 +87,47 @@
                     id="address"
                     v-model="formData.address"
                     rows="3"
-                    :class="{ 'error': errors.address }"
                   ></textarea>
-                  <span class="error-message" v-if="errors.address">{{ errors.address }}</span>
                 </div>
 
-                <div class="form-actions">
-                  <button type="button" class="cancel-btn" @click="resetForm">Annuler</button>
-                  <button type="submit" class="save-btn" :disabled="isSubmitting">
-                    <i class="fas fa-save"></i>
-                    {{ isSubmitting ? 'Enregistrement...' : 'Enregistrer' }}
-                  </button>
-                </div>
+                <button type="submit" class="btn-primary">
+                  <i class="fas fa-save"></i>
+                  Enregistrer les modifications
+                </button>
               </form>
             </div>
 
             <div class="profile-sidebar">
-              <div class="info-card">
-                <h3>Informations de compte</h3>
-                <div class="info-item">
-                  <i class="fas fa-user"></i>
-                  <span>Membre depuis {{ formatDate(user.createdAt) }}</span>
-                </div>
-                <div class="info-item">
-                  <i class="fas fa-certificate"></i>
-                  <span>{{ user.certificates?.length || 0 }} certificats obtenus</span>
-                </div>
-                <div class="info-item">
-                  <i class="fas fa-clock"></i>
-                  <span>Dernière connexion : {{ formatDate(user.lastLogin) }}</span>
+              <div class="sidebar-section">
+                <h3>Informations du compte</h3>
+                <div class="account-info">
+                  <p>
+                    <i class="fas fa-calendar"></i>
+                    Membre depuis : {{ formatDate(user.createdAt) }}
+                  </p>
+                  <p>
+                    <i class="fas fa-certificate"></i>
+                    Certificats : {{ user.certificates?.length || 0 }}
+                  </p>
+                  <p>
+                    <i class="fas fa-clock"></i>
+                    Dernière connexion : {{ formatDate(user.lastLogin) }}
+                  </p>
+                  <p>
+                    <i class="fas fa-book"></i>
+                    Cours suivis : {{ user.courses?.length || 0 }}
+                  </p>
+                  <p>
+                    <i class="fas fa-trophy"></i>
+                    Progression : {{ calculateProgress() }}%
+                  </p>
                 </div>
               </div>
 
-              <div class="security-card">
+              <div class="sidebar-section">
                 <h3>Sécurité</h3>
-                <button class="change-password-btn" @click="showChangePasswordModal = true">
-                  <i class="fas fa-lock"></i>
-                  Changer le mot de passe
+                <button @click="showPasswordModal = true" class="btn-secondary">
+                  <i class="fas fa-key"></i> Changer le mot de passe
                 </button>
               </div>
             </div>
@@ -164,74 +137,58 @@
     </div>
 
     <!-- Modal de changement de mot de passe -->
-    <Teleport to="body">
-      <div v-if="showChangePasswordModal" class="modal-overlay" @click.self="closePasswordModal">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3>Changer le mot de passe</h3>
-            <button class="close-btn" @click="closePasswordModal">
-              <i class="fas fa-times"></i>
+    <div v-if="showPasswordModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Changer le mot de passe</h3>
+          <button class="close-btn" @click="showPasswordModal = false">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="changePassword" class="password-form">
+            <div class="form-group">
+              <label for="currentPassword">Mot de passe actuel</label>
+              <input
+                type="password"
+                id="currentPassword"
+                v-model="passwordForm.currentPassword"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="newPassword">Nouveau mot de passe</label>
+              <input
+                type="password"
+                id="newPassword"
+                v-model="passwordForm.newPassword"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirmer le mot de passe</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                v-model="passwordForm.confirmPassword"
+                required
+              />
+            </div>
+            <button type="submit" class="btn-primary">
+              Mettre à jour le mot de passe
             </button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="changePassword" class="password-form">
-              <div class="form-group">
-                <label for="currentPassword">Mot de passe actuel</label>
-                <input
-                  type="password"
-                  id="currentPassword"
-                  v-model="passwordForm.currentPassword"
-                  :class="{ 'error': passwordErrors.currentPassword }"
-                />
-                <span class="error-message" v-if="passwordErrors.currentPassword">
-                  {{ passwordErrors.currentPassword }}
-                </span>
-              </div>
-
-              <div class="form-group">
-                <label for="newPassword">Nouveau mot de passe</label>
-                <input
-                  type="password"
-                  id="newPassword"
-                  v-model="passwordForm.newPassword"
-                  :class="{ 'error': passwordErrors.newPassword }"
-                />
-                <span class="error-message" v-if="passwordErrors.newPassword">
-                  {{ passwordErrors.newPassword }}
-                </span>
-              </div>
-
-              <div class="form-group">
-                <label for="confirmPassword">Confirmer le mot de passe</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  v-model="passwordForm.confirmPassword"
-                  :class="{ 'error': passwordErrors.confirmPassword }"
-                />
-                <span class="error-message" v-if="passwordErrors.confirmPassword">
-                  {{ passwordErrors.confirmPassword }}
-                </span>
-              </div>
-
-              <div class="form-actions">
-                <button type="button" class="cancel-btn" @click="closePasswordModal">
-                  Annuler
-                </button>
-                <button type="submit" class="save-btn" :disabled="isChangingPassword">
-                  {{ isChangingPassword ? 'Modification...' : 'Modifier' }}
-                </button>
-              </div>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
-    </Teleport>
+    </div>
 
+    <!-- Notifications -->
     <div class="notifications">
-      <div v-if="notification.show" 
-           :class="['notification', notification.type]" 
-           @click="notification.show = false">
+      <div
+        v-if="notification.show"
+        :class="['notification', notification.type]"
+        @click="notification.show = false"
+      >
         {{ notification.message }}
       </div>
     </div>
@@ -242,6 +199,7 @@
 import { ref, onMounted, onUnmounted, reactive } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
+import UserSidebar from '~/components/UserSidebar.vue'
 
 definePageMeta({
   layout: 'user',
@@ -300,7 +258,8 @@ const user = ref({
   avatar: null,
   createdAt: new Date(),
   lastLogin: new Date(),
-  certificates: []
+  certificates: [],
+  courses: []
 })
 
 // Formulaire principal
@@ -322,7 +281,7 @@ const passwordForm = reactive({
 // États
 const isSubmitting = ref(false)
 const isChangingPassword = ref(false)
-const showChangePasswordModal = ref(false)
+const showPasswordModal = ref(false)
 const avatarInput = ref(null)
 
 // Erreurs
@@ -385,7 +344,8 @@ onMounted(async () => {
         avatar: userData.avatar || null,
         createdAt: userData.createdAt || new Date(),
         lastLogin: userData.lastLogin || new Date(),
-        certificates: userData.certificates || []
+        certificates: userData.certificates || [],
+        courses: userData.courses || []
       }
       
       Object.assign(formData, {
@@ -463,6 +423,20 @@ const validatePasswordForm = () => {
   return isValid
 }
 
+const calculateProgress = () => {
+  if (!user.value.courses?.length) return 0;
+  
+  const totalLessons = user.value.courses.reduce((total, course) => {
+    return total + (course.lessons?.length || 0);
+  }, 0);
+  
+  const completedLessons = user.value.courses.reduce((total, course) => {
+    return total + (course.completedLessons?.length || 0);
+  }, 0);
+  
+  return totalLessons ? Math.round((completedLessons / totalLessons) * 100) : 0;
+};
+
 const updateProfile = async () => {
   if (!validateForm()) return
 
@@ -472,7 +446,20 @@ const updateProfile = async () => {
     // À remplacer par votre appel API réel
     await new Promise(resolve => setTimeout(resolve, 1000))
     
+    // Mettre à jour les données locales
     Object.assign(user.value, formData)
+    
+    // Mettre à jour le store d'authentification
+    const updatedUser = {
+      ...authStore.currentUser,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address
+    }
+    authStore.setUser(updatedUser)
+    
     showNotification('Profil mis à jour avec succès')
   } catch (error) {
     showNotification('Erreur lors de la mise à jour du profil', 'error')
@@ -491,7 +478,7 @@ const changePassword = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000))
     
     showNotification('Mot de passe modifié avec succès')
-    closePasswordModal()
+    showPasswordModal.value = false
   } catch (error) {
     showNotification('Erreur lors de la modification du mot de passe', 'error')
   } finally {
@@ -530,6 +517,13 @@ const handleAvatarChange = async (event) => {
     const reader = new FileReader()
     reader.onload = (e) => {
       user.value.avatar = e.target.result
+      
+      // Mettre à jour l'avatar dans le store
+      const updatedUser = {
+        ...authStore.currentUser,
+        avatar: e.target.result
+      }
+      authStore.setUser(updatedUser)
     }
     reader.readAsDataURL(file)
     
@@ -537,15 +531,6 @@ const handleAvatarChange = async (event) => {
   } catch (error) {
     showNotification('Erreur lors de la mise à jour de la photo de profil', 'error')
   }
-}
-
-const closePasswordModal = () => {
-  showChangePasswordModal.value = false
-  Object.assign(passwordForm, {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  })
 }
 
 const formatDate = (date) => {
@@ -562,102 +547,6 @@ const formatDate = (date) => {
   display: flex;
   min-height: 100vh;
   background: #f8f9fc;
-}
-
-/* Styles de la sidebar */
-.user-sidebar {
-  width: 250px;
-  background: linear-gradient(135deg, #4e73df 60%, #224abe 100%);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  padding: 2rem 1rem 0 1rem;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.07);
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 1000;
-  transition: transform 0.3s ease;
-}
-
-.sidebar-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.sidebar-logo {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-}
-
-.sidebar-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.sidebar-nav {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.home-link {
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.5rem;
-}
-
-.home-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffe082;
-}
-
-.sidebar-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0.5rem 0;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.75rem 1rem;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-  background: rgba(255,255,255,0.15);
-  color: #ffe082;
-  transform: translateX(4px);
-}
-
-.sidebar-link.logout {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
-  background: #e74c3c;
-  color: #fff;
-  justify-content: center;
-  border-radius: 6px;
-  padding: 1rem;
-  border: none;
-  cursor: pointer;
-}
-
-.sidebar-link.logout:hover {
-  background: #c0392b;
 }
 
 /* Styles du contenu principal */
@@ -687,21 +576,6 @@ const formatDate = (date) => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-}
-
-.profile-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.profile-header h1 {
-  font-size: 2rem;
-  color: #2d3748;
-  margin-bottom: 0.5rem;
-}
-
-.profile-header p {
-  color: #718096;
 }
 
 .profile-content {
@@ -850,37 +724,81 @@ const formatDate = (date) => {
   gap: 1.5rem;
 }
 
-.info-card,
-.security-card {
+.sidebar-section {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.info-card h3,
-.security-card h3 {
-  font-size: 1.25rem;
-  color: #2d3748;
-  margin-bottom: 1rem;
+.sidebar-section h3 {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.info-item {
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.account-info p {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 0;
   color: #4a5568;
-  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
 }
 
-.info-item:last-child {
-  border-bottom: none;
+.account-info p:last-child {
+  margin-bottom: 0;
 }
 
-.info-item i {
-  color: #4a90e2;
-  font-size: 1.25rem;
+.account-info p:hover {
+  background: #edf2f7;
+  transform: translateX(4px);
+}
+
+.account-info i {
+  color: #4e73df;
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #4e73df;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #224abe;
+  transform: translateY(-2px);
+}
+
+.btn-secondary i {
+  font-size: 1rem;
 }
 
 .change-password-btn {
@@ -979,30 +897,36 @@ const formatDate = (date) => {
   }
 }
 
-/* Styles pour le menu mobile */
+/* Menu hamburger */
 .hamburger-menu {
   display: none;
   position: fixed;
   top: 1rem;
   left: 1rem;
   z-index: 1001;
-  background: none;
+  background: #4e73df;
   border: none;
-  cursor: pointer;
+  border-radius: 4px;
   padding: 0.5rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
 }
 
 .hamburger-menu span {
   display: block;
-  width: 25px;
+  width: 100%;
   height: 3px;
-  background: #2c3e50;
-  margin: 5px 0;
+  background-color: white;
+  border-radius: 3px;
   transition: all 0.3s ease;
 }
 
 .hamburger-menu.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: translateY(8px) rotate(45deg);
 }
 
 .hamburger-menu.active span:nth-child(2) {
@@ -1010,9 +934,10 @@ const formatDate = (date) => {
 }
 
 .hamburger-menu.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -6px);
+  transform: translateY(-8px) rotate(-45deg);
 }
 
+/* Overlay pour la sidebar mobile */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -1024,17 +949,10 @@ const formatDate = (date) => {
   z-index: 999;
 }
 
-@media (max-width: 768px) {
-  .user-sidebar {
-    transform: translateX(-100%);
-  }
-
-  .user-sidebar.open {
-    transform: translateX(0);
-  }
-
+/* Media queries */
+@media (max-width: 1024px) {
   .hamburger-menu {
-    display: block;
+    display: flex;
   }
 
   .sidebar-overlay {
@@ -1044,10 +962,19 @@ const formatDate = (date) => {
   .user-dashboard-content {
     margin-left: 0;
     padding: 1rem;
+    padding-top: 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-sidebar {
+    width: 100%;
+    max-width: 280px;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .hamburger-menu {
+    top: 0.5rem;
+    left: 0.5rem;
   }
 }
 
@@ -1117,5 +1044,39 @@ const formatDate = (date) => {
 
 .notification.hide {
   animation: slideOut 0.3s ease-out forwards;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  background: #4e73df;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 6px rgba(78, 115, 223, 0.2);
+}
+
+.btn-primary:hover {
+  background: #224abe;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(78, 115, 223, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(78, 115, 223, 0.2);
+}
+
+.btn-primary i {
+  font-size: 1.1rem;
 }
 </style> 

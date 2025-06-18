@@ -1,12 +1,16 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  const authStore = useAuthStore()
-  
-  // Vérifier si l'utilisateur est authentifié
-  if (!authStore.isAuthenticated) {
-    // Rediriger vers la page de connexion avec le retour prévu
-    return navigateTo({
-      path: '/login',
-      query: { redirect: to.fullPath }
-    })
+export default defineNuxtRouteMiddleware((to) => {
+  // Vérifier si nous sommes côté client
+  if (process.client) {
+    const authStore = useAuthStore()
+    
+    // Vérifier l'authentification
+    const isAuthenticated = authStore.checkAuth()
+    
+    if (!isAuthenticated) {
+      return navigateTo({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
+    }
   }
 }) 

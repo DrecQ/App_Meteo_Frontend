@@ -10,33 +10,12 @@
     <!-- Overlay pour fermer la sidebar sur mobile -->
     <div v-if="isSidebarOpen" class="sidebar-overlay" @click="toggleSidebar"></div>
 
-    <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
-      <div class="sidebar-header">
-        <i class="fas fa-user-circle sidebar-logo"></i>
-        <span class="sidebar-title">Espace Membre</span>
-      </div>
-      <nav class="sidebar-nav">
-        <NuxtLink to="/" class="sidebar-link home-link" @click="handleHomeClick">
-          <i class="fas fa-home"></i> Retour à l'accueil
-        </NuxtLink>
-        <div class="sidebar-divider"></div>
-        <NuxtLink to="/user" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-tachometer-alt"></i> Tableau de bord
-        </NuxtLink>
-        <NuxtLink to="/user/courses" class="sidebar-link" exact-active-class="active" @click="closeSidebar">
-          <i class="fas fa-book"></i> Mes cours
-        </NuxtLink>
-        <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-certificate"></i> Certificats
-        </NuxtLink>
-        <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-user"></i> Profil
-        </NuxtLink>
-        <button @click="handleLogout" class="sidebar-link logout">
-          <i class="fas fa-sign-out-alt"></i> Déconnexion
-        </button>
-      </nav>
-    </aside>
+    <UserSidebar
+      :is-sidebar-open="isSidebarOpen"
+      @close="closeSidebar"
+      @home-click="handleHomeClick"
+      @logout="handleLogout"
+    />
 
     <div class="user-dashboard-content">
       <div class="dashboard-header">
@@ -45,14 +24,58 @@
       </div>
 
       <div class="dashboard-content">
-        <div class="courses-grid">
-          <div class="empty-state">
-            <i class="fas fa-book-open"></i>
-            <p>Vous n'avez pas encore commencé de cours</p>
-            <NuxtLink to="/courses" class="btn-primary">
-              Découvrir les cours
-            </NuxtLink>
+        <!-- Filtres -->
+        <div class="filters">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input 
+              type="text" 
+              v-model="searchQuery" 
+              placeholder="Rechercher un cours..."
+            >
           </div>
+          <div class="filter-group">
+            <select v-model="statusFilter" class="filter-select">
+              <option value="">Tous les cours</option>
+              <option value="in_progress">En cours</option>
+              <option value="completed">Terminés</option>
+              <option value="not_started">Non commencés</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Liste des cours -->
+        <div class="courses-grid" v-if="filteredCourses.length > 0">
+          <div v-for="course in filteredCourses" :key="course.id" class="course-card">
+            <div class="course-image">
+              <img :src="course.image" :alt="course.title">
+            </div>
+            <div class="course-content">
+              <h3>{{ course.title }}</h3>
+              <div class="course-meta">
+                <span class="course-level">{{ course.level }}</span>
+                <span class="course-duration">{{ course.duration }}</span>
+              </div>
+              <div class="course-progress">
+                <div class="progress-bar">
+                  <div class="progress" :style="{ width: `${course.progress}%` }"></div>
+                </div>
+                <span class="progress-text">{{ course.progress }}% complété</span>
+              </div>
+              <button @click="viewCourse(course.id)" class="course-button">
+                {{ course.progress > 0 ? 'Continuer' : 'Commencer' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- État vide -->
+        <div class="empty-state" v-else>
+          <i class="fas fa-book-open"></i>
+          <p>Vous n'avez pas encore commencé de cours</p>
+          <NuxtLink to="/courses" class="btn-primary">
+            Découvrir les cours
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -60,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -72,10 +95,41 @@ definePageMeta({
 const authStore = useAuthStore()
 const router = useRouter()
 const isSidebarOpen = ref(false)
+const searchQuery = ref('')
+const statusFilter = ref('')
 
-// Vérifier si l'utilisateur est connecté
-if (!authStore.isAuthenticated) {
-  navigateTo('/login')
+// Données des cours (à remplacer par un appel API)
+const userCourses = ref([
+  {
+    id: 'introduction-meteo',
+    title: 'Introduction à la Météorologie',
+    duration: '20 minutes',
+    level: 'Débutant',
+    image: '/images/courses/ciel.jpg',
+    progress: 75
+  },
+  {
+    id: 'secrets-du-ciel',
+    title: 'Les Secrets du Ciel',
+    duration: '30 minutes',
+    level: 'Débutant',
+    image: '/images/courses/ciel.jpg',
+    progress: 0
+  }
+])
+
+// Filtrage des cours
+const filteredCourses = computed(() => {
+  return userCourses.value.filter(course => {
+    const matchesSearch = course.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                         course.duration.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesStatus = !statusFilter.value || course.progress > 0
+    return matchesSearch && matchesStatus
+  })
+})
+
+const viewCourse = (courseId) => {
+  router.push(`/course/${courseId}`)
 }
 
 const toggleSidebar = () => {
@@ -371,6 +425,194 @@ onUnmounted(() => {
 
   .dashboard-header h1 {
     font-size: 1.4rem;
+  }
+}
+
+/* Styles pour les filtres */
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.search-box i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #718096;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.filter-select {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  min-width: 150px;
+}
+
+/* Styles pour la grille de cours */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.course-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+}
+
+.course-image {
+  height: 160px;
+}
+
+.course-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.course-content {
+  padding: 1rem;
+}
+
+.course-content h3 {
+  margin: 0 0 0.5rem;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.course-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.course-level,
+.course-duration {
+  background: #f7fafc;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #4a5568;
+}
+
+.course-progress {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.progress {
+  height: 100%;
+  background: #3498db;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #718096;
+  font-size: 0.8rem;
+}
+
+.course-button {
+  width: 100%;
+  padding: 0.5rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.course-button:hover {
+  background: #2980b9;
+}
+
+/* État vide */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: #3498db;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: #718096;
+  margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background: #2980b9;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
   }
 }
 </style> 
