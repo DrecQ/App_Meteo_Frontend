@@ -10,36 +10,12 @@
     <!-- Overlay pour fermer la sidebar sur mobile -->
     <div v-if="isSidebarOpen" class="sidebar-overlay" @click="toggleSidebar"></div>
 
-    <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
-      <div class="sidebar-header">
-        <i class="fas fa-user-circle sidebar-logo"></i>
-        <span class="sidebar-title">Michel Ange</span>
-      </div>
-      <nav class="sidebar-nav">
-        <button @click="handleHomeClick" class="sidebar-link home-link">
-          <i class="fas fa-home"></i> Retour à l'accueil
-        </button>
-        <div class="sidebar-divider"></div>
-        <NuxtLink to="/user" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-tachometer-alt"></i> Tableau de bord
-        </NuxtLink>
-        <NuxtLink to="/user/courses" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-book"></i> Mes cours
-        </NuxtLink>
-        <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-certificate"></i> Certificats
-        </NuxtLink>
-        <NuxtLink to="/user/community-chat" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-comments"></i> Chat communautaire
-        </NuxtLink>
-        <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-user"></i> Profil
-        </NuxtLink>
-        <NuxtLink to="/logout" class="sidebar-link logout" @click="handleLogout">
-          <i class="fas fa-sign-out-alt"></i> Déconnexion
-        </NuxtLink>
-      </nav>
-    </aside>
+    <UserSidebar
+      :is-sidebar-open="isSidebarOpen"
+      @close="closeSidebar"
+      @home-click="handleHomeClick"
+      @logout="handleLogout"
+    />
 
     <div class="user-dashboard-content">
       <div class="dashboard-header">
@@ -52,24 +28,107 @@
           <div class="filter-dropdown">
             <select v-model="selectedFilter">
               <option value="all">Tous les certificats</option>
-              <option value="recent">Récents</option>
+              <option value="valid">Valides</option>
               <option value="expiring">Expirant bientôt</option>
+              <option value="expired">Expirés</option>
             </select>
           </div>
         </div>
       </div>
 
       <div class="dashboard-content">
-        <div class="certificates-grid">
-          <CertificationCard
+        <!-- État de chargement -->
+        <div v-if="loading" class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Chargement de vos certificats...</p>
+        </div>
+
+        <!-- État vide -->
+        <div v-else-if="filteredCertificates.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-certificate"></i>
+          </div>
+          <h3>Aucun certificat trouvé</h3>
+          <p v-if="searchQuery || selectedFilter !== 'all'">
+            Aucun certificat ne correspond à votre recherche.
+          </p>
+          <p v-else>
+            Vous n'avez pas encore obtenu de certificats. Commencez par suivre et compléter des cours !
+          </p>
+          <NuxtLink to="/user/courses" class="btn-primary">
+            <i class="fas fa-book"></i>
+            Voir mes cours
+          </NuxtLink>
+        </div>
+
+        <!-- Liste des certificats -->
+        <div v-else class="certificates-grid">
+          <div
             v-for="certificate in filteredCertificates"
             :key="certificate.id"
-            :certificate="certificate"
-            @obtain="handleObtainCertificate"
-            @view="viewCertificate"
-            @download="downloadCertificate"
-          />
+            class="certificate-card"
+            :class="certificate.status"
+          >
+            <div class="certificate-header">
+              <div class="certificate-icon">
+                <i class="fas fa-certificate"></i>
+              </div>
+              <div class="certificate-status" :class="certificate.status">
+                {{ getStatusText(certificate.status) }}
+              </div>
+            </div>
+
+            <div class="certificate-content">
+              <h3 class="certificate-title">{{ certificate.title }}</h3>
+              <p class="certificate-description">{{ certificate.description }}</p>
+              
+              <div class="certificate-details">
+                <div class="detail-item">
+                  <i class="fas fa-book"></i>
+                  <span>{{ certificate.courseTitle }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-user"></i>
+                  <span>{{ certificate.instructor }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-calendar"></i>
+                  <span>Obtenu le {{ certificate.issueDate }}</span>
+                </div>
+                <div v-if="certificate.expiryDate" class="detail-item">
+                  <i class="fas fa-clock"></i>
+                  <span>Expire le {{ certificate.expiryDate }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-star"></i>
+                  <span>Score: {{ certificate.score }}/{{ certificate.maxScore }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="certificate-actions">
+              <button @click="viewCertificate(certificate)" class="btn-secondary">
+                <i class="fas fa-eye"></i>
+                Voir
+              </button>
+              <button @click="downloadCertificate(certificate)" class="btn-primary">
+                <i class="fas fa-download"></i>
+                Télécharger
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notifications">
+      <div
+        v-if="notification.show"
+        :class="['notification', notification.type]"
+        @click="notification.show = false"
+      >
+        {{ notification.message }}
       </div>
     </div>
   </div>
@@ -79,7 +138,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useRouter } from 'vue-router';
-import CertificationCard from '~/components/CertificationCard.vue';
+import UserSidebar from '~/components/UserSidebar.vue';
 
 definePageMeta({
   layout: 'user',
@@ -91,6 +150,8 @@ const router = useRouter();
 const isSidebarOpen = ref(false);
 const searchQuery = ref('');
 const selectedFilter = ref('all');
+const loading = ref(false);
+const certificates = ref([]);
 
 // Vérifier si l'utilisateur est connecté
 if (!authStore.isAuthenticated) {
@@ -124,137 +185,53 @@ const handleLogout = () => {
   router.push('/login');
 };
 
-const certificates = ref([
-  {
-    id: 1,
-    title: 'Certificat en Météorologie de Base',
-    description: 'Maîtrise des concepts fondamentaux de la météorologie',
-    issueDate: '15/03/2024',
-    expiryDate: '15/03/2027',
-    status: 'valid',
-    obtained: false,
-    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=meteo',
-    conditions: [
-      {
-        text: 'Compléter tous les modules du cours de météorologie de base',
-        met: false
-      },
-      {
-        text: 'Obtenir une note minimale de 70% à l\'examen final',
-        met: false
-      },
-      {
-        text: 'Participer à au moins 80% des sessions pratiques',
-        met: false
-      },
-      {
-        text: 'Réussir le projet final de prévision météorologique',
-        met: false
-      }
-    ]
-  },
-  {
-    id: 2,
-    title: 'Expert en Prévisions Météorologiques',
-    description: 'Compétences avancées en prévisions météorologiques',
-    issueDate: '01/02/2024',
-    expiryDate: '01/02/2026',
-    status: 'valid',
-    obtained: false,
-    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=expert',
-    conditions: [
-      {
-        text: 'Posséder le Certificat en Météorologie de Base',
-        met: false
-      },
-      {
-        text: 'Compléter le cours avancé de prévisions météorologiques',
-        met: false
-      },
-      {
-        text: 'Obtenir une note minimale de 80% à l\'examen pratique',
-        met: false
-      },
-      {
-        text: 'Réaliser avec succès 50 prévisions météorologiques',
-        met: false
-      },
-      {
-        text: 'Participer à un stage pratique de 2 semaines',
-        met: false
-      }
-    ]
-  },
-  {
-    id: 3,
-    title: 'Spécialiste en Climatologie',
-    description: 'Expertise en analyse climatique et études environnementales',
-    issueDate: '10/01/2023',
-    expiryDate: '10/01/2025',
-    status: 'expiring',
-    obtained: false,
-    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=climat',
-    conditions: [
-      {
-        text: 'Avoir suivi le cours de climatologie avancée',
-        met: false
-      },
-      {
-        text: 'Réaliser une étude climatique complète',
-        met: false
-      },
-      {
-        text: 'Obtenir une note minimale de 85% à l\'examen final',
-        met: false
-      },
-      {
-        text: 'Présenter un mémoire de recherche en climatologie',
-        met: false
-      },
-      {
-        text: 'Participer à une conférence sur le climat',
-        met: false
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: 'Technicien en Instruments Météorologiques',
-    description: 'Maîtrise des outils et instruments de mesure météorologique',
-    issueDate: '20/12/2022',
-    expiryDate: '20/12/2024',
-    status: 'expired',
-    obtained: false,
-    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=technicien',
-    conditions: [
-      {
-        text: 'Compléter la formation technique sur les instruments météorologiques',
-        met: false
-      },
-      {
-        text: 'Réussir l\'examen pratique d\'étalonnage des instruments',
-        met: false
-      },
-      {
-        text: 'Effectuer 100 heures de pratique sur le terrain',
-        met: false
-      },
-      {
-        text: 'Réaliser un rapport technique sur l\'utilisation des instruments',
-        met: false
-      },
-      {
-        text: 'Obtenir une certification de sécurité en manipulation d\'équipements',
-        met: false
-      }
-    ]
+// Notification system
+const notification = ref({
+  show: false,
+  message: '',
+  type: 'success',
+  timeout: null
+});
+
+const showNotification = (message, type = 'success') => {
+  if (notification.value.timeout) {
+    clearTimeout(notification.value.timeout);
   }
-]);
+  
+  notification.value.message = message;
+  notification.value.type = type;
+  notification.value.show = true;
+  
+  notification.value.timeout = setTimeout(() => {
+    notification.value.show = false;
+  }, 3000);
+};
+
+// Charger les certificats
+const loadCertificates = async () => {
+  loading.value = true;
+  try {
+    const response = await $fetch('/api/user/certificates', {
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`,
+        'x-user-email': authStore.user.email
+      }
+    });
+    
+    certificates.value = response.certificates;
+  } catch (error) {
+    console.error('Erreur lors du chargement des certificats:', error);
+    showNotification('Erreur lors du chargement des certificats', 'error');
+  } finally {
+    loading.value = false;
+  }
+};
 
 const filteredCertificates = computed(() => {
   return certificates.value.filter(certificate => {
     const matchesSearch = certificate.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                         certificate.description.toLowerCase().includes(searchQuery.value.toLowerCase());
+                         certificate.description.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                         certificate.courseTitle.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesFilter = selectedFilter.value === 'all' || certificate.status === selectedFilter.value;
     return matchesSearch && matchesFilter;
   });
@@ -270,50 +247,21 @@ const getStatusText = (status) => {
 };
 
 const viewCertificate = (certificate) => {
+  // TODO: Implémenter la vue détaillée du certificat
   console.log('Voir le certificat:', certificate);
+  showNotification('Fonctionnalité en cours de développement');
 };
 
 const downloadCertificate = (certificate) => {
+  // TODO: Implémenter le téléchargement du certificat
   console.log('Télécharger le certificat:', certificate);
+  showNotification('Fonctionnalité en cours de développement');
 };
 
-const handleObtainCertificate = async (certificate) => {
-  try {
-    // Ici, vous pouvez ajouter la logique pour obtenir le certificat
-    // Par exemple, appeler une API pour mettre à jour le statut
-    console.log('Obtenir le certificat:', certificate);
-    
-    // Mettre à jour le statut localement
-    const index = certificates.value.findIndex(c => c.id === certificate.id);
-    if (index !== -1) {
-      certificates.value[index] = {
-        ...certificate,
-        obtained: true,
-        status: 'valid',
-        issueDate: new Date().toLocaleDateString('fr-FR')
-      };
-    }
-  } catch (error) {
-    console.error('Erreur lors de l\'obtention du certificat:', error);
-  }
-};
-
-// Fonction pour mettre à jour l'état d'une condition
-const updateConditionStatus = (certificateId, conditionIndex, met) => {
-  const certificate = certificates.value.find(c => c.id === certificateId);
-  if (certificate) {
-    certificate.conditions[conditionIndex].met = met;
-  }
-};
-
-// Fonction pour vérifier si toutes les conditions sont remplies
-const checkAllConditionsMet = (certificateId) => {
-  const certificate = certificates.value.find(c => c.id === certificateId);
-  if (certificate) {
-    return certificate.conditions.every(condition => condition.met);
-  }
-  return false;
-};
+// Charger les données au montage
+onMounted(() => {
+  loadCertificates();
+});
 
 // Nettoyer les classes lors du démontage du composant
 onUnmounted(() => {
@@ -436,29 +384,26 @@ onUnmounted(() => {
 }
 
 .dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 2rem;
 }
 
 .dashboard-header h1 {
   font-size: 1.8rem;
   color: #2c3e50;
-  margin: 0;
+  margin: 0 0 1rem;
 }
 
 .header-actions {
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .search-bar {
   position: relative;
-  width: 300px;
+  flex: 1;
+  max-width: 400px;
 }
 
 .search-bar i {
@@ -466,16 +411,16 @@ onUnmounted(() => {
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #6c757d;
+  color: #7f8c8d;
 }
 
 .search-bar input {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: all 0.3s;
+  border: 1px solid #e0e6ed;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
 }
 
 .search-bar input:focus {
@@ -485,151 +430,249 @@ onUnmounted(() => {
 }
 
 .filter-dropdown select {
-  padding: 0.75rem 2rem 0.75rem 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e0e6ed;
+  border-radius: 8px;
+  font-size: 1rem;
   background: white;
   cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
+  transition: border-color 0.3s;
+}
+
+.filter-dropdown select:focus {
+  outline: none;
+  border-color: #4e73df;
+}
+
+/* États de chargement et vide */
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e0e6ed;
+  border-top: 4px solid #4e73df;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  color: #bdc3c7;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Grille des certificats */
 .certificates-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
 }
 
 .certificate-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: transform 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 2px solid transparent;
 }
 
 .certificate-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-card.valid {
+  border-color: #28a745;
+}
+
+.certificate-card.expiring {
+  border-color: #ffc107;
+}
+
+.certificate-card.expired {
+  border-color: #dc3545;
+  opacity: 0.7;
 }
 
 .certificate-header {
-  padding: 1.2rem;
-  background: #f8f9fc;
-  border-bottom: 1px solid #e9ecef;
-  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #e0e6ed;
 }
 
 .certificate-icon {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: #4e73df;
-  margin-bottom: 0.5rem;
 }
 
 .certificate-status {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .certificate-status.valid {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: #d4edda;
+  color: #155724;
 }
 
 .certificate-status.expiring {
-  background: #fff3e0;
-  color: #ef6c00;
+  background: #fff3cd;
+  color: #856404;
 }
 
 .certificate-status.expired {
-  background: #ffebee;
-  color: #c62828;
+  background: #f8d7da;
+  color: #721c24;
 }
 
-.certificate-info {
-  padding: 1.2rem;
+.certificate-content {
+  padding: 1.5rem;
 }
 
-.certificate-info h3 {
-  margin: 0 0 0.5rem;
+.certificate-title {
+  font-size: 1.2rem;
   color: #2c3e50;
-  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
   font-weight: 600;
 }
 
-.certificate-info p {
-  margin: 0 0 1rem;
-  color: #6c757d;
-  font-size: 0.9rem;
-  line-height: 1.4;
+.certificate-description {
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+  line-height: 1.5;
 }
 
-.certificate-meta {
+.certificate-details {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  color: #6c757d;
-  font-size: 0.85rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #e9ecef;
-}
-
-.certificate-meta span {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
 }
 
-.certificate-actions {
-  padding: 1rem;
-  border-top: 1px solid #e9ecef;
+.detail-item {
   display: flex;
-  gap: 0.8rem;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #5a6c7d;
 }
 
-.view-btn,
-.download-btn {
+.detail-item i {
+  width: 16px;
+  color: #4e73df;
+}
+
+.certificate-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e6ed;
+}
+
+.btn-primary, .btn-secondary {
   flex: 1;
-  padding: 0.6rem;
-  border: none;
-  border-radius: 4px;
+  padding: 0.75rem;
+  border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  text-decoration: none;
 }
 
-.view-btn {
+.btn-primary {
   background: #4e73df;
   color: white;
+  border: none;
 }
 
-.view-btn:hover {
+.btn-primary:hover {
   background: #224abe;
+  transform: translateY(-1px);
 }
 
-.download-btn {
-  background: #f8f9fc;
+.btn-secondary {
+  background: white;
   color: #4e73df;
   border: 1px solid #4e73df;
 }
 
-.download-btn:hover {
+.btn-secondary:hover {
   background: #4e73df;
   color: white;
+}
+
+/* Notifications */
+.notifications {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1001;
+}
+
+.notification {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.3s;
+  min-width: 300px;
+}
+
+.notification:hover {
+  transform: translateX(-5px);
+}
+
+.notification.success {
+  border-left: 4px solid #28a745;
+  color: #155724;
+}
+
+.notification.error {
+  border-left: 4px solid #dc3545;
+  color: #721c24;
 }
 
 /* Menu hamburger */
@@ -685,16 +728,6 @@ onUnmounted(() => {
 }
 
 /* Media queries */
-@media (max-width: 1200px) {
-  .user-dashboard-content {
-    padding: 1.5rem;
-  }
-
-  .certificates-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 @media (max-width: 1024px) {
   .hamburger-menu {
     display: flex;
@@ -704,67 +737,33 @@ onUnmounted(() => {
     display: block;
   }
 
-  .user-sidebar {
-    transform: translateX(-100%);
-  }
-
-  .user-sidebar.open {
-    transform: translateX(0);
-  }
-
-  body.sidebar-open .user-sidebar {
-    transform: translateX(0);
-  }
-
   .user-dashboard-content {
     margin-left: 0;
     padding: 1rem;
     padding-top: 4rem;
   }
 
-  .dashboard-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .search-bar {
-    width: 100%;
+  .certificates-grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .user-sidebar {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .hamburger-menu {
-    top: 0.5rem;
-    left: 0.5rem;
-  }
-
-  .dashboard-header {
+  .header-actions {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1rem;
+    align-items: stretch;
   }
 
-  .dashboard-header h1 {
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
-    color: #2c3e50;
-    font-weight: 600;
+  .search-bar {
+    max-width: none;
   }
 
-  .certificates-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .certificate-card {
+    margin: 0 0.5rem;
+  }
+
+  .certificate-actions {
+    flex-direction: column;
   }
 }
 
@@ -774,29 +773,21 @@ onUnmounted(() => {
   }
 
   .dashboard-header h1 {
-    font-size: 1.2rem;
-    margin-bottom: 0.3rem;
+    font-size: 1.4rem;
   }
 
-  .certificate-info {
+  .certificate-content {
     padding: 1rem;
   }
 
-  .certificate-header {
-    padding: 1rem;
+  .notifications {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
   }
 
-  .certificate-icon {
-    font-size: 2rem;
-  }
-}
-
-/* Optimisation des performances */
-@media (prefers-reduced-motion: reduce) {
-  .user-sidebar,
-  .hamburger-menu,
-  .certificate-card {
-    transition: none;
+  .notification {
+    min-width: auto;
   }
 }
 </style> 

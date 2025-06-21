@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -117,7 +117,15 @@ const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref(null)
 
+// Clear error on component unmount
+onUnmounted(() => {
+  authStore.clearError()
+})
+
 const handleSubmit = async () => {
+  loading.value = true
+  errorMessage.value = null
+  
   try {
     await authStore.login({
       email: form.value.email,
@@ -125,7 +133,20 @@ const handleSubmit = async () => {
     })
     router.push('/user')
   } catch (error) {
-    errorMessage.value = error.message
+    console.error('Erreur de connexion:', error)
+    
+    // Gérer différents types d'erreurs
+    if (error.data?.statusMessage) {
+      errorMessage.value = error.data.statusMessage
+    } else if (error.message) {
+      errorMessage.value = error.message
+    } else if (error.statusMessage) {
+      errorMessage.value = error.statusMessage
+    } else {
+      errorMessage.value = 'Une erreur est survenue lors de la connexion'
+    }
+  } finally {
+    loading.value = false
   }
 }
 

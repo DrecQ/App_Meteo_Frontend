@@ -16,11 +16,11 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="auth-form">
-        <!-- <div v-if="authStore.error" class="error-message">
-          {{ authStore.error }}
-        </div> -->
+        <div v-if="errorMessage || authStore.error" class="error-message">
+          {{ errorMessage || authStore.error }}
+        </div>
 
-          <div class="form-group">
+        <div class="form-group">
           <label for="name">Nom complet</label>
             <div class="input-group">
               <i class="fas fa-user input-icon"></i>
@@ -160,7 +160,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -179,6 +179,12 @@ const form = ref({
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 const loading = ref(false)
+const errorMessage = ref(null)
+
+// Clear error on component unmount
+onUnmounted(() => {
+  authStore.clearError()
+})
 
 // Calcul de la force du mot de passe
 const passwordStrength = computed(() => {
@@ -229,6 +235,8 @@ const formValid = computed(() => {
 
 const handleSubmit = async () => {
   loading.value = true
+  errorMessage.value = null
+  
   try {
     const success = await authStore.register({
       name: form.value.name,
@@ -238,10 +246,21 @@ const handleSubmit = async () => {
     })
     
     if (success) {
-      router.push('/')
+      router.push('/user')
     }
   } catch (error) {
     console.error('Erreur d\'inscription:', error)
+    
+    // Gérer différents types d'erreurs
+    if (error.data?.statusMessage) {
+      errorMessage.value = error.data.statusMessage
+    } else if (error.message) {
+      errorMessage.value = error.message
+    } else if (error.statusMessage) {
+      errorMessage.value = error.statusMessage
+    } else {
+      errorMessage.value = 'Une erreur est survenue lors de l\'inscription'
+    }
   } finally {
     loading.value = false
   }

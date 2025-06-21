@@ -130,11 +130,11 @@
     "title": "Kọntákti",
     "subtitle": "Ìbéèrè? Ẹgbẹ́ wa wà fún ọ",
     "infoTitle": "Àdírẹ́sì wa",
-    "addressTitle": "Àdírẹ́sì",
-    "address": "123 Rue de la Météo<br>75000 Paris, France",
-    "emailTitle": "Ìmẹ́lì",
-    "email": "contact@meteo-benin.com",
-    "phoneTitle": "Fóònù",
+    "addressTitle": "Adirẹsi",
+    "address": "123 Oju-ọjọ Street<br>75000 Paris, France",
+    "emailTitle": "E-meeli",
+    "email": "'contact@meteo-benin.com'",
+    "phoneTitle": "Foonu",
     "phone": "+33 1 23 45 67 89",
     "hoursTitle": "Àkókò",
     "hours": "Mọnde-Sannde: 9am-6pm<br>Satide: 10am-4pm",
@@ -142,7 +142,7 @@
     "form": {
       "nameLabel": "Orúkọ rẹ",
       "namePlaceholder": "Adeola Akin",
-      "emailLabel": "Ìmẹ́lì rẹ",
+      "emailLabel": "E-meeli",
       "emailPlaceholder": "adeola@email.com",
       "subjectLabel": "Kókó ifiranṣẹ",
       "subjectPlaceholder": "Ìbéèrè nípa ẹ̀kọ́",
@@ -152,39 +152,47 @@
     }
   },
   "coursesPage": {
-    "title": "Àwọn Ẹ̀kọ́ Wa",
-    "subtitle": "Wa ẹ̀kọ́ tó péye fún ìmọ̀ ojú-ọjọ́ rẹ",
-    "searchPlaceholder": "Wá ẹ̀kọ́, kókó, ọrọ̀...",
+    "title": "Àwọn Ìkẹ́kọ̀ọ́ Wa",
+    "subtitle": "Wá ìkẹ́kọ̀ọ́ tí ó dára jù láti fẹ́sẹ̀ sí àwọn ìmọ̀ ọ̀rọ̀ afẹ́fẹ́ rẹ",
+    "searchPlaceholder": "Ṣe wíwá ìkẹ́kọ̀ọ́, ọ̀rọ̀, ọ̀rọ̀ ìṣọ̀kan...",
     "searchBtn": "Wá",
     "category": "Ẹ̀ka",
     "allCategories": "Gbogbo",
-    "meteo": "Ojú-ọjọ́",
-    "climat": "Climatology",
-    "previsions": "Àṣàyàn",
+    "meteo": "Ìmọ̀ ọ̀rọ̀ afẹ́fẹ́",
+    "climat": "Ìmọ̀ ọ̀rọ̀ afẹ́fẹ́",
+    "previsions": "Ìṣọ̀ro",
     "level": "Ipele",
     "allLevels": "Gbogbo",
-    "beginner": "Akẹ́kọ̀ọ́ tuntun",
-    "intermediate": "Aarin",
-    "advanced": "Tó gíga",
-    "duration": "Akoko",
+    "beginner": "Olùbẹ̀rẹ̀",
+    "intermediate": "Àárín",
+    "advanced": "Olùgbé",
+    "duration": "Ìgbà",
     "allDurations": "Gbogbo",
-    "short": "Kéré ju 2wákàtí lọ",
-    "medium": "2-5wákàtí",
-    "long": "Tó ju 5wákàtí lọ",
-    "coursesAvailable": "ẹ̀kọ́ tó wà",
-    "sortPopular": "Tó gbajúmọ̀",
-    "sortRecent": "Tuntun",
-    "sortDuration": "Akoko",
+    "short": "Kéré ju 2h",
+    "medium": "2-5h",
+    "long": "Tóbi ju 5h",
+    "coursesAvailable": "ìkẹ́kọ̀ọ́ wà",
+    "sortPopular": "Tí ó gbajúmọ̀ jù",
+    "sortRecent": "Tí ó ṣẹlẹ̀ sẹ́yìn",
+    "sortDuration": "Ìgbà",
     "levels": {
-      "débutant": "Akẹ́kọ̀ọ́ tuntun",
-      "intermédiaire": "Aarin",
-      "avancé": "Tó gíga"
+      "débutant": "Olùbẹ̀rẹ̀",
+      "intermédiaire": "Àárín",
+      "avancé": "Olùgbé"
     },
-    "free": "Ọfẹ",
-    "lessons": "kíláàsì",
-    "completed": "parí",
-    "continue": "Tesiwaju",
-    "start": "Bẹrẹ"
+    "free": "Ọfẹ́",
+    "lessons": "ìkẹ́kọ̀ọ́",
+    "completed": "tí a ṣe",
+    "continue": "Tẹ̀síwájú",
+    "start": "Bẹ̀rẹ̀",
+    "audio": {
+      "listen": "Gbọ́",
+      "stop": "Dẹ́kun",
+      "listenTitle": "Gbọ́ ìkẹ́kọ̀ọ́",
+      "stopTitle": "Dẹ́kun gbígbọ́",
+      "notSupported": "Ìgbọ́ ọ̀rọ̀ kì í ṣe atẹ̀lẹwọ́ nínú browser rẹ.",
+      "error": "Àṣìṣe nínú gbígbọ́. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si."
+    }
   },
   "weatherPage": {
     "title": "Ìròyìn Ojú-ọjọ́",
@@ -233,5 +241,118 @@
     "google": "Forúkọsílẹ̀ pẹ̀lú Google",
     "alreadyAccount": "Ti forúkọsílẹ̀?",
     "login": "Wọlé"
+  },
+  "quizPage": {
+    "modeSelection": {
+      "title": "Yàn ọ̀nà ìdánwò rẹ",
+      "iaMode": {
+        "title": "Ìdánwò AI Aláṣepọ̀",
+        "description": "Ìbéèrè tí AI ṣe pẹ̀lú ìmọ̀ ọ̀rọ̀ àti ìtúnṣe ọgbọ́n"
+      },
+      "classicMode": {
+        "title": "Ìdánwò Àtijọ́",
+        "description": "Ìbéèrè tí a ṣàlàyé tẹ́lẹ̀ pẹ̀lú ìlọsíwájú líńéà"
+      },
+      "testMode": {
+        "title": "Ìdánwò API",
+        "description": "Ṣààyẹ̀wò ìṣètò API"
+      },
+      "or": "tàbí",
+      "debug": "Ìtúnṣe"
+    },
+    "iaThinking": {
+      "preparing": "AI ń ṣètò ìbéèrè rẹ lórí",
+      "meteorology": "Ìmọ̀ ọ̀rọ̀ afẹ́fẹ́"
+    },
+    "question": {
+      "audioButton": "Kà ìbéèrè",
+      "voiceAnswer": "Ìdáhùn ọ̀rọ̀",
+      "listening": "N gbọ́...",
+      "textAnswer": "Kọ ìdáhùn rẹ nihí...",
+      "validate": "Jẹ́risí",
+      "nextQuestion": "Ìbéèrè tí ó tẹ̀le",
+      "seeResults": "Wo àbájáde",
+      "seeMyResults": "Wo àbájáde mi"
+    },
+    "feedback": {
+      "correct": "Ó tọ̀!",
+      "incorrect": "Ó súnmọ́!",
+      "excellent": "Ìdáhùn dára! O mọ̀ ọ̀rọ̀ yìí dáadáa.",
+      "wrongAnswer": "Kì í ṣe gbogbo. Ìdáhùn tí ó tọ̀ ni ìbò"
+    },
+    "results": {
+      "title": "Àbájáde Ìdánwò AI",
+      "finalScore": "Ìpín ìparí",
+      "performance": {
+        "perfect": "Ìṣẹ́ tí ó yẹ! 🏆",
+        "excellent": "Ìṣẹ́ dára! ✨",
+        "good": "Àbájáde dára, tẹ̀síwájú! 👍",
+        "needsImprovement": "Ó ní láti dára si, iwọ yóò lọ síwájú! 💪"
+      },
+      "actions": {
+        "restart": "Bẹ̀rẹ̀ lẹ́ẹ̀kan si",
+        "changeMode": "Yí ọ̀nà padà"
+      }
+    },
+    "errors": {
+      "speechNotSupported": "Ìmọ̀ ọ̀rọ̀ kì í ṣe atẹ̀lẹwọ́ nínú browser rẹ.",
+      "speechError": "Àṣìṣe ìmọ̀ ọ̀rọ̀:",
+      "apiError": "Àṣìṣe nínú ṣíṣe ìbéèrè. Jọ̀ọ́ gbìyànjú lẹ́ẹ̀kan si.",
+      "iaQuestionFetchError": "Aforiji! A ko le ṣe agbekalẹ ibeere kan ni bayi. Jọwọ gbiyanju lẹẹkansi."
+    }
+  },
+  "common": {
+    "loading": "N gbà...",
+    "submitting": "N fi ránṣẹ́...",
+    "cancel": "Fagile",
+    "help": "Ìrànlọ́wọ́",
+    "member": "Ẹgbẹ́"
+  },
+  "community": {
+    "newQuestion": "Be ìbéèrè tuntun",
+    "questionTitle": "Àkọlé ìbéèrè",
+    "questionTitlePlaceholder": "Ex: Bawo ni a ṣe le ṣàlàyé ìjì ní ìgbà òòrùn?",
+    "questionDetails": "Àkọsílẹ̀ ìbéèrè",
+    "questionDetailsPlaceholder": "Ṣàlàyé ìbéèrè rẹ ní dídá...",
+    "category": "Ẹ̀ka",
+    "selectCategory": "Yan ẹ̀ka",
+    "categories": {
+      "meteo": "Ìmọ̀ òjò",
+      "climat": "Ìmọ̀ òjò",
+      "instruments": "Ìmọ̀ òjò",
+      "agriculture": "Ìṣọ̀dọ̀"
+    },
+    "publishQuestion": "Tẹ ìbéèrè jáde",
+    "helpTitle": "Bawo ni a ṣe le lo àyè àwùjọ?",
+    "help": {
+      "step1": {
+        "title": "1. Wa ìbéèrè:",
+        "description": "Lo ìbéèrè wá tabi wo àpẹẹrẹ isalẹ̀."
+      },
+      "step2": {
+        "title": "2. Be ìbéèrè rẹ:",
+        "description": "Tẹ lórí mikirofonu láti sọrọ̀ tabi kọ ìbéèrè rẹ."
+      },
+      "step3": {
+        "title": "3. Ka ìdáhùn:",
+        "description": "Tẹ lórí ìbéèrè láti wo ìdáhùn láti ọ̀dọ̀ àwọn ẹgbẹ́ mìíràn."
+      }
+    },
+    "searchPlaceholder": "Wa ìbéèrè...",
+    "searchTitle": "Tẹ ìbéèrè rẹ tabi ọ̀rọ̀ ìṣàlàyé nibi",
+    "searchButton": "Wa",
+    "voiceQuestion": "Fi ìbéèrè ránṣẹ́",
+    "examples": "Àpẹẹrẹ",
+    "exampleQuestions": {
+      "rain": "Bawo ni a ṣe le mọ̀ bí òjò yóò rọ̀ lọ́la?",
+      "corn": "Ìmọ̀ran wo fún gbígbìn ọkà yìí ìgbà?",
+      "drought": "Bawo ni a ṣe le dá àgbẹ̀ mi lára òun?"
+    },
+    "askQuestion": "Be ìbéèrè",
+    "answers": "ìdáhùn",
+    "reply": "Dáhùn",
+    "yourAnswer": "Ìdáhùn rẹ",
+    "answerPlaceholder": "Kọ ìdáhùn rẹ ní dídá nibi...",
+    "publishAnswer": "Tẹ ìdáhùn jáde"
   }
 } 

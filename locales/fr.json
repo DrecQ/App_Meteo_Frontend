@@ -77,7 +77,7 @@
       "signup": "S'inscrire",
       "navigation": "Navigation",
       "home": "Accueil",
-      "courses": "Cours",
+      "courses": "Formations",
       "pricing": "Tarifs",
       "contact": "Contact",
       "resources": "Ressources",
@@ -90,8 +90,8 @@
       "terms": "Conditions",
       "cookies": "Cookies",
       "contact2": "Contact",
-      "email": "contact@meteo-benin.com",
-      "phone": "+33 1 23 45 67 89",
+      "email": "'contact@meteo-benin.com'",
+      "phone": "+229 12 34 56 78",
       "copyright": "© 2025 EduMétéo - Tous droits réservés"
     }
   },
@@ -125,11 +125,11 @@
     "subtitle": "Une question ? Notre équipe est à votre écoute",
     "infoTitle": "Nos coordonnées",
     "addressTitle": "Adresse",
-    "address": "123 Rue de la Météo<br>75000 Paris, France",
+    "address": "Cotonou, Bénin",
     "emailTitle": "Email",
-    "email": "contact@meteo-benin.com",
+    "email": "'contact@meteo-benin.com'",
     "phoneTitle": "Téléphone",
-    "phone": "+33 1 23 45 67 89",
+    "phone": "+229 12 34 56 78",
     "hoursTitle": "Horaires",
     "hours": "Lun-Ven: 9h-18h<br>Sam: 10h-16h",
     "formTitle": "Envoyez un message",
@@ -178,7 +178,15 @@
     "lessons": "leçons",
     "completed": "complété",
     "continue": "Continuer",
-    "start": "Commencer"
+    "start": "Commencer",
+    "audio": {
+      "listen": "Écouter",
+      "stop": "Arrêter",
+      "listenTitle": "Écouter le cours",
+      "stopTitle": "Arrêter la lecture",
+      "notSupported": "La synthèse vocale n'est pas supportée par votre navigateur.",
+      "error": "Erreur lors de la lecture audio. Veuillez réessayer."
+    }
   },
   "weatherPage": {
     "title": "Bulletin Météo",
@@ -262,5 +270,118 @@
     "google": "S'inscrire avec Google",
     "alreadyAccount": "Déjà inscrit ?",
     "login": "Se connecter"
+  },
+  "quizPage": {
+    "modeSelection": {
+      "title": "Choisissez votre mode de quiz",
+      "iaMode": {
+        "title": "Quiz IA Interactif",
+        "description": "Questions générées par IA avec reconnaissance vocale et correction intelligente"
+      },
+      "classicMode": {
+        "title": "Quiz Classique",
+        "description": "Questions prédéfinies avec progression linéaire"
+      },
+      "testMode": {
+        "title": "Test API",
+        "description": "Vérifier la configuration de l'API"
+      },
+      "or": "ou",
+      "debug": "Debug"
+    },
+    "iaThinking": {
+      "preparing": "L'IA prépare votre question sur",
+      "meteorology": "Météorologie"
+    },
+    "question": {
+      "audioButton": "Lire la question",
+      "voiceAnswer": "Réponse vocale",
+      "listening": "En écoute...",
+      "textAnswer": "Écrivez votre réponse ici...",
+      "validate": "Valider",
+      "nextQuestion": "Question suivante",
+      "seeResults": "Voir résultats",
+      "seeMyResults": "Voir mes résultats"
+    },
+    "feedback": {
+      "correct": "Exact !",
+      "incorrect": "Presque !",
+      "excellent": "Excellente réponse ! Vous maîtrisez bien ce concept.",
+      "wrongAnswer": "Pas tout à fait. La bonne réponse était l'option"
+    },
+    "results": {
+      "title": "Résultats du Quiz IA",
+      "finalScore": "Score final",
+      "performance": {
+        "perfect": "Performance exceptionnelle ! 🏆",
+        "excellent": "Excellent travail ! ✨",
+        "good": "Bon résultat, continuez ainsi ! 👍",
+        "needsImprovement": "À perfectionner, vous progresserez ! 💪"
+      },
+      "actions": {
+        "restart": "Recommencer",
+        "changeMode": "Changer de mode"
+      }
+    },
+    "errors": {
+      "speechNotSupported": "La reconnaissance vocale n'est pas supportée par votre navigateur.",
+      "speechError": "Erreur de reconnaissance vocale:",
+      "apiError": "Erreur lors de la génération de la question. Veuillez réessayer.",
+      "iaQuestionFetchError": "Oups ! Impossible de générer une question pour le moment. Veuillez réessayer."
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "submitting": "Envoi en cours...",
+    "cancel": "Annuler",
+    "help": "Aide",
+    "member": "Membre"
+  },
+  "community": {
+    "newQuestion": "Poser une nouvelle question",
+    "questionTitle": "Titre de la question",
+    "questionTitlePlaceholder": "Ex: Comment prévoir les orages en saison sèche ?",
+    "questionDetails": "Détails de la question",
+    "questionDetailsPlaceholder": "Décrivez votre question en détails...",
+    "category": "Catégorie",
+    "selectCategory": "Choisir une catégorie",
+    "categories": {
+      "meteo": "Météorologie",
+      "climat": "Climatologie",
+      "instruments": "Instruments météo",
+      "agriculture": "Agriculture"
+    },
+    "publishQuestion": "Publier la question",
+    "helpTitle": "Comment utiliser l'espace communautaire ?",
+    "help": {
+      "step1": {
+        "title": "1. Cherche une question :",
+        "description": "Utilise la barre de recherche ou parcours les exemples ci-dessous."
+      },
+      "step2": {
+        "title": "2. Pose ta question :",
+        "description": "Clique sur le micro pour parler ou écris ta question."
+      },
+      "step3": {
+        "title": "3. Lis les réponses :",
+        "description": "Clique sur une question pour voir les réponses des autres membres."
+      }
+    },
+    "searchPlaceholder": "Rechercher des questions...",
+    "searchTitle": "Tape ici ta question ou un mot-clé",
+    "searchButton": "Lancer la recherche",
+    "voiceQuestion": "Enregistrer une question à l'oral",
+    "examples": "Exemples",
+    "exampleQuestions": {
+      "rain": "Comment savoir s'il va pleuvoir demain ?",
+      "corn": "Quels conseils pour semer le maïs cette saison ?",
+      "drought": "Comment protéger mes cultures de la sécheresse ?"
+    },
+    "askQuestion": "Poser une question",
+    "answers": "réponses",
+    "reply": "Répondre",
+    "yourAnswer": "Votre réponse",
+    "answerPlaceholder": "Écrivez votre réponse détaillée ici...",
+    "publishAnswer": "Publier la réponse"
   }
 } 

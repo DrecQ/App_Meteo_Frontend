@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Chat Communautaire</title>
+</head>
+<body>
+    <h1>Test Chat Communautaire</h1>
+    
+    <h2>Charger les questions</h2>
+    <button onclick="loadQuestions()">Charger les questions</button>
+    <div id="questions"></div>
+    
+    <h2>Créer une question</h2>
+    <button onclick="createQuestion()">Créer une question de test</button>
+    
+    <script>
+        async function loadQuestions() {
+            try {
+                const response = await fetch('/api/community/questions');
+                const data = await response.json();
+                document.getElementById('questions').innerHTML = 
+                    '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+        
+        async function createQuestion() {
+            try {
+                const response = await fetch('/api/community/questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: 'Question de test',
+                        content: 'Contenu de test pour vérifier le fonctionnement',
+                        category: 'meteo',
+                        userId: 'test-user-id'
+                    })
+                });
+                const data = await response.json();
+                alert('Question créée: ' + JSON.stringify(data));
+                loadQuestions();
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Erreur: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html> 

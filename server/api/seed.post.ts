@@ -1,196 +1,164 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
   try {
-    // Données des cours existants
+    // 1. Nettoyer la base de données pour un redémarrage propre
+    await prisma.communityLike.deleteMany({})
+    await prisma.communityAnswer.deleteMany({})
+    await prisma.communityQuestion.deleteMany({})
+    await prisma.certificate.deleteMany({})
+    await prisma.quizResult.deleteMany({})
+    await prisma.lesson.deleteMany({})
+    await prisma.course.deleteMany({})
+    await prisma.user.deleteMany({})
+    console.log('Anciennes données nettoyées.')
+
+    // 2. Créer des utilisateurs de test
+    const salt = await bcrypt.genSalt(10)
+    const users = await Promise.all([
+      prisma.user.create({
+        data: {
+          email: 'kofi@example.com',
+          password: await bcrypt.hash('password123', salt),
+          firstName: 'Kofi',
+          lastName: 'Mensah',
+          role: 'user',
+          avatar: '/default-avatar.svg'
+        }
+      }),
+      prisma.user.create({
+        data: {
+          email: 'amina@example.com',
+          password: await bcrypt.hash('password123', salt),
+          firstName: 'Amina',
+          lastName: 'Diallo',
+          role: 'user',
+          avatar: '/default-avatar.svg'
+        }
+      }),
+      prisma.user.create({
+        data: {
+          email: 'jean@example.com',
+          password: await bcrypt.hash('password123', salt),
+          firstName: 'Jean',
+          lastName: 'Adékambi',
+          role: 'admin',
+          avatar: '/default-avatar.svg'
+        }
+      }),
+      prisma.user.create({
+        data: {
+          email: 'fatou@example.com',
+          password: await bcrypt.hash('password123', salt),
+          firstName: 'Fatou',
+          lastName: "N'Diaye",
+          role: 'user',
+          avatar: '/default-avatar.svg'
+        }
+      })
+    ])
+    console.log(`${users.length} utilisateurs de test créés.`)
+
+    // 3. Créer des cours
     const coursesData = [
-      {
+       {
         slug: 'introduction-meteo',
-        title: 'Introduction à la Météorologie',
-        description: 'Découvrez les bases de la météorologie. Un cours gratuit pour comprendre les phénomènes météorologiques quotidiens.',
-        instructor: 'Dr. Jean Dupont',
-        duration: '20 minutes',
-        lessons: [
-          {
-            title: 'Les Bases de la Météorologie',
-            content: `
-              <h3>Qu'est-ce que la météorologie ?</h3>
-              <p>La météorologie est la science qui étudie les phénomènes atmosphériques et les prévisions du temps.</p>
-              
-              <h4>Points clés à retenir</h4>
-              <ul>
-                <li>Définition de la météorologie</li>
-                <li>Importance des prévisions météo</li>
-                <li>Instruments de base</li>
-              </ul>
-            `,
-            duration: '10 min'
-          },
-          {
-            title: 'Lire une Carte Météo',
-            content: `
-              <h3>Comprendre les symboles météo</h3>
-              <p>Apprenez à décoder les symboles et les informations sur une carte météorologique.</p>
-            `,
-            duration: '10 min'
-          }
-        ]
-      },
-      {
-        slug: 'secrets-du-ciel',
-        title: 'Les Secrets du Ciel',
-        description: 'Découvrez les mystères du ciel bleu et des nuages. Comprendre pourquoi le ciel est bleu et comment se forment les différents types de nuages.',
-        instructor: 'Dr. Marie Dubois',
-        duration: '30 minutes',
-        lessons: [
-          {
-            title: 'Le Mystère du Ciel Bleu',
-            content: `
-              <h3>Pourquoi le ciel est-il bleu ?</h3>
-              <p>Le ciel nous apparaît bleu à cause d'un phénomène appelé diffusion de Rayleigh. La lumière du soleil, qui est blanche, est composée de toutes les couleurs de l'arc-en-ciel.</p>
-              
-              <h4>Points clés à retenir</h4>
-              <ul>
-                <li>La lumière du soleil est blanche</li>
-                <li>Les molécules de l'air diffusent la lumière</li>
-                <li>La couleur bleue est plus diffusée que les autres</li>
-              </ul>
-            `,
-            duration: '15 min'
-          },
-          {
-            title: 'Les Nuages et leurs Formes',
-            content: `
-              <h3>Les différents types de nuages</h3>
-              <p>Les nuages sont classés selon leur forme et leur altitude. Chaque type de nuage nous donne des informations sur le temps qu'il va faire.</p>
-            `,
-            duration: '15 min'
-          }
-        ]
-      },
-      {
-        slug: 'instruments-meteo',
-        title: 'Les Instruments Météo',
-        description: 'Apprenez à utiliser les instruments météorologiques essentiels. Du thermomètre à l\'anémomètre, maîtrisez les outils de mesure du temps.',
-        instructor: 'Prof. Pierre Martin',
+        title: 'Introduction à la Météorologie Agricole',
+        description: 'Comprendre les bases de la météo pour mieux planifier vos activités agricoles. Un cours simple et pratique pour les agriculteurs béninois.',
+        instructor: 'Agence de Météo',
         duration: '45 minutes',
         lessons: [
           {
-            title: 'Le Thermomètre',
+            title: "Qu'est-ce que la météorologie agricole ?",
             content: `
-              <h3>Comment fonctionne un thermomètre ?</h3>
-              <p>Le thermomètre est l'instrument le plus connu pour mesurer la température. Découvrez son fonctionnement et son histoire.</p>
-            `,
-            duration: '20 min'
-          },
-          {
-            title: 'L\'Anémomètre',
-            content: `
-              <h3>Mesurer la vitesse du vent</h3>
-              <p>L'anémomètre est l'instrument qui nous permet de mesurer la vitesse du vent. Apprenez à l'utiliser et à interpréter ses mesures.</p>
-            `,
-            duration: '25 min'
-          }
-        ]
-      },
-      {
-        slug: 'saisons',
-        title: 'Les Saisons',
-        description: 'Explorez les caractéristiques météorologiques de chaque saison. Comprendre les changements climatiques et leurs impacts sur la nature.',
-        instructor: 'Dr. Sophie Bernard',
-        duration: '40 minutes',
-        lessons: [
-          {
-            title: 'Le Printemps',
-            content: `
-              <h3>Le réveil de la nature</h3>
-              <p>Le printemps est la saison du renouveau. Découvrez les changements météorologiques qui caractérisent cette période.</p>
-            `,
-            duration: '10 min'
-          },
-          {
-            title: 'L\'Été',
-            content: `
-              <h3>Les journées ensoleillées</h3>
-              <p>L'été est la saison la plus chaude. Apprenez à comprendre les phénomènes météorologiques estivaux.</p>
-            `,
-            duration: '10 min'
-          },
-          {
-            title: 'L\'Automne',
-            content: `
-              <h3>Les couleurs de l'automne</h3>
-              <p>L'automne est la saison des changements. Découvrez les particularités météorologiques de cette période.</p>
-            `,
-            duration: '10 min'
-          },
-          {
-            title: 'L\'Hiver',
-            content: `
-              <h3>Le froid et la neige</h3>
-              <p>L'hiver est la saison la plus froide. Apprenez à comprendre les phénomènes météorologiques hivernaux.</p>
-            `,
-            duration: '10 min'
-          }
-        ]
-      },
-      {
-        slug: 'phenomenes-meteo',
-        title: 'Les Phénomènes Météo',
-        description: 'Découvrez les phénomènes météorologiques fascinants. Des orages aux arc-en-ciel, explorez la magie de la météo.',
-        instructor: 'Dr. Thomas Leroy',
-        duration: '50 minutes',
-        lessons: [
-          {
-            title: 'Les Orages',
-            content: `
-              <h3>Comprendre les orages</h3>
-              <p>Les orages sont des phénomènes météorologiques spectaculaires. Découvrez leur formation et leurs caractéristiques.</p>
-            `,
-            duration: '15 min'
-          },
-          {
-            title: 'Les Arc-en-ciel',
-            content: `
-              <h3>La magie des arc-en-ciel</h3>
-              <p>Les arc-en-ciel sont de magnifiques phénomènes optiques. Apprenez comment ils se forment et pourquoi nous voyons leurs couleurs.</p>
-            `,
-            duration: '15 min'
-          },
-          {
-            title: 'La Neige',
-            content: `
-              <h3>La formation de la neige</h3>
-              <p>La neige est un phénomène météorologique fascinant. Découvrez comment se forment les flocons et pourquoi chaque flocon est unique.</p>
-            `,
-            duration: '20 min'
+              <h3>La météorologie agricole, c'est quoi ?</h3>
+              <p>La météorologie agricole est la science qui étudie le temps qu'il fait et comment il affecte vos cultures. C'est comme avoir un ami qui vous dit à l'avance s'il va pleuvoir ou faire soleil.</p>
+              <h4>Pourquoi c'est important pour vous ?</h4>
+              <ul>
+                <li><strong>Planifier les semis :</strong> Savoir quand planter vos graines pour qu'elles poussent bien</li>
+                <li><strong>Éviter les pertes :</strong> Protéger vos récoltes des pluies trop fortes ou de la sécheresse</li>
+                <li><strong>Améliorer les rendements :</strong> Avoir de meilleures récoltes grâce à une bonne planification</li>
+                <li><strong>Économiser l'eau :</strong> Arroser seulement quand c'est nécessaire</li>
+              </ul>
+            `
           }
         ]
       }
     ]
-
-    // Créer les cours et leurs leçons
+    
     for (const courseData of coursesData) {
       const { lessons, ...courseInfo } = courseData
-      
-      const course = await prisma.course.create({
+      await prisma.course.create({
         data: {
           ...courseInfo,
-          lessons: {
-            create: lessons
-          }
+          lessons: { create: lessons }
         }
       })
-      
-      console.log(`Cours créé: ${course.title}`)
+    }
+    console.log(`${coursesData.length} cours créés.`)
+
+    // 4. Créer des questions communautaires
+    const communityQuestions = await Promise.all([
+      prisma.communityQuestion.create({
+        data: {
+          title: "Comment prévoir les orages en saison sèche ?",
+          content: "Je cherche à comprendre les indicateurs météorologiques qui pourraient aider à prévoir les orages même pendant la saison sèche au Bénin. Y a-t-il des signes particuliers à observer ?",
+          category: "meteo",
+          featured: true,
+          userId: users[0].id
+        }
+      }),
+      prisma.communityQuestion.create({
+        data: {
+          title: "Quels instruments pour mesurer l'humidité avec précision ?",
+          content: "Quels sont les instruments les plus précis pour mesurer l'humidité relative dans un contexte de recherche climatique ? Je travaille sur un projet agricole.",
+          category: "instruments",
+          featured: false,
+          userId: users[1].id
+        }
+      })
+    ])
+    console.log(`${communityQuestions.length} questions communautaires créées.`)
+
+    // 5. Créer des réponses de test
+    const answers = await Promise.all([
+      prisma.communityAnswer.create({
+        data: {
+          content: "Pour prévoir les orages en saison sèche, observez les cumulonimbus qui se forment en fin d'après-midi.",
+          questionId: communityQuestions[0].id,
+          userId: users[1].id
+        }
+      })
+    ])
+    console.log(`${answers.length} réponses communautaires créées.`)
+
+    // 6. Créer quelques likes de test
+    await Promise.all([
+      prisma.communityLike.create({ data: { userId: users[0].id, questionId: communityQuestions[1].id } }),
+      prisma.communityLike.create({ data: { userId: users[1].id, answerId: answers[0].id } })
+    ])
+    console.log('Likes de test créés.')
+
+    // 7. Inscrire les utilisateurs de test aux cours
+    const allCourses = await prisma.course.findMany();
+    if (allCourses.length > 0 && users.length > 0) {
+      // Inscrire le premier utilisateur au premier cours
+      await prisma.userCourse.create({
+        data: {
+          userId: users[0].id,
+          courseId: allCourses[0].id,
+          progress: 50, // Simulation d'une progression
+        }
+      });
+      console.log(`Utilisateur ${users[0].email} inscrit au cours "${allCourses[0].title}".`);
     }
 
     return {
       success: true,
       message: 'Base de données peuplée avec succès',
-      coursesCreated: coursesData.length
     }
 
   } catch (error) {
@@ -198,7 +166,7 @@ export default defineEventHandler(async (event) => {
     
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erreur lors du peuplement de la base de données'
+      statusMessage: `Erreur lors du peuplement de la base de données: ${error.message}`
     })
   }
 }) 

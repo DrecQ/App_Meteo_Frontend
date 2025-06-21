@@ -1,8 +1,14 @@
 <template>
   <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
     <div class="sidebar-header">
-      <i class="fas fa-user-circle sidebar-logo"></i>
-      <span class="sidebar-title">Michel Ange</span>
+      <div class="user-avatar">
+        <img 
+          :src="authStore.user?.avatar || '/default-avatar.svg'" 
+          :alt="userName"
+          @error="handleAvatarError"
+        />
+      </div>
+      <span class="sidebar-title">{{ userName }}</span>
     </div>
     <nav class="sidebar-nav">
       <button @click="handleHomeClick" class="sidebar-link home-link">
@@ -48,20 +54,11 @@ const emit = defineEmits(['close', 'home-click', 'logout'])
 const authStore = useAuthStore()
 const router = useRouter()
 
-const userAvatar = computed(() => {
-  return authStore.currentUser?.avatar || '/default-avatar.png'
-})
-
 const userName = computed(() => {
-  const user = authStore.currentUser
-  if (user?.firstName && user?.lastName) {
-    return `${user.firstName} ${user.lastName}`
-  }
-  return user?.name || 'Utilisateur'
-})
-
-const userEmail = computed(() => {
-  return authStore.currentUser?.email || ''
+  const fullName = authStore.user?.name || 'Utilisateur'
+  // Extraire seulement le prénom (premier mot)
+  const firstName = fullName.split(' ')[0]
+  return firstName
 })
 
 const closeSidebar = () => {
@@ -74,6 +71,11 @@ const handleHomeClick = () => {
 
 const handleLogout = () => {
   emit('logout')
+}
+
+const handleAvatarError = (event) => {
+  // En cas d'erreur de chargement de l'avatar, utiliser l'avatar par défaut
+  event.target.src = '/default-avatar.svg'
 }
 </script>
 
@@ -98,18 +100,33 @@ const handleLogout = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-.sidebar-logo {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .sidebar-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 0;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-nav {
@@ -168,13 +185,20 @@ const handleLogout = () => {
   color: #fff;
   justify-content: center;
   border-radius: 6px;
-  padding: 1rem;
+  padding: 0.7rem;
   border: none;
   cursor: pointer;
+  margin-bottom: 0;
+  font-size: 0.9rem;
 }
 
 .sidebar-link.logout:hover {
   background: #c0392b;
+}
+
+/* Ajouter une marge basse au bouton profil pour éviter qu'il soit collé au bouton déconnexion */
+.sidebar-link[href*="profile"] {
+  margin-bottom: 6rem;
 }
 
 @media (max-width: 1024px) {

@@ -43,6 +43,7 @@ export default defineEventHandler(async (event) => {
         email: true,
         name: true,
         domaineActivite: true,
+        avatar: true,
         createdAt: true
       }
     })

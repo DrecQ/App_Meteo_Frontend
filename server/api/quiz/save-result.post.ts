@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 
 export default defineEventHandler(async (event) => {
   try {
-    const { userId, courseId, score } = await readBody(event)
+    const { userId, courseId, score, maxScore = 5 } = await readBody(event)
 
     // Validation des données
     if (!userId || !courseId || typeof score !== 'number') {
@@ -60,10 +60,55 @@ export default defineEventHandler(async (event) => {
       }
     })
 
+    // Vérifier si l'utilisateur mérite un certificat (score >= 70%)
+    const percentage = (score / maxScore) * 100
+    let certificate = null
+
+    if (percentage >= 70) {
+      // Vérifier si un certificat existe déjà pour ce cours
+      const existingCertificate = await prisma.certificate.findFirst({
+        where: {
+          userId: userId,
+          courseId: courseId
+        }
+      })
+
+      if (!existingCertificate) {
+        // Créer un certificat
+        const issuedAt = new Date()
+        const expiresAt = new Date()
+        expiresAt.setFullYear(expiresAt.getFullYear() + 3)
+
+        certificate = await prisma.certificate.create({
+          data: {
+            userId: userId,
+            courseId: courseId,
+            title: `Certificat de réussite - ${course.title}`,
+            description: `Certificat de réussite pour le cours "${course.title}" avec un score de ${score}/${maxScore} (${percentage.toFixed(1)}%)`,
+            score: score,
+            maxScore: maxScore,
+            issuedAt: issuedAt,
+            expiresAt: expiresAt,
+            certificateUrl: null,
+            status: 'active'
+          }
+        })
+      }
+    }
+
     return {
       success: true,
       message: 'Résultat sauvegardé avec succès',
-      quizResult
+      quizResult,
+      certificate: certificate ? {
+        id: certificate.id,
+        title: certificate.title,
+        description: certificate.description,
+        score: certificate.score,
+        maxScore: certificate.maxScore,
+        percentage: percentage
+      } : null,
+      earnedCertificate: !!certificate
     }
 
   } catch (error) {

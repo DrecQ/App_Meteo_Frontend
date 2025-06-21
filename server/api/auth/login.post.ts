@@ -17,7 +17,19 @@ export default defineEventHandler(async (event) => {
 
     // Trouver l'utilisateur
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
+      include: {
+        courses: {
+          include: {
+            course: {
+              include: {
+                lessons: true
+              }
+            }
+          }
+        },
+        certificates: true
+      }
     })
 
     if (!user) {
@@ -37,13 +49,16 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Retourner les données utilisateur (sans le mot de passe)
+    // Formatter les données utilisateur pour le frontend
     const userData = {
       id: user.id,
       email: user.email,
       name: user.name,
       domaineActivite: user.domaineActivite,
-      createdAt: user.createdAt
+      avatar: user.avatar,
+      createdAt: user.createdAt,
+      courses: user.courses.map(e => e.course),
+      certificates: user.certificates
     }
 
     return {

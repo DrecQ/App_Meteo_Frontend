@@ -10,44 +10,46 @@
     <!-- Overlay pour fermer la sidebar sur mobile -->
     <div v-if="isSidebarOpen" class="sidebar-overlay" @click="toggleSidebar"></div>
 
-    <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
-      <div class="sidebar-header">
-        <i class="fas fa-user-circle sidebar-logo"></i>
-        <span class="sidebar-title">Michel Ange</span>
-      </div>
-      <nav class="sidebar-nav">
-        <button @click="handleHomeClick" class="sidebar-link home-link">
-          <i class="fas fa-home"></i> Retour à l'accueil
-        </button>
-        <div class="sidebar-divider"></div>
-        <NuxtLink to="/user" class="sidebar-link" exact-active-class="active" @click="closeSidebar">
-          <i class="fas fa-tachometer-alt"></i> Tableau de bord
-        </NuxtLink>
-        <NuxtLink to="/user/courses" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-book"></i> Mes cours
-        </NuxtLink>
-        <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-certificate"></i> Certificats
-        </NuxtLink>
-        <NuxtLink to="/user/community-chat" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-comments"></i> Chat communautaire
-        </NuxtLink>
-        <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
-          <i class="fas fa-user"></i> Profil
-        </NuxtLink>
-        <button @click="handleLogout" class="sidebar-link logout">
-          <i class="fas fa-sign-out-alt"></i> Déconnexion
-        </button>
-      </nav>
-    </aside>
+    <!-- Utilisation du composant UserSidebar -->
+    <UserSidebar 
+      :is-sidebar-open="isSidebarOpen"
+      @close="closeSidebar"
+      @home-click="handleHomeClick"
+      @logout="handleLogout"
+    />
 
     <div class="user-dashboard-content">
       <div class="dashboard-header">
         <h1>Tableau de bord</h1>
-        <p>Bienvenue, {{ authStore.currentUser?.name }}</p>
+        <p>Bienvenue, {{ authStore.user?.name || 'Utilisateur' }}</p>
       </div>
 
       <div class="dashboard-content">
+        <!-- Informations utilisateur -->
+        <div class="user-info-section">
+          <div class="user-info-card">
+            <div class="user-avatar-large">
+              <img 
+                :src="authStore.user?.avatar || '/default-avatar.svg'" 
+                :alt="authStore.user?.name || 'Utilisateur'"
+                @error="handleAvatarError"
+              />
+            </div>
+            <div class="user-details">
+              <h2>{{ authStore.user?.name || 'Utilisateur' }}</h2>
+              <p class="user-email">{{ authStore.user?.email }}</p>
+              <p class="user-domain" v-if="authStore.user?.domaineActivite">
+                <i class="fas fa-briefcase"></i>
+                {{ authStore.user.domaineActivite }}
+              </p>
+              <p class="user-join-date">
+                <i class="fas fa-calendar"></i>
+                Membre depuis {{ formatDate(authStore.user?.createdAt) }}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <!-- Statistiques -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -104,9 +106,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
+import UserSidebar from '~/components/UserSidebar.vue'
 
 definePageMeta({
   layout: 'user',
@@ -117,18 +120,49 @@ const authStore = useAuthStore()
 const router = useRouter()
 const isSidebarOpen = ref(false)
 
-// Valeurs statiques pour la simulation
-const stats = ref({
-  courses: 5,
-  certificates: 2,
-  learningTime: '12h',
+// Propriétés calculées pour les statistiques
+const stats = computed(() => {
+  const userCourses = authStore.user?.courses || []
+  const userCertificates = authStore.user?.certificates || []
+  
+  // Calcul du temps d'apprentissage en sommant la durée des cours
+  const totalMinutes = userCourses.reduce((sum, course) => {
+    // Extrait le nombre de la chaîne "XX minutes"
+    const durationInMinutes = parseInt(course.duration, 10) || 0
+    return sum + durationInMinutes
+  }, 0)
+  
+  const learningTimeHours = totalMinutes / 60
+  
+  return {
+    courses: userCourses.length,
+    certificates: userCertificates.length,
+    learningTime: `${learningTimeHours.toFixed(1)}h`
+  }
 })
 
-const recentCourses = ref([
-  { title: 'Introduction à la météorologie', date: '10/06/2024', progress: 100 },
-  { title: 'Prévisions saisonnières', date: '05/06/2024', progress: 60 },
-  { title: 'Climat du Bénin', date: '01/06/2024', progress: 80 },
-])
+// Propriétés calculées pour les cours récents
+const recentCourses = computed(() => {
+  const userCourses = authStore.user?.courses || []
+  const completedLessons = authStore.user?.completedLessons || []
+
+  return userCourses.slice(0, 3).map(course => {
+    const courseLessons = course.lessons || []
+    const completedInCourse = completedLessons.filter(cl => 
+      courseLessons.some(l => l.id === cl.lessonId)
+    )
+    
+    const progress = courseLessons.length > 0
+      ? Math.round((completedInCourse.length / courseLessons.length) * 100)
+      : 0
+      
+    return {
+      ...course,
+      progress: progress,
+      date: formatDate(course.createdAt) // ou une autre date pertinente
+    }
+  })
+})
 
 // Vérifier si l'utilisateur est connecté
 if (!authStore.isAuthenticated) {
@@ -162,6 +196,20 @@ const handleLogout = () => {
   router.push('/login')
 }
 
+const handleAvatarError = (event) => {
+  // En cas d'erreur de chargement de l'avatar, utiliser l'avatar par défaut
+  event.target.src = '/default-avatar.svg'
+}
+
+const formatDate = (date) => {
+  if (!date) return 'Date inconnue'
+  return new Date(date).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
+
 // Nettoyer les classes lors du démontage du composant
 onUnmounted(() => {
   document.body.classList.remove('sidebar-open')
@@ -174,106 +222,6 @@ onUnmounted(() => {
   display: flex;
   min-height: 100vh;
   background: #f8f9fc;
-}
-
-/* Styles de la sidebar */
-.user-sidebar {
-  width: 250px;
-  background: linear-gradient(135deg, #4e73df 60%, #224abe 100%);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  padding: 2rem 1rem 0 1rem;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.07);
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 1000;
-  transition: transform 0.3s ease;
-}
-
-.sidebar-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.sidebar-logo {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-}
-
-.sidebar-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.sidebar-nav {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.home-link {
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 0.5rem;
-  width: 100%;
-  text-align: left;
-  border: none;
-  cursor: pointer;
-}
-
-.home-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffe082;
-}
-
-.sidebar-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0.5rem 0;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.75rem 1rem;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-  background: rgba(255,255,255,0.15);
-  color: #ffe082;
-  transform: translateX(4px);
-}
-
-.sidebar-link.logout {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
-  background: #e74c3c;
-  color: #fff;
-  justify-content: center;
-  border-radius: 6px;
-  padding: 1rem;
-  border: none;
-  cursor: pointer;
-}
-
-.sidebar-link.logout:hover {
-  background: #c0392b;
 }
 
 /* Styles du contenu principal */
@@ -452,18 +400,6 @@ onUnmounted(() => {
     display: block;
   }
 
-  .user-sidebar {
-    transform: translateX(-100%);
-  }
-
-  .user-sidebar.open {
-    transform: translateX(0);
-  }
-
-  body.sidebar-open .user-sidebar {
-    transform: translateX(0);
-  }
-
   .user-dashboard-content {
     margin-left: 0;
     padding: 1rem;
@@ -472,11 +408,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .user-sidebar {
-    width: 100%;
-    max-width: 280px;
-  }
-
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -507,6 +438,7 @@ onUnmounted(() => {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
 }
+
 .course-card {
   background: #fff;
   border-radius: 10px;
@@ -517,9 +449,11 @@ onUnmounted(() => {
   align-items: flex-start;
   transition: box-shadow 0.2s;
 }
+
 .course-card:hover {
   box-shadow: 0 6px 18px rgba(44, 62, 80, 0.13);
 }
+
 .course-card-header {
   width: 100%;
   display: flex;
@@ -527,19 +461,23 @@ onUnmounted(() => {
   align-items: center;
   margin-bottom: 0.7rem;
 }
+
 .course-title {
   font-size: 1.1rem;
   font-weight: 600;
   color: #2563eb;
 }
+
 .course-date {
   font-size: 0.95rem;
   color: #7f8c8d;
 }
+
 .course-progress-bar {
   width: 100%;
   margin: 0.5rem 0 0.2rem 0;
 }
+
 .progress-bar-bg {
   width: 100%;
   height: 8px;
@@ -547,18 +485,21 @@ onUnmounted(() => {
   border-radius: 4px;
   overflow: hidden;
 }
+
 .progress-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #3498db, #10b981);
   border-radius: 4px;
   transition: width 0.4s;
 }
+
 .progress-label {
   font-size: 0.92rem;
   color: #2563eb;
   margin-top: 0.2rem;
   display: inline-block;
 }
+
 .btn-primary {
   background: #3498db;
   color: #fff;
@@ -570,7 +511,68 @@ onUnmounted(() => {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .btn-primary:hover {
   background: #2563eb;
+}
+
+/* Informations utilisateur */
+.user-info-section {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.user-info-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.user-avatar-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-details h2 {
+  font-size: 1.4rem;
+  color: #2c3e50;
+  margin: 0 0 0.5rem;
+}
+
+.user-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.user-details .user-email {
+  margin-bottom: 0.5rem;
+}
+
+.user-details .user-domain {
+  margin-bottom: 0.5rem;
+}
+
+.user-details .user-join-date {
+  margin-bottom: 0;
+}
+
+.user-details .user-domain i {
+  margin-right: 0.5rem;
 }
 </style>

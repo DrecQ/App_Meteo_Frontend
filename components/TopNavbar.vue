@@ -26,9 +26,18 @@
             </NuxtLink>
           </div>
           <template v-else>
-            <NuxtLink to="/user" class="btn-login">
-              <i class="fas fa-user"></i>
-              <span>{{ authStore.currentUser?.name }}</span>
+            <NuxtLink to="/user" class="btn-login user-profile-btn">
+              <div class="user-avatar">
+                <img 
+                  v-if="authStore.user?.avatar && !avatarError" 
+                  :src="authStore.user.avatar" 
+                  :alt="authStore.user?.name || 'Utilisateur'"
+                  @error="handleAvatarError"
+                  class="avatar-image"
+                />
+                <i v-else class="fas fa-user avatar-fallback"></i>
+              </div>
+              <span class="user-name">{{ userFirstName }}</span>
             </NuxtLink>
           </template>
           <button class="mobile-menu-btn" @click="toggleMobileMenu" :class="{ 'active': isMobileMenuOpen }" :aria-label="isMobileMenuOpen ? $t('nav.closeMenu') : $t('nav.openMenu')">
@@ -53,6 +62,7 @@ const currentLang = ref(locale.value);
 const isMobileMenuOpen = ref(false);
 const isScrolled = ref(false);
 const isLanguageDropdownOpen = ref(false);
+const avatarError = ref(false);
 
 const isLoggedIn = computed(() => {
   return authStore.isAuthenticated;
@@ -69,6 +79,11 @@ const isLoginPage = computed(() => {
 
 const isRegisterPage = computed(() => {
   return route.path === '/register';
+});
+
+const userFirstName = computed(() => {
+  if (!authStore.user?.name) return '';
+  return authStore.user.name.split(' ')[0];
 });
 
 // Surveiller les changements de route
@@ -120,6 +135,11 @@ const changeLanguage = (lang) => {
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
   emit('toggle-menu', isMobileMenuOpen.value);
+};
+
+const handleAvatarError = () => {
+  console.log('Erreur de chargement de l\'avatar, utilisation du fallback');
+  avatarError.value = true;
 };
 
 const emit = defineEmits(['toggle-menu', 'language-changed']);
@@ -285,6 +305,60 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
   color: white;
 }
 
+.user-profile-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.user-profile-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 0.6rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (max-width: 768px) {
   .top-navbar {
     padding: 0.5rem 0;
@@ -317,6 +391,25 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
   .btn-login {
     padding: 0.4rem 1rem;
     font-size: 0.9rem;
+  }
+
+  .user-profile-btn {
+    padding: 0.4rem 0.8rem;
+  }
+
+  .user-avatar {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.4rem;
+  }
+
+  .avatar-fallback {
+    font-size: 1rem;
+  }
+
+  .user-name {
+    font-size: 0.8rem;
+    max-width: 80px;
   }
 
   .mobile-menu-btn {

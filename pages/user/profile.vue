@@ -28,7 +28,7 @@
           <div class="profile-content">
             <div class="profile-card">
               <div class="profile-avatar">
-                <img :src="user.avatar || '/default-avatar.png'" alt="Avatar" />
+                <img :src="user.avatar || '/default-avatar.svg'" alt="Avatar" />
                 <button class="change-avatar-btn" @click="triggerAvatarUpload">
                   <i class="fas fa-camera"></i>
                 </button>
@@ -43,23 +43,14 @@
 
               <form @submit.prevent="updateProfile" class="profile-form">
                 <div class="form-group">
-                  <label for="firstName">Prénom</label>
+                  <label for="name">Nom complet</label>
                   <input
                     type="text"
-                    id="firstName"
-                    v-model="formData.firstName"
+                    id="name"
+                    v-model="formData.name"
                     required
                   />
-                </div>
-
-                <div class="form-group">
-                  <label for="lastName">Nom</label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    v-model="formData.lastName"
-                    required
-                  />
+                  <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
                 </div>
 
                 <div class="form-group">
@@ -70,29 +61,55 @@
                     v-model="formData.email"
                     required
                   />
+                  <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="phone">Téléphone</label>
+                  <label for="domaineActivite">Domaine d'activité</label>
+                  <select
+                    id="domaineActivite"
+                    v-model="formData.domaineActivite"
+                    required
+                  >
+                    <option value="">Sélectionnez votre domaine</option>
+                    <option value="Agriculture">Agriculture</option>
+                    <option value="Aviation">Aviation</option>
+                    <option value="Éducation">Éducation</option>
+                    <option value="Environnement">Environnement</option>
+                    <option value="Météorologie">Météorologie</option>
+                    <option value="Maritime">Maritime</option>
+                    <option value="Médias">Médias</option>
+                    <option value="Recherche">Recherche</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Tourisme">Tourisme</option>
+                    <option value="Autre">Autre</option>
+                  </select>
+                  <span v-if="errors.domaineActivite" class="error-message">{{ errors.domaineActivite }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">Téléphone (optionnel)</label>
                   <input
                     type="tel"
                     id="phone"
                     v-model="formData.phone"
                   />
+                  <span v-if="errors.phone" class="error-message">{{ errors.phone }}</span>
                 </div>
 
                 <div class="form-group">
-                  <label for="address">Adresse</label>
+                  <label for="address">Adresse (optionnel)</label>
                   <textarea
                     id="address"
                     v-model="formData.address"
                     rows="3"
                   ></textarea>
+                  <span v-if="errors.address" class="error-message">{{ errors.address }}</span>
                 </div>
 
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn-primary" :disabled="isSubmitting">
                   <i class="fas fa-save"></i>
-                  Enregistrer les modifications
+                  {{ isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications' }}
                 </button>
               </form>
             </div>
@@ -248,34 +265,27 @@ onUnmounted(() => {
   document.body.style.overflow = ''
 })
 
-// État initial
+// État initial avec les vraies données utilisateur
 const user = ref({
-  firstName: 'Michel',
-  lastName: 'Ange',
-  email: 'michel.ange@email.com',
-  phone: '+229 90 00 00 00',
-  address: 'Cotonou, Bénin',
-  avatar: 'https://api.dicebear.com/6.x/adventurer/svg?seed=michelange',
-  createdAt: new Date('2022-01-15'),
-  lastLogin: new Date('2024-06-10T08:30:00'),
-  certificates: [
-    { id: 1, title: 'Certificat en Météorologie de Base' },
-    { id: 2, title: 'Expert en Prévisions Météorologiques' }
-  ],
-  courses: [
-    { id: 1, title: 'Introduction à la météorologie' },
-    { id: 2, title: 'Prévisions saisonnières' },
-    { id: 3, title: 'Climat du Bénin' }
-  ]
+  name: '',
+  email: '',
+  domaineActivite: '',
+  phone: '',
+  address: '',
+  avatar: null,
+  createdAt: new Date(),
+  lastLogin: new Date(),
+  certificates: [],
+  courses: []
 })
 
 // Formulaire principal
 const formData = reactive({
-  firstName: 'Michel',
-  lastName: 'Ange',
-  email: 'michel.ange@email.com',
-  phone: '+229 90 00 00 00',
-  address: 'Cotonou, Bénin'
+  name: '',
+  email: '',
+  domaineActivite: '',
+  phone: '',
+  address: ''
 })
 
 // Formulaire de mot de passe
@@ -293,9 +303,9 @@ const avatarInput = ref(null)
 
 // Erreurs
 const errors = reactive({
-  firstName: '',
-  lastName: '',
+  name: '',
   email: '',
+  domaineActivite: '',
   phone: '',
   address: ''
 })
@@ -337,15 +347,13 @@ onMounted(async () => {
       return
     }
 
-    // Simuler le chargement des données utilisateur
-    // À remplacer par votre appel API réel
-    const userData = authStore.currentUser
+    // Charger les vraies données utilisateur
+    const userData = authStore.user
     if (userData) {
       user.value = {
-        ...userData,
-        firstName: userData.firstName || '',
-        lastName: userData.lastName || '',
+        name: userData.name || '',
         email: userData.email || '',
+        domaineActivite: userData.domaineActivite || '',
         phone: userData.phone || '',
         address: userData.address || '',
         avatar: userData.avatar || null,
@@ -356,9 +364,9 @@ onMounted(async () => {
       }
       
       Object.assign(formData, {
-        firstName: user.value.firstName,
-        lastName: user.value.lastName,
+        name: user.value.name,
         email: user.value.email,
+        domaineActivite: user.value.domaineActivite,
         phone: user.value.phone,
         address: user.value.address
       })
@@ -371,19 +379,14 @@ onMounted(async () => {
 // Méthodes
 const validateForm = () => {
   let isValid = true
-  errors.firstName = ''
-  errors.lastName = ''
+  errors.name = ''
   errors.email = ''
+  errors.domaineActivite = ''
   errors.phone = ''
   errors.address = ''
 
-  if (!formData.firstName.trim()) {
-    errors.firstName = 'Le prénom est requis'
-    isValid = false
-  }
-
-  if (!formData.lastName.trim()) {
-    errors.lastName = 'Le nom est requis'
+  if (!formData.name.trim()) {
+    errors.name = 'Le nom complet est requis'
     isValid = false
   }
 
@@ -392,6 +395,11 @@ const validateForm = () => {
     isValid = false
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
     errors.email = 'Format d\'email invalide'
+    isValid = false
+  }
+
+  if (!formData.domaineActivite) {
+    errors.domaineActivite = 'Le domaine d\'activité est requis'
     isValid = false
   }
 
@@ -449,27 +457,35 @@ const updateProfile = async () => {
 
   isSubmitting.value = true
   try {
-    // Simuler l'appel API
-    // À remplacer par votre appel API réel
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Appel API pour mettre à jour le profil
+    const response = await $fetch('/api/user/profile', {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`,
+        'x-user-email': authStore.user.email
+      }
+    })
     
     // Mettre à jour les données locales
-    Object.assign(user.value, formData)
+    Object.assign(user.value, response.user)
     
     // Mettre à jour le store d'authentification
     const updatedUser = {
-      ...authStore.currentUser,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address
+      ...authStore.user,
+      name: response.user.name,
+      email: response.user.email,
+      domaineActivite: response.user.domaineActivite,
+      phone: response.user.phone,
+      address: response.user.address
     }
-    authStore.setUser(updatedUser)
+    authStore.user = updatedUser
     
-    showNotification('Profil mis à jour avec succès')
+    showNotification(response.message || 'Profil mis à jour avec succès')
   } catch (error) {
-    showNotification('Erreur lors de la mise à jour du profil', 'error')
+    console.error('Erreur mise à jour profil:', error)
+    const errorMessage = error.data?.statusMessage || 'Erreur lors de la mise à jour du profil'
+    showNotification(errorMessage, 'error')
   } finally {
     isSubmitting.value = false
   }
@@ -480,14 +496,32 @@ const changePassword = async () => {
 
   isChangingPassword.value = true
   try {
-    // Simuler l'appel API
-    // À remplacer par votre appel API réel
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Appel API pour changer le mot de passe
+    const response = await $fetch('/api/user/change-password', {
+      method: 'POST',
+      body: {
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
+      },
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`,
+        'x-user-email': authStore.user.email
+      }
+    })
     
-    showNotification('Mot de passe modifié avec succès')
+    showNotification(response.message || 'Mot de passe modifié avec succès')
     showPasswordModal.value = false
+    
+    // Réinitialiser le formulaire
+    Object.assign(passwordForm, {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    })
   } catch (error) {
-    showNotification('Erreur lors de la modification du mot de passe', 'error')
+    console.error('Erreur changement mot de passe:', error)
+    const errorMessage = error.data?.statusMessage || 'Erreur lors de la modification du mot de passe'
+    showNotification(errorMessage, 'error')
   } finally {
     isChangingPassword.value = false
   }
@@ -495,9 +529,9 @@ const changePassword = async () => {
 
 const resetForm = () => {
   Object.assign(formData, {
-    firstName: user.value.firstName,
-    lastName: user.value.lastName,
+    name: user.value.name,
     email: user.value.email,
+    domaineActivite: user.value.domaineActivite,
     phone: user.value.phone,
     address: user.value.address
   })
@@ -516,27 +550,43 @@ const handleAvatarChange = async (event) => {
     return
   }
 
+  // Vérifier la taille du fichier (max 5MB)
+  const maxSize = 5 * 1024 * 1024 // 5MB
+  if (file.size > maxSize) {
+    showNotification('Le fichier est trop volumineux (max 5MB)', 'error')
+    return
+  }
+
   try {
-    // Simuler l'upload
-    // À remplacer par votre logique d'upload réelle
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Créer FormData pour l'upload
+    const formData = new FormData()
+    formData.append('avatar', file)
     
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      user.value.avatar = e.target.result
-      
-      // Mettre à jour l'avatar dans le store
-      const updatedUser = {
-        ...authStore.currentUser,
-        avatar: e.target.result
+    // Upload vers l'API
+    const response = await $fetch('/api/user/avatar', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`,
+        'x-user-email': authStore.user.email
       }
-      authStore.setUser(updatedUser)
-    }
-    reader.readAsDataURL(file)
+    })
     
-    showNotification('Photo de profil mise à jour')
+    // Mettre à jour l'avatar localement
+    user.value.avatar = response.avatar
+    
+    // Mettre à jour l'avatar dans le store
+    const updatedUser = {
+      ...authStore.user,
+      avatar: response.avatar
+    }
+    authStore.user = updatedUser
+    
+    showNotification('Photo de profil mise à jour avec succès')
   } catch (error) {
-    showNotification('Erreur lors de la mise à jour de la photo de profil', 'error')
+    console.error('Erreur upload avatar:', error)
+    const errorMessage = error.data?.statusMessage || 'Erreur lors de la mise à jour de la photo de profil'
+    showNotification(errorMessage, 'error')
   }
 }
 
@@ -582,7 +632,6 @@ const formatDate = (date) => {
 .profile-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
 }
 
 .profile-content {
@@ -600,39 +649,51 @@ const formatDate = (date) => {
 
 .profile-avatar {
   position: relative;
-  width: 150px;
-  height: 150px;
-  margin: 0 auto 2rem;
+  display: inline-block;
+  margin-bottom: 2rem;
 }
 
 .profile-avatar img {
-  width: 100%;
-  height: 100%;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #4a90e2;
+  border: 4px solid #e3f2fd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.profile-avatar:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .change-avatar-btn {
   position: absolute;
   bottom: 0;
   right: 0;
-  background: #4a90e2;
-  color: white;
-  border: none;
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background: #1976d2;
+  color: white;
+  border: 3px solid white;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  font-size: 1rem;
   transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .change-avatar-btn:hover {
-  background: #357abd;
+  background: #1565c0;
   transform: scale(1.1);
+}
+
+.change-avatar-btn i {
+  font-size: 0.9rem;
 }
 
 .hidden {
@@ -640,7 +701,8 @@ const formatDate = (date) => {
 }
 
 .profile-form {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
@@ -652,79 +714,60 @@ const formatDate = (date) => {
 
 .form-group label {
   font-weight: 500;
-  color: #4a5568;
+  color: #2c3e50;
+  font-size: 0.9rem;
 }
 
 .form-group input,
+.form-group select,
 .form-group textarea {
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 1px solid #e0e6ed;
+  border-radius: 6px;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s;
 }
 
 .form-group input:focus,
+.form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-}
-
-.form-group input.error,
-.form-group textarea.error {
-  border-color: #e53e3e;
+  border-color: #4e73df;
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.1);
 }
 
 .error-message {
-  color: #e53e3e;
-  font-size: 0.875rem;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.cancel-btn,
-.save-btn {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cancel-btn {
-  background: #f7fafc;
-  color: #4a5568;
-  border: 1px solid #e2e8f0;
-}
-
-.cancel-btn:hover {
-  background: #edf2f7;
-}
-
-.save-btn {
-  background: #4a90e2;
+.btn-primary {
+  background: #4e73df;
   color: white;
   border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
-.save-btn:hover {
-  background: #357abd;
+.btn-primary:hover:not(:disabled) {
+  background: #224abe;
 }
 
-.save-btn:disabled {
-  background: #cbd5e0;
+.btn-primary:disabled {
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
+/* Sidebar du profil */
 .profile-sidebar {
   display: flex;
   flex-direction: column;
@@ -736,99 +779,50 @@ const formatDate = (date) => {
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .sidebar-section h3 {
   color: #2c3e50;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.account-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
 }
 
 .account-info p {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: #4a5568;
-  font-size: 0.95rem;
-  padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  margin-bottom: 0.5rem;
-}
-
-.account-info p:last-child {
-  margin-bottom: 0;
-}
-
-.account-info p:hover {
-  background: #edf2f7;
-  transform: translateX(4px);
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
 }
 
 .account-info i {
   color: #4e73df;
-  font-size: 1.1rem;
-  width: 20px;
-  text-align: center;
+  width: 16px;
 }
 
 .btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
-  padding: 0.75rem 1rem;
-  background: #4e73df;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background: #224abe;
-  transform: translateY(-2px);
+  background: #5a6268;
 }
 
-.btn-secondary i {
-  font-size: 1rem;
-}
-
-.change-password-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background: #f7fafc;
-  color: #4a5568;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.change-password-btn:hover {
-  background: #edf2f7;
-}
-
-/* Modal styles */
-.modal-overlay {
+/* Modal */
+.modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -836,53 +830,39 @@ const formatDate = (date) => {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
 }
 
 .modal-content {
   background: white;
   border-radius: 12px;
-  width: 90%;
   max-width: 500px;
+  width: 90%;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 .modal-header {
-  padding: 1.25rem;
-  border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e6ed;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 1.5rem;
-  color: #2d3748;
+  color: #2c3e50;
 }
 
 .close-btn {
   background: none;
   border: none;
-  color: #718096;
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 0.5rem;
-  transition: all 0.2s ease;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.close-btn:hover {
-  background: #f7fafc;
-  color: #4a5568;
+  color: #7f8c8d;
 }
 
 .modal-body {
@@ -890,18 +870,42 @@ const formatDate = (date) => {
 }
 
 .password-form {
-  display: grid;
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-@media (max-width: 768px) {
-  .profile-content {
-    grid-template-columns: 1fr;
-  }
+/* Notifications */
+.notifications {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1001;
+}
 
-  .profile-sidebar {
-    order: -1;
-  }
+.notification {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.3s;
+  min-width: 300px;
+}
+
+.notification:hover {
+  transform: translateX(-5px);
+}
+
+.notification.success {
+  border-left: 4px solid #28a745;
+  color: #155724;
+}
+
+.notification.error {
+  border-left: 4px solid #dc3545;
+  color: #721c24;
 }
 
 /* Menu hamburger */
@@ -971,119 +975,49 @@ const formatDate = (date) => {
     padding: 1rem;
     padding-top: 4rem;
   }
+
+  .profile-content {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
-  .user-sidebar {
-    width: 100%;
-    max-width: 280px;
+  .profile-container {
+    padding: 1rem;
   }
 
-  .hamburger-menu {
-    top: 0.5rem;
-    left: 0.5rem;
+  .profile-card {
+    padding: 1.5rem;
   }
-}
 
-.notifications {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-}
-
-.notification {
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  animation: slideIn 0.3s ease-out;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.notification.success {
-  background-color: #48bb78;
-}
-
-.notification.error {
-  background-color: #e53e3e;
-}
-
-.notification::before {
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
-}
-
-.notification.success::before {
-  content: '\f00c';
-}
-
-.notification.error::before {
-  content: '\f00d';
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
   }
 }
 
-@keyframes slideOut {
-  from {
-    transform: translateX(0);
-    opacity: 1;
+@media (max-width: 480px) {
+  .user-dashboard-content {
+    padding: 0.8rem;
   }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
+
+  .dashboard-header h1 {
+    font-size: 1.4rem;
   }
-}
 
-.notification.hide {
-  animation: slideOut 0.3s ease-out forwards;
-}
+  .profile-avatar img {
+    width: 100px;
+    height: 100px;
+  }
 
-.btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 1rem;
-  background: #4e73df;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1.5rem;
-  box-shadow: 0 4px 6px rgba(78, 115, 223, 0.2);
-}
+  .notifications {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+  }
 
-.btn-primary:hover {
-  background: #224abe;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(78, 115, 223, 0.3);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(78, 115, 223, 0.2);
-}
-
-.btn-primary i {
-  font-size: 1.1rem;
+  .notification {
+    min-width: auto;
+  }
 }
 </style> 

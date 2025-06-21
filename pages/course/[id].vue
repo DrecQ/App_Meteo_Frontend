@@ -290,7 +290,7 @@ const coursesData = {
   'introduction-meteo': {
     id: 'introduction-meteo',
   title: 'Introduction à la Météorologie',
-  instructor: 'Dr. Jean Dupont',
+  instructor: 'Agence de Météo',
     duration: '20 minutes',
   resources: [
       { id: 1, title: 'Guide de base météo', url: '/resources/intro-meteo.pdf' },
@@ -333,7 +333,7 @@ const coursesData = {
   'secrets-du-ciel': {
     id: 'secrets-du-ciel',
     title: 'Les Secrets du Ciel',
-    instructor: 'Dr. Marie Dubois',
+    instructor: 'Agence de Météo',
     duration: '30 minutes',
     resources: [
       { id: 1, title: 'Guide des phénomènes célestes', url: '/resources/secrets-du-ciel.pdf' },
@@ -374,7 +374,7 @@ const coursesData = {
   'instruments-meteo': {
     id: 'instruments-meteo',
     title: 'Les Instruments Météo',
-    instructor: 'Prof. Pierre Martin',
+    instructor: 'Agence de Météo',
     duration: '45 minutes',
     resources: [
       { id: 1, title: 'Guide des instruments météo', url: '/resources/instruments.pdf' },
@@ -408,7 +408,7 @@ const coursesData = {
   'saisons': {
     id: 'saisons',
     title: 'Les Saisons',
-    instructor: 'Dr. Sophie Bernard',
+    instructor: 'Agence de Météo',
     duration: '40 minutes',
     resources: [
       { id: 1, title: 'Guide des saisons', url: '/resources/saisons.pdf' },
@@ -464,7 +464,7 @@ const coursesData = {
   'phenomenes-meteo': {
     id: 'phenomenes-meteo',
     title: 'Les Phénomènes Météo',
-    instructor: 'Dr. Thomas Leroy',
+    instructor: 'Agence de Météo',
     duration: '50 minutes',
     resources: [
       { id: 1, title: 'Guide des phénomènes météo', url: '/resources/phenomenes.pdf' },

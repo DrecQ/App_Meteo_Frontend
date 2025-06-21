@@ -96,8 +96,8 @@
     }
   },
   "about": {
-    "title": "Gbɛ",
-    "subtitle": "Wɛ kpɔ wɛ mission, wɛ valeurs kple wɛ équipe",
+    "title": "Nǔ E Kɔn Mǐ Donu",
+    "subtitle": "Mi sè nǔdɔɖ'ayǐ mǐtɔn, sɔ mǐtɔn lẹ, kpodo gbɛtɔ mǐtɔn lẹ",
     "missionTitle": "Wɛ Mission",
     "missionDesc": "EduMétéo lɛ kpɔ sɔ̀nù ɖe zã lɛ kpɛ kpɛ. Wɛ plateforme lɛ kpɔ expertise scientifique kple pédagogie innovante ɖe wɛwɛ lɛ kpɛ kpɛ.",
     "stats": {
@@ -130,11 +130,11 @@
     "title": "Kpɔntákt",
     "subtitle": "Gbɛ? Wɛ équipe lɛ kpɔ kpɛ kpɛ",
     "infoTitle": "Wɛ coordonnées",
-    "addressTitle": "Adresse",
-    "address": "123 Rue de la Météo<br>75000 Paris, France",
+    "addressTitle": "Adɛ́si",
+    "address": "123 Météo Street<br>75000 Paris, France",
     "emailTitle": "Email",
-    "email": "contact@meteo-benin.com",
-    "phoneTitle": "Téléphone",
+    "email": "'contact@meteo-benin.com'",
+    "phoneTitle": "Telefɔ́ɔnu",
     "phone": "+33 1 23 45 67 89",
     "hoursTitle": "Horaires",
     "hours": "Lun-Ven: 9h-18h<br>Sam: 10h-16h",
@@ -152,39 +152,47 @@
     }
   },
   "coursesPage": {
-    "title": "Sɔ̀nù kpɛ kpɛ",
-    "subtitle": "Wɛ kpɔ sɔ̀nù kpɛ kpɛ ɖe zã lɛ",
-    "searchPlaceholder": "Wɛ sɔ̀nù, xwɛ, kpɔxɔ...",
-    "searchBtn": "Wɛ kpɔ",
-    "category": "Kpɛ",
-    "allCategories": "Gbogbo",
-    "meteo": "Zã",
-    "climat": "Climatologie",
-    "previsions": "Prévisions",
-    "level": "Dɔ",
-    "allLevels": "Gbogbo",
-    "beginner": "Dɔ xɔxɔ",
-    "intermediate": "Dɔ ɖeɖe",
-    "advanced": "Dɔ tɔgbɛ",
-    "duration": "Gblɔ",
-    "allDurations": "Gbogbo",
-    "short": "Gblɔ kɛ 2h",
+    "title": "Mí Kɔ́nɔ́nú",
+    "subtitle": "Dò Kɔ́nɔ́nú ɖéɖé wá wá nɔ̀ ɖò míɖéɖé gbɛ̀nɛ̀nɛ̀ tɔ̀n mɛ̀",
+    "searchPlaceholder": "Dò Kɔ́nɔ́nú, nùɖúɖú, gbɛ̀nɛ̀nɛ̀...",
+    "searchBtn": "Dò",
+    "category": "Fífɔ̀",
+    "allCategories": "Ée",
+    "meteo": "Gbɛ̀nɛ̀nɛ̀",
+    "climat": "Gbɛ̀nɛ̀nɛ̀ ɖòkpó",
+    "previsions": "Gbɛ̀nɛ̀nɛ̀ ɖòkpó",
+    "level": "Dégbè",
+    "allLevels": "Ée",
+    "beginner": "Débutant",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé",
+    "duration": "Ɖòkpó",
+    "allDurations": "Ée",
+    "short": "Kpɛ́ví ɖò 2h",
     "medium": "2-5h",
-    "long": "Gblɔ tɔ 5h",
-    "coursesAvailable": "sɔ̀nù kpɛ kpɛ",
-    "sortPopular": "Wɛwɛ",
-    "sortRecent": "Tɔxɔ",
-    "sortDuration": "Gblɔ",
+    "long": "Gànjí ɖò 5h",
+    "coursesAvailable": "kɔ́nɔ́nú wɛ̀",
+    "sortPopular": "Wɛ̀ɖɛ̀ɖɛ̀",
+    "sortRecent": "Yɛ̀yɛ̀",
+    "sortDuration": "Ɖòkpó",
     "levels": {
-      "débutant": "Dɔ xɔxɔ",
-      "intermédiaire": "Dɔ ɖeɖe",
-      "avancé": "Dɔ tɔgbɛ"
+      "débutant": "Débutant",
+      "intermédiaire": "Intermédiaire",
+      "avancé": "Avancé"
     },
-    "free": "Wɛ kpɔ",
-    "lessons": "xwɛ",
-    "completed": "kpɔxɔ",
-    "continue": "Kpɔxɔ",
-    "start": "Dɔ"
+    "free": "Fɔ̀n",
+    "lessons": "kɔ́nɔ́nú",
+    "completed": "ɖòkpó",
+    "continue": "Dòkpó",
+    "start": "Bɛ̀",
+    "audio": {
+      "listen": "Mɛ̀",
+      "stop": "Dò",
+      "listenTitle": "Mɛ̀ kɔ́nɔ́nú",
+      "stopTitle": "Dò mɛ̀",
+      "notSupported": "Mɛ̀ ɖòkpó má ɖòkpó ɖò navigator ɔ̀.",
+      "error": "Jíjɔ̀ ɖò mɛ̀ mɛ̀. Dòkpó ɖòkpó."
+    }
   },
   "weatherPage": {
     "title": "Bulletin Zã",
@@ -268,5 +276,118 @@
     "google": "Kpɔxɔ Google",
     "alreadyAccount": "Déjà inscrit ?",
     "login": "Wɛ gbɔ"
+  },
+  "quizPage": {
+    "modeSelection": {
+      "title": "Dò quiz mode ɔ̀",
+      "iaMode": {
+        "title": "Quiz IA Interactif",
+        "description": "Questions IA ɖòkpó ɖòkpó ɖòkpó ɖòkpó"
+      },
+      "classicMode": {
+        "title": "Quiz Classique",
+        "description": "Questions ɖòkpó ɖòkpó ɖòkpó"
+      },
+      "testMode": {
+        "title": "Test API",
+        "description": "Dòkpó API ɖòkpó"
+      },
+      "or": "àbɔ̀",
+      "debug": "Debug"
+    },
+    "iaThinking": {
+      "preparing": "IA ɖòkpó question ɔ̀ ɖò",
+      "meteorology": "Gbɛ̀nɛ̀nɛ̀"
+    },
+    "question": {
+      "audioButton": "Mɛ̀ question",
+      "voiceAnswer": "Answer ɖòkpó",
+      "listening": "ɖòkpó...",
+      "textAnswer": "Sɛ̀ answer ɔ̀ ɖòkpó...",
+      "validate": "Dòkpó",
+      "nextQuestion": "Question ɖòkpó",
+      "seeResults": "Dòkpó results",
+      "seeMyResults": "Dòkpó mí results"
+    },
+    "feedback": {
+      "correct": "Dòkpó!",
+      "incorrect": "ɖòkpó!",
+      "excellent": "Answer ɖòkpó! ɖòkpó ɖòkpó ɖòkpó.",
+      "wrongAnswer": "ɖòkpó. Answer ɖòkpó ɖòkpó option"
+    },
+    "results": {
+      "title": "Quiz IA Results",
+      "finalScore": "Score ɖòkpó",
+      "performance": {
+        "perfect": "Performance ɖòkpó! 🏆",
+        "excellent": "Work ɖòkpó! ✨",
+        "good": "Result ɖòkpó, ɖòkpó! 👍",
+        "needsImprovement": "ɖòkpó, ɖòkpó! 💪"
+      },
+      "actions": {
+        "restart": "ɖòkpó",
+        "changeMode": "ɖòkpó mode"
+      }
+    },
+    "errors": {
+      "speechNotSupported": "Speech recognition ɖòkpó ɖòkpó navigator ɔ̀.",
+      "speechError": "Speech recognition error:",
+      "apiError": "Error ɖòkpó question. Dòkpó ɖòkpó.",
+      "iaQuestionFetchError": "Aɖo, mí ma sixu ɖe kanbiọ e lɔn tɔn ɖokpo mɛ kpɔn o. Vɔvɔ miɖo mi ni vɔ kpɔn."
+    }
+  },
+  "common": {
+    "loading": "Gblɔ...",
+    "submitting": "Gblɔ...",
+    "cancel": "Tɔ",
+    "help": "Kpɔn",
+    "member": "Gbɛtɔ"
+  },
+  "community": {
+    "newQuestion": "Bi nyɔnu ɖe",
+    "questionTitle": "Nyɔnu ɖe tɔn",
+    "questionTitlePlaceholder": "Ex: Ale nyɔnu ɖe gbɛnɔ lɛ ɖo gbɛnɔ ɖo?",
+    "questionDetails": "Nyɔnu ɖe tɔn ɖoɖo",
+    "questionDetailsPlaceholder": "Kpɔn nyɔnu ɖe tɔn ɖoɖo...",
+    "category": "Fɛ",
+    "selectCategory": "Fɛ ɖe",
+    "categories": {
+      "meteo": "Gbɛnɔ nyɔnu",
+      "climat": "Gbɛnɔ nyɔnu",
+      "instruments": "Gbɛnɔ nyɔnu",
+      "agriculture": "Agbɔ"
+    },
+    "publishQuestion": "Nyɔnu ɖe ɖe",
+    "helpTitle": "Ale nyɔnu ɖe gbɛnɔ lɛ ɖo?",
+    "help": {
+      "step1": {
+        "title": "1. Nyɔnu ɖe ɖe:",
+        "description": "Nyɔnu ɖe ɖe ɖoɖo."
+      },
+      "step2": {
+        "title": "2. Nyɔnu ɖe ɖe:",
+        "description": "Nyɔnu ɖe ɖe ɖoɖo."
+      },
+      "step3": {
+        "title": "3. Nyɔnu ɖe ɖe:",
+        "description": "Nyɔnu ɖe ɖe ɖoɖo."
+      }
+    },
+    "searchPlaceholder": "Nyɔnu ɖe ɖe...",
+    "searchTitle": "Nyɔnu ɖe ɖe ɖoɖo",
+    "searchButton": "Nyɔnu ɖe",
+    "voiceQuestion": "Nyɔnu ɖe ɖe",
+    "examples": "Nyɔnu ɖe",
+    "exampleQuestions": {
+      "rain": "Ale nyɔnu ɖe gbɛnɔ lɛ ɖo?",
+      "corn": "Ale nyɔnu ɖe gbɛnɔ lɛ ɖo?",
+      "drought": "Ale nyɔnu ɖe gbɛnɔ lɛ ɖo?"
+    },
+    "askQuestion": "Nyɔnu ɖe ɖe",
+    "answers": "ɖe",
+    "reply": "ɖe",
+    "yourAnswer": "ɖe tɔn",
+    "answerPlaceholder": "ɖe tɔn ɖoɖo...",
+    "publishAnswer": "ɖe ɖe"
   }
 } 

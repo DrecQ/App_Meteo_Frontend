@@ -34,8 +34,22 @@ export const useAuthStore = defineStore('auth', {
           throw new Error(response.message || 'Erreur de connexion')
         }
       } catch (error) {
-        this.error = error.message || 'Erreur de connexion'
-        throw error
+        console.error('Erreur login store:', error)
+        
+        // Gérer les erreurs de l'API
+        if (error.data?.statusMessage) {
+          this.error = error.data.statusMessage
+          throw new Error(error.data.statusMessage)
+        } else if (error.statusMessage) {
+          this.error = error.statusMessage
+          throw new Error(error.statusMessage)
+        } else if (error.message) {
+          this.error = error.message
+          throw error
+        } else {
+          this.error = 'Erreur de connexion'
+          throw new Error('Erreur de connexion')
+        }
       } finally {
         this.loading = false
       }
@@ -61,8 +75,22 @@ export const useAuthStore = defineStore('auth', {
           throw new Error(response.message || 'Erreur d\'inscription')
         }
       } catch (error) {
-        this.error = error.message || 'Erreur d\'inscription'
-        throw error
+        console.error('Erreur register store:', error)
+        
+        // Gérer les erreurs de l'API
+        if (error.data?.statusMessage) {
+          this.error = error.data.statusMessage
+          throw new Error(error.data.statusMessage)
+        } else if (error.statusMessage) {
+          this.error = error.statusMessage
+          throw new Error(error.statusMessage)
+        } else if (error.message) {
+          this.error = error.message
+          throw error
+        } else {
+          this.error = 'Erreur d\'inscription'
+          throw new Error('Erreur d\'inscription')
+        }
       } finally {
         this.loading = false
       }
@@ -92,6 +120,17 @@ export const useAuthStore = defineStore('auth', {
         this.token = token
         this.user = JSON.parse(userData)
       }
+    },
+
+    updateUserAvatar(avatarUrl) {
+      if (this.user) {
+        this.user.avatar = avatarUrl
+        localStorage.setItem('user_data', JSON.stringify(this.user))
+      }
+    },
+
+    clearError() {
+      this.error = null
     }
   }
 }) 

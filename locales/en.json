@@ -89,7 +89,7 @@
       "terms": "Terms",
       "cookies": "Cookies",
       "contact2": "Contact",
-      "email": "contact@meteo-benin.com",
+      "email": "'contact@meteo-benin.com'",
       "phone": "+33 1 23 45 67 89",
       "copyright": "© 2025 EduMétéo - All rights reserved"
     }
@@ -101,8 +101,8 @@
     "ctaRegister": "Start now"
   },
   "about": {
-    "title": "About",
-    "subtitle": "Discover our mission, values and team",
+    "title": "About Us",
+    "subtitle": "Discover our mission, values, and team",
     "missionTitle": "Our Mission",
     "missionDesc": "EduMétéo is committed to making meteorology learning accessible to all. Our platform combines scientific expertise and innovative pedagogy to train the next generation of meteorologists and climate enthusiasts.",
     "stats": {
@@ -132,7 +132,7 @@
     "addressTitle": "Address",
     "address": "123 Weather Street<br>75000 Paris, France",
     "emailTitle": "Email",
-    "email": "contact@meteo-benin.com",
+    "email": "'contact@meteo-benin.com'",
     "phoneTitle": "Phone",
     "phone": "+33 1 23 45 67 89",
     "hoursTitle": "Hours",
@@ -183,7 +183,15 @@
     "lessons": "lessons",
     "completed": "completed",
     "continue": "Continue",
-    "start": "Start"
+    "start": "Start",
+    "audio": {
+      "listen": "Listen",
+      "stop": "Stop",
+      "listenTitle": "Listen to the course",
+      "stopTitle": "Stop playback",
+      "notSupported": "Speech synthesis is not supported by your browser.",
+      "error": "Error during audio playback. Please try again."
+    }
   },
   "weatherPage": {
     "title": "Weather Bulletin",
@@ -267,5 +275,122 @@
     "google": "Sign up with Google",
     "alreadyAccount": "Already registered?",
     "login": "Log in"
+  },
+  "quizPage": {
+    "modeSelection": {
+      "title": "Choose your quiz mode",
+      "iaMode": {
+        "title": "AI Interactive Quiz",
+        "description": "AI-generated questions with voice recognition and intelligent correction"
+      },
+      "classicMode": {
+        "title": "Classic Quiz",
+        "description": "Predefined questions with linear progression"
+      },
+      "testMode": {
+        "title": "API Test",
+        "description": "Check API configuration"
+      },
+      "or": "or",
+      "debug": "Debug"
+    },
+    "iaThinking": {
+      "preparing": "AI is preparing your question on",
+      "meteorology": "Meteorology"
+    },
+    "question": {
+      "audioButton": "Read question",
+      "voiceAnswer": "Voice answer",
+      "listening": "Listening...",
+      "textAnswer": "Write your answer here...",
+      "validate": "Validate",
+      "nextQuestion": "Next question",
+      "seeResults": "See results",
+      "seeMyResults": "See my results"
+    },
+    "feedback": {
+      "correct": "Correct!",
+      "incorrect": "Almost!",
+      "excellent": "Excellent answer! You master this concept well.",
+      "wrongAnswer": "Not quite. The correct answer was option"
+    },
+    "results": {
+      "title": "AI Quiz Results",
+      "finalScore": "Final score",
+      "performance": {
+        "perfect": "Exceptional performance! 🏆",
+        "excellent": "Excellent work! ✨",
+        "good": "Good result, keep it up! 👍",
+        "needsImprovement": "Needs improvement, you will progress! 💪"
+      },
+      "actions": {
+        "restart": "Restart",
+        "changeMode": "Change mode"
+      }
+    },
+    "errors": {
+      "speechNotSupported": "Speech recognition is not supported by your browser.",
+      "speechError": "Speech recognition error:",
+      "apiError": "Error generating question. Please try again.",
+      "iaQuestionFetchError": "Oops! We couldn't generate a question right now. Please try again."
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "submitting": "Submitting...",
+    "cancel": "Cancel",
+    "help": "Help",
+    "member": "Member"
+  },
+  "community": {
+    "newQuestion": "Ask a new question",
+    "questionTitle": "Question title",
+    "questionTitlePlaceholder": "Ex: How to predict storms in dry season?",
+    "questionDetails": "Question details",
+    "questionDetailsPlaceholder": "Describe your question in detail...",
+    "category": "Category",
+    "selectCategory": "Choose a category",
+    "categories": {
+      "meteo": "Meteorology",
+      "climat": "Climatology",
+      "instruments": "Weather instruments",
+      "agriculture": "Agriculture"
+    },
+    "publishQuestion": "Publish question",
+    "helpTitle": "How to use the community space?",
+    "help": {
+      "step1": {
+        "title": "1. Search for a question:",
+        "description": "Use the search bar or browse the examples below."
+      },
+      "step2": {
+        "title": "2. Ask your question:",
+        "description": "Click on the microphone to speak or write your question."
+      },
+      "step3": {
+        "title": "3. Read answers:",
+        "description": "Click on a question to see answers from other members."
+      }
+    },
+    "searchPlaceholder": "Search questions...",
+    "searchTitle": "Type your question or keyword here",
+    "searchButton": "Search",
+    "voiceQuestion": "Record a voice question",
+    "examples": "Examples",
+    "exampleQuestions": {
+      "rain": "How to know if it will rain tomorrow?",
+      "corn": "What advice for planting corn this season?",
+      "drought": "How to protect my crops from drought?"
+    },
+    "askQuestion": "Ask a question",
+    "answers": "answers",
+    "reply": "Reply",
+    "yourAnswer": "Your answer",
+    "answerPlaceholder": "Write your detailed answer here...",
+    "publishAnswer": "Publish answer"
+  },
+  "footer": {
+    "email": "'contact@meteo-benin.com'",
+    "newsletter": "Subscribe to our newsletter"
   }
 } 

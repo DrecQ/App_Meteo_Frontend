@@ -17,12 +17,24 @@ model User {
   id                String   @id @default(cuid())
   email             String   @unique
   password          String
+  firstName         String?
+  lastName          String?
   name              String?
   domaineActivite   String?  // Nouveau champ pour le domaine d'activité
+  phone             String?  // Numéro de téléphone optionnel
+  address           String?  // Adresse optionnelle
+  avatar            String?  // URL de la photo de profil
+  role              String?  @default("user") // user, admin, expert
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   courses           UserCourse[]
   quizzes           QuizResult[]
+  certificates      Certificate[]
+  questions         CommunityQuestion[]
+  answers           CommunityAnswer[]
+  likes             CommunityLike[]
+  favorites         UserFavorite[]
+  feedbacks         CourseFeedback[]
 }
 
 model Course {
@@ -32,11 +44,20 @@ model Course {
   description String?
   instructor  String?
   duration    String?
+  level       String?       @default("beginner") // beginner, intermediate, advanced
+  category    String?       // meteo, climat, agriculture, etc.
+  language    String?       @default("fr") // fr, en, ar, fon, yo
+  audioUrl    String?       // URL pour l'audio
+  videoUrl    String?       // URL pour la vidéo
+  downloadUrl String?       // URL pour téléchargement
   lessons     Lesson[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   users       UserCourse[]
   quizResults QuizResult[]  // Relation inverse ajoutée
+  certificates Certificate[]
+  favorites   UserFavorite[]
+  feedbacks   CourseFeedback[]
 }
 
 model Lesson {
@@ -53,6 +74,9 @@ model UserCourse {
   userId    String
   courseId  String
   progress  Int      @default(0)
+  completed Boolean  @default(false)
+  startedAt DateTime @default(now())
+  completedAt DateTime?
   user      User     @relation(fields: [userId], references: [id])
   course    Course   @relation(fields: [courseId], references: [id])
 }
@@ -62,7 +86,86 @@ model QuizResult {
   userId    String
   courseId  String
   score     Int
+  maxScore  Int      @default(5)
   date      DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+}
+
+model Certificate {
+  id             String    @id @default(cuid())
+  userId         String
+  courseId       String
+  title          String
+  description    String?
+  score          Int
+  maxScore       Int
+  percentage     Float
+  issuedAt       DateTime  @default(now())
+  expiresAt      DateTime?
+  certificateUrl String?
+  status         String    @default("active") // active, expired, revoked
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  user           User      @relation(fields: [userId], references: [id])
+  course         Course    @relation(fields: [courseId], references: [id])
+}
+
+// Chat communautaire
+model CommunityQuestion {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  category  String   // meteo, climat, instruments, agriculture
+  featured  Boolean  @default(false)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  answers   CommunityAnswer[]
+  likes     CommunityLike[]
+}
+
+model CommunityAnswer {
+  id         String   @id @default(cuid())
+  content    String
+  questionId String
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  question   CommunityQuestion @relation(fields: [questionId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  likes      CommunityLike[]
+}
+
+model CommunityLike {
+  id         String   @id @default(cuid())
+  userId     String
+  questionId String?
+  answerId   String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  question   CommunityQuestion? @relation(fields: [questionId], references: [id])
+  answer     CommunityAnswer? @relation(fields: [answerId], references: [id])
+}
+
+// Favoris et feedback
+model UserFavorite {
+  id       String   @id @default(cuid())
+  userId   String
+  courseId String
+  createdAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id])
+  course   Course   @relation(fields: [courseId], references: [id])
+}
+
+model CourseFeedback {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  rating    Int      // 1-5 étoiles
+  comment   String?
+  createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   course    Course   @relation(fields: [courseId], references: [id])
 }

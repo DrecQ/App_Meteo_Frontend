@@ -8,45 +8,45 @@
       <div class="modal" v-if="showQuestionForm">
         <div class="modal-content">
           <div class="modal-header">
-            <h3>Poser une nouvelle question</h3>
+            <h3>{{ $t('community.newQuestion') }}</h3>
             <button @click="showQuestionForm = false" class="close-btn">
               <i class="fas fa-times"></i>
             </button>
           </div>
           <form @submit.prevent="submitQuestion" class="question-form">
             <div class="form-group">
-              <label>Titre de la question</label>
+              <label>{{ $t('community.questionTitle') }}</label>
               <input 
                 type="text" 
                 v-model="newQuestion.title" 
-                placeholder="Ex: Comment prévoir les orages en saison sèche ?"
+                :placeholder="$t('community.questionTitlePlaceholder')"
                 required
               >
             </div>
             <div class="form-group">
-              <label>Détails de la question</label>
+              <label>{{ $t('community.questionDetails') }}</label>
               <textarea 
                 v-model="newQuestion.content" 
-                placeholder="Décrivez votre question en détails..."
+                :placeholder="$t('community.questionDetailsPlaceholder')"
                 required
               ></textarea>
             </div>
             <div class="form-group">
-              <label>Catégorie</label>
+              <label>{{ $t('community.category') }}</label>
               <select v-model="newQuestion.category" required>
-                <option value="">Choisir une catégorie</option>
-                <option value="meteo">Météorologie</option>
-                <option value="climat">Climatologie</option>
-                <option value="instruments">Instruments météo</option>
-                <option value="agriculture">Agriculture</option>
+                <option value="">{{ $t('community.selectCategory') }}</option>
+                <option value="meteo">{{ $t('community.categories.meteo') }}</option>
+                <option value="climat">{{ $t('community.categories.climat') }}</option>
+                <option value="instruments">{{ $t('community.categories.instruments') }}</option>
+                <option value="agriculture">{{ $t('community.categories.agriculture') }}</option>
               </select>
             </div>
             <div class="form-actions">
               <button type="button" @click="showQuestionForm = false" class="btn-cancel">
-                Annuler
+                {{ $t('common.cancel') }}
               </button>
-              <button type="submit" class="btn-submit">
-                Publier la question
+              <button type="submit" class="btn-submit" :disabled="isSubmitting">
+                {{ isSubmitting ? $t('common.submitting') : $t('community.publishQuestion') }}
               </button>
             </div>
           </form>
@@ -54,20 +54,22 @@
       </div>
 
       <!-- Bouton Aide déplacé dans l'angle supérieur droit -->
-      <button class="btn-help floating-help" @click="showHelp = true" title="Besoin d'aide ? Cliquez ici pour un guide illustré"><i class="fas fa-question-circle"></i> Aide</button>
+      <button class="btn-help floating-help" @click="showHelp = true" :title="$t('community.helpTitle')">
+        <i class="fas fa-question-circle"></i> {{ $t('common.help') }}
+      </button>
 
       <!-- Modale d'aide -->
       <div class="modal" v-if="showHelp">
         <div class="modal-content help-modal">
           <div class="modal-header">
-            <h3>Comment utiliser l'espace communautaire ?</h3>
+            <h3>{{ $t('community.helpTitle') }}</h3>
             <button @click="showHelp = false" class="close-btn"><i class="fas fa-times"></i></button>
           </div>
           <div class="help-body">
             <ol>
-              <li><b>1. Cherche une question :</b> Utilise la barre de recherche ou parcours les exemples ci-dessous.</li>
-              <li><b>2. Pose ta question :</b> Clique sur le micro <i class='fas fa-microphone'></i> pour parler ou écris ta question.</li>
-              <li><b>3. Lis les réponses :</b> Clique sur une question pour voir les réponses des autres membres.</li>
+              <li><b>{{ $t('community.help.step1.title') }}</b> {{ $t('community.help.step1.description') }}</li>
+              <li><b>{{ $t('community.help.step2.title') }}</b> {{ $t('community.help.step2.description') }}</li>
+              <li><b>{{ $t('community.help.step3.title') }}</b> {{ $t('community.help.step3.description') }}</li>
             </ol>
             <img :src="guideCommunaute" alt="Guide illustré" style="width:100%;max-width:300px;margin:1rem auto;display:block;">
           </div>
@@ -81,26 +83,26 @@
           <div class="search-bar">
             <input 
               type="text" 
-              placeholder="Rechercher des questions..." 
+              :placeholder="$t('community.searchPlaceholder')" 
               v-model="searchQuery"
-              title="Tape ici ta question ou un mot-clé"
+              :title="$t('community.searchTitle')"
             >
-            <button @click="searchQuestions" title="Lancer la recherche">
+            <button @click="searchQuestions" :title="$t('community.searchButton')">
               <i class="fas fa-search"></i>
             </button>
             <!-- Bouton micro pour question vocale -->
-            <button class="btn-micro" title="Enregistrer une question à l'oral">
+            <button class="btn-micro" :title="$t('community.voiceQuestion')">
               <i class="fas fa-microphone"></i>
             </button>
           </div>
           
           <!-- Exemples de questions -->
           <div class="question-examples">
-            <span>Exemples :</span>
+            <span>{{ $t('community.examples') }}:</span>
             <ul>
-              <li>Comment savoir s'il va pleuvoir demain ?</li>
-              <li>Quels conseils pour semer le maïs cette saison ?</li>
-              <li>Comment protéger mes cultures de la sécheresse ?</li>
+              <li>{{ $t('community.exampleQuestions.rain') }}</li>
+              <li>{{ $t('community.exampleQuestions.corn') }}</li>
+              <li>{{ $t('community.exampleQuestions.drought') }}</li>
             </ul>
           </div>
           
@@ -116,8 +118,22 @@
           </div>
         </div>
 
+        <!-- Bouton pour poser une question -->
+        <div class="new-question-section">
+          <button @click="showQuestionForm = true" class="btn-new-question">
+            <i class="fas fa-plus"></i>
+            {{ $t('community.askQuestion') }}
+          </button>
+        </div>
+
+        <!-- État de chargement -->
+        <div v-if="loading" class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>{{ $t('common.loading') }}</p>
+        </div>
+
         <!-- Liste des questions -->
-        <div class="questions-list">
+        <div v-else class="questions-list">
           <div 
             v-for="question in filteredQuestions" 
             :key="question.id" 
@@ -129,17 +145,22 @@
                 <span class="category-badge" :class="question.category">
                   {{ formatCategory(question.category) }}
                 </span>
-                <span class="date">{{ formatDate(question.date) }}</span>
+                <span class="date">{{ formatDate(question.createdAt) }}</span>
               </div>
               
               <h3 class="question-title">{{ question.title }}</h3>
               <p class="question-content">{{ question.content }}</p>
               
               <div class="question-author">
-                <i class="fas fa-user-circle fa-2x" style="color: #b0bec5;"></i>
+                <img 
+                  :src="question.user?.avatar || '/default-avatar.svg'" 
+                  :alt="getUserName(question.user)"
+                  class="author-avatar"
+                  @error="handleAvatarError"
+                />
                 <div class="author-info">
-                  <span class="name">{{ question.author.name }}</span>
-                  <span class="role">{{ question.author.role }}</span>
+                  <span class="name">{{ getUserName(question.user) }}</span>
+                  <span class="role">{{ question.user?.role || $t('common.member') }}</span>
                 </div>
               </div>
             </div>
@@ -147,36 +168,72 @@
             <div class="question-stats">
               <div class="stat">
                 <i class="fas fa-comment"></i>
-                <span>{{ question.answers }} réponses</span>
+                <span>{{ question.answersCount || 0 }} {{ $t('community.answers') }}</span>
               </div>
               <div class="stat">
-                <i class="fas fa-heart"></i>
-                <span>{{ question.likes }} votes</span>
+                <button 
+                  @click="toggleLike(question.id)"
+                  class="like-btn"
+                  :class="{ liked: isLiked(question.id) }"
+                >
+                  <i class="fas fa-heart"></i>
+                  <span>{{ question.likesCount || 0 }}</span>
+                </button>
               </div>
               <button 
                 class="btn-answer"
                 @click="showAnswerForm(question.id)"
               >
-                <i class="fas fa-reply"></i> Répondre
+                <i class="fas fa-reply"></i> {{ $t('community.reply') }}
               </button>
+            </div>
+
+            <!-- Réponses -->
+            <div v-if="question.answers && question.answers.length > 0" class="answers-section">
+              <h4>{{ $t('community.answers') }} ({{ question.answers.length }})</h4>
+              <div v-for="answer in question.answers" :key="answer.id" class="answer-card">
+                <div class="answer-content">
+                  <p>{{ answer.content }}</p>
+                  <div class="answer-meta">
+                    <div class="answer-author">
+                      <img 
+                        :src="answer.user?.avatar || '/default-avatar.svg'" 
+                        :alt="getUserName(answer.user)"
+                        class="author-avatar-small"
+                        @error="handleAvatarError"
+                      />
+                      <span class="author-name">{{ getUserName(answer.user) }}</span>
+                      <span class="answer-date">{{ formatDate(answer.createdAt) }}</span>
+                    </div>
+                    <button 
+                      @click="toggleAnswerLike(answer.id)"
+                      class="like-btn small"
+                      :class="{ liked: isAnswerLiked(answer.id) }"
+                    >
+                      <i class="fas fa-heart"></i>
+                      <span>{{ answer.likes?.length || 0 }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Formulaire de réponse -->
         <div class="answer-form" v-if="showAnswerForQuestion">
-          <h4>Votre réponse</h4>
+          <h4>{{ $t('community.yourAnswer') }}</h4>
           <textarea 
             v-model="newAnswer.content" 
-            placeholder="Écrivez votre réponse détaillée ici..."
+            :placeholder="$t('community.answerPlaceholder')"
             rows="4"
           ></textarea>
           <div class="form-actions">
             <button @click="cancelAnswer" class="btn-cancel">
-              Annuler
+              {{ $t('common.cancel') }}
             </button>
-            <button @click="submitAnswer" class="btn-submit">
-              Publier la réponse
+            <button @click="submitAnswer" class="btn-submit" :disabled="isSubmittingAnswer">
+              {{ isSubmittingAnswer ? $t('common.submitting') : $t('community.publishAnswer') }}
             </button>
           </div>
         </div>
@@ -189,7 +246,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '~/stores/auth'
 import guideCommunaute from '@/assets/images/ui/guide-communaute.svg'
 
 // États
@@ -197,9 +255,13 @@ const showQuestionForm = ref(false)
 const showAnswerForQuestion = ref(null)
 const searchQuery = ref('')
 const activeTab = ref('recent')
-const weatherIcon = ref('fas fa-sun')
 const showHelp = ref(false)
-const selectedLang = ref('fr')
+const loading = ref(false)
+const isSubmitting = ref(false)
+const isSubmittingAnswer = ref(false)
+
+// Store d'authentification
+const authStore = useAuthStore()
 
 // Données
 const newQuestion = ref({
@@ -212,112 +274,15 @@ const newAnswer = ref({
   content: ''
 })
 
-const stats = ref({
-  questions: 124,
-  answers: 543,
-  members: 89
-})
+const questions = ref([])
+const userLikes = ref(new Set())
+const answerLikes = ref(new Set())
 
 const tabs = ref([
   { value: 'recent', label: 'Récentes' },
   { value: 'unanswered', label: 'Sans réponse' },
   { value: 'popular', label: 'Populaires' },
   { value: 'featured', label: 'En vedette' }
-])
-
-const questions = ref([
-  {
-    id: 1,
-    title: "Comment prévoir les orages en saison sèche ?",
-    content: "Je cherche à comprendre les indicateurs météorologiques qui pourraient aider à prévoir les orages même pendant la saison sèche au Bénin.",
-    category: "meteo",
-    date: "2023-05-15T14:30:00",
-    answered: true,
-    featured: true,
-    answers: 8,
-    likes: 15,
-    author: {
-      id: 1,
-      name: "Kofi Mensah",
-      avatar: "/avatars/1.jpg",
-      role: "Étudiant en météo"
-    }
-  },
-  {
-    id: 2,
-    title: "Quels instruments pour mesurer l'humidité avec précision ?",
-    content: "Quels sont les instruments les plus précis pour mesurer l'humidité relative dans un contexte de recherche climatique ?",
-    category: "instruments",
-    date: "2023-05-12T09:15:00",
-    answered: false,
-    featured: false,
-    answers: 3,
-    likes: 7,
-    author: {
-      id: 2,
-      name: "Amina Diallo",
-      avatar: "/avatars/2.jpg",
-      role: "Chercheuse"
-    }
-  },
-  {
-    id: 3,
-    title: "Impact du changement climatique sur les précipitations au Bénin",
-    content: "Quelles sont les dernières études sur l'évolution des régimes de précipitations au Bénin ces 20 dernières années ?",
-    category: "climat",
-    date: "2023-05-10T16:45:00",
-    answered: true,
-    featured: true,
-    answers: 12,
-    likes: 24,
-    author: {
-      id: 3,
-      name: "Dr. Jean Adékambi",
-      avatar: "/avatars/3.jpg",
-      role: "Climatologue"
-    }
-  },
-  {
-    id: 4,
-    title: "Meilleures pratiques agricoles en période de sécheresse",
-    content: "Quelles techniques agricoles recommanderiez-vous pour faire face aux longues périodes de sécheresse ?",
-    category: "agriculture",
-    date: "2023-05-08T11:20:00",
-    answered: true,
-    featured: false,
-    answers: 5,
-    likes: 9,
-    author: {
-      id: 4,
-      name: "Fatou N'Diaye",
-      avatar: "/avatars/4.jpg",
-      role: "Agronome"
-    }
-  }
-])
-
-const activeMembers = ref([
-  {
-    id: 1,
-    name: "Dr. Jean Adékambi",
-    avatar: "/avatars/3.jpg",
-    answers: 42,
-    role: "Climatologue"
-  },
-  {
-    id: 2,
-    name: "Amina Diallo",
-    avatar: "/avatars/2.jpg",
-    answers: 28,
-    role: "Chercheuse"
-  },
-  {
-    id: 3,
-    name: "Samuel Gbêto",
-    avatar: "/avatars/5.jpg",
-    answers: 19,
-    role: "Météorologue"
-  }
 ])
 
 // Computed
@@ -338,11 +303,11 @@ const filteredQuestions = computed(() => {
     case 'unanswered':
       return result.filter(q => !q.answered)
     case 'popular':
-      return [...result].sort((a, b) => b.likes - a.likes)
+      return [...result].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0))
     case 'featured':
       return result.filter(q => q.featured)
     default:
-      return [...result].sort((a, b) => new Date(b.date) - new Date(a.date))
+      return [...result].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }
 })
 
@@ -367,36 +332,93 @@ function formatCategory(category) {
   return categories[category] || category
 }
 
-function searchQuestions() {
-  // Logique de recherche
+function getUserName(user) {
+  if (!user) return 'Utilisateur'
+  return `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Utilisateur'
 }
 
-function submitQuestion() {
-  const newQ = {
-    id: questions.value.length + 1,
-    title: newQuestion.value.title,
-    content: newQuestion.value.content,
-    category: newQuestion.value.category,
-    date: new Date().toISOString(),
-    answered: false,
-    featured: false,
-    answers: 0,
-    likes: 0,
-    author: {
-      id: 10,
-      name: "Moi",
-      avatar: "/avatars/default.jpg",
-      role: "Membre"
+function handleAvatarError(event) {
+  event.target.src = '/default-avatar.svg'
+}
+
+function isLiked(questionId) {
+  return userLikes.value.has(questionId)
+}
+
+function isAnswerLiked(answerId) {
+  return answerLikes.value.has(answerId)
+}
+
+async function loadQuestions() {
+  loading.value = true
+  try {
+    const response = await $fetch('/api/community/questions')
+    if (response.success) {
+      questions.value = response.questions
     }
+  } catch (error) {
+    console.error('Erreur lors du chargement des questions:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function searchQuestions() {
+  if (!searchQuery.value.trim()) {
+    await loadQuestions()
+    return
   }
   
-  questions.value.unshift(newQ)
-  stats.value.questions++
-  showQuestionForm.value = false
-  newQuestion.value = { title: '', content: '', category: '' }
+  loading.value = true
+  try {
+    const response = await $fetch(`/api/community/questions?search=${encodeURIComponent(searchQuery.value)}`)
+    if (response.success) {
+      questions.value = response.questions
+    }
+  } catch (error) {
+    console.error('Erreur lors de la recherche:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function submitQuestion() {
+  if (!authStore.isAuthenticated) {
+    alert('Vous devez être connecté pour poser une question')
+    return
+  }
+
+  isSubmitting.value = true
+  try {
+    const response = await $fetch('/api/community/questions', {
+      method: 'POST',
+      body: {
+        title: newQuestion.value.title,
+        content: newQuestion.value.content,
+        category: newQuestion.value.category,
+        userId: authStore.user.id
+      }
+    })
+
+    if (response.success) {
+      // Recharger les questions
+      await loadQuestions()
+      showQuestionForm.value = false
+      newQuestion.value = { title: '', content: '', category: '' }
+    }
+  } catch (error) {
+    console.error('Erreur lors de la création de la question:', error)
+    alert('Erreur lors de la création de la question')
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 function showAnswerForm(questionId) {
+  if (!authStore.isAuthenticated) {
+    alert('Vous devez être connecté pour répondre')
+    return
+  }
   showAnswerForQuestion.value = questionId
   newAnswer.value = { content: '' }
 }
@@ -405,15 +427,97 @@ function cancelAnswer() {
   showAnswerForQuestion.value = null
 }
 
-function submitAnswer() {
-  const question = questions.value.find(q => q.id === showAnswerForQuestion.value)
-  if (question) {
-    question.answers++
-    question.answered = true
-    stats.value.answers++
+async function submitAnswer() {
+  isSubmittingAnswer.value = true
+  try {
+    const response = await $fetch('/api/community/answers', {
+      method: 'POST',
+      body: {
+        content: newAnswer.value.content,
+        questionId: showAnswerForQuestion.value,
+        userId: authStore.user.id
+      }
+    })
+
+    if (response.success) {
+      // Recharger les questions pour afficher la nouvelle réponse
+      await loadQuestions()
+      cancelAnswer()
+    }
+  } catch (error) {
+    console.error('Erreur lors de la création de la réponse:', error)
+    alert('Erreur lors de la création de la réponse')
+  } finally {
+    isSubmittingAnswer.value = false
   }
-  cancelAnswer()
 }
+
+async function toggleLike(questionId) {
+  if (!authStore.isAuthenticated) {
+    alert('Vous devez être connecté pour liker')
+    return
+  }
+
+  try {
+    const response = await $fetch('/api/community/like', {
+      method: 'POST',
+      body: {
+        userId: authStore.user.id,
+        questionId: questionId
+      }
+    })
+
+    if (response.success) {
+      // Mettre à jour l'état local
+      if (userLikes.value.has(questionId)) {
+        userLikes.value.delete(questionId)
+      } else {
+        userLikes.value.add(questionId)
+      }
+      
+      // Recharger les questions pour mettre à jour les compteurs
+      await loadQuestions()
+    }
+  } catch (error) {
+    console.error('Erreur lors du like:', error)
+  }
+}
+
+async function toggleAnswerLike(answerId) {
+  if (!authStore.isAuthenticated) {
+    alert('Vous devez être connecté pour liker')
+    return
+  }
+
+  try {
+    const response = await $fetch('/api/community/like', {
+      method: 'POST',
+      body: {
+        userId: authStore.user.id,
+        answerId: answerId
+      }
+    })
+
+    if (response.success) {
+      // Mettre à jour l'état local
+      if (answerLikes.value.has(answerId)) {
+        answerLikes.value.delete(answerId)
+      } else {
+        answerLikes.value.add(answerId)
+      }
+      
+      // Recharger les questions pour mettre à jour les compteurs
+      await loadQuestions()
+    }
+  } catch (error) {
+    console.error('Erreur lors du like:', error)
+  }
+}
+
+// Initialisation
+onMounted(() => {
+  loadQuestions()
+})
 </script>
 
 <style scoped>
@@ -496,26 +600,206 @@ function submitAnswer() {
   margin: 0 auto 1.5rem;
 }
 
+/* Bouton nouvelle question */
+.new-question-section {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
 .btn-new-question {
-  background: #3498db;
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
+  padding: 1rem 2rem;
   border-radius: 50px;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+  gap: 0.8rem;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 .btn-new-question:hover {
-  background: #2980b9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(52, 152, 219, 0.4);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+/* État de chargement */
+.loading-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Bouton like */
+.like-btn {
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 20px;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.like-btn:hover {
+  background: #f8f9fa;
+  color: #e74c3c;
+}
+
+.like-btn.liked {
+  color: #e74c3c;
+  background: #fdf2f2;
+}
+
+.like-btn.small {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+}
+
+/* Avatar utilisateur */
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e6ed;
+}
+
+.author-avatar-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e0e6ed;
+}
+
+/* Section des réponses */
+.answers-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e6ed;
+}
+
+.answers-section h4 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.answer-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 3px solid #3498db;
+}
+
+.answer-content p {
+  color: #2c3e50;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.answer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.answer-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.author-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.answer-date {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* Bouton micro */
+.btn-micro {
+  padding: 0 1.2rem;
+  background: #4caf50;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-micro:hover {
+  background: #45a049;
+}
+
+/* Responsive pour les nouveaux éléments */
+@media (max-width: 768px) {
+  .btn-new-question {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .answer-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .like-btn {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 576px) {
+  .new-question-section {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-new-question {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .answer-card {
+    padding: 0.8rem;
+  }
+  
+  .author-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .author-avatar-small {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 /* Modale */
@@ -529,7 +813,7 @@ function submitAnswer() {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1050;
 }
 
 .modal-content {

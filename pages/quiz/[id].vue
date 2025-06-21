@@ -4,7 +4,7 @@
       <!-- Écran de sélection du mode -->
       <div v-if="!quizStarted" class="mode-selection">
         <div class="quiz-header">
-          <h1>Choisissez votre mode de quiz</h1>
+          <h1>{{ $t('quizPage.modeSelection.title') }}</h1>
           <div class="quiz-mascotte">
             <img src="/assets/images/ui/mascotte-quiz.svg" alt="Mascotte Quiz" />
           </div>
@@ -15,33 +15,33 @@
             <div class="mode-icon">
               <i class="fas fa-robot"></i>
             </div>
-            <h3>Quiz IA Interactif</h3>
-            <p>Questions générées par IA avec reconnaissance vocale et correction intelligente</p>
+            <h3>{{ $t('quizPage.modeSelection.iaMode.title') }}</h3>
+            <p>{{ $t('quizPage.modeSelection.iaMode.description') }}</p>
           </button>
           
           <div class="divider">
-            <span>ou</span>
+            <span>{{ $t('quizPage.modeSelection.or') }}</span>
           </div>
           
           <button class="mode-card classic-mode" @click="startClassicQuiz">
             <div class="mode-icon">
               <i class="fas fa-book"></i>
             </div>
-            <h3>Quiz Classique</h3>
-            <p>Questions prédéfinies avec progression linéaire</p>
+            <h3>{{ $t('quizPage.modeSelection.classicMode.title') }}</h3>
+            <p>{{ $t('quizPage.modeSelection.classicMode.description') }}</p>
           </button>
           
           <!-- Bouton de test temporaire -->
           <div class="divider">
-            <span>Debug</span>
+            <span>{{ $t('quizPage.modeSelection.debug') }}</span>
           </div>
           
           <button class="mode-card test-mode" @click="testApi">
             <div class="mode-icon">
               <i class="fas fa-bug"></i>
             </div>
-            <h3>Test API</h3>
-            <p>Vérifier la configuration de l'API</p>
+            <h3>{{ $t('quizPage.modeSelection.testMode.title') }}</h3>
+            <p>{{ $t('quizPage.modeSelection.testMode.description') }}</p>
           </button>
         </div>
       </div>
@@ -54,7 +54,7 @@
             <div class="typing-indicator">
               <span></span><span></span><span></span>
             </div>
-            <p>L'IA prépare votre question sur<br><strong>{{ currentCourse?.title || 'Météorologie' }}</strong></p>
+            <p>{{ $t('quizPage.iaThinking.preparing') }}<br><strong>{{ currentCourse?.title || $t('quizPage.iaThinking.meteorology') }}</strong></p>
           </div>
           <img src="/assets/images/ui/mascotte-quiz.svg" class="mascotte" alt="Mascotte IA">
           <div class="streaming-text">{{ iaStreamingText }}</div>
@@ -104,28 +104,28 @@
             <!-- Réponse utilisateur -->
             <div v-if="!iaAnswered" class="user-answer-section">
               <div class="answer-input">
-                <textarea
-                  v-model="iaUserAnswer"
-                  placeholder="Écrivez votre réponse ici..."
+              <textarea
+                v-model="iaUserAnswer"
+                :placeholder="$t('quizPage.question.textAnswer')"
                   rows="2"
                   class="text-input"
-                ></textarea>
+              ></textarea>
                 <div class="voice-controls">
-                  <button
-                    @click="startSpeechToText"
-                    class="voice-btn"
-                    :class="{ active: isListening }"
-                  >
-                    <i class="fas fa-microphone"></i>
-                    {{ isListening ? 'En écoute...' : 'Réponse vocale' }}
-                  </button>
-                  <button
+                <button
+                  @click="startSpeechToText"
+                  class="voice-btn"
+                  :class="{ active: isListening }"
+                >
+                  <i class="fas fa-microphone"></i>
+                  {{ isListening ? $t('quizPage.question.listening') : $t('quizPage.question.voiceAnswer') }}
+                </button>
+                <button
                     @click="submitAnswer"
-                    class="submit-btn"
+                  class="submit-btn"
                     :disabled="!canSubmit"
-                  >
-                    Valider
-                  </button>
+                >
+                  {{ $t('quizPage.question.validate') }}
+                </button>
                 </div>
               </div>
             </div>
@@ -136,12 +136,12 @@
                 <div class="emoji">
                   {{ iaCorrect ? '🎯' : '💡' }}
                 </div>
-                <h3>{{ iaCorrect ? 'Exact !' : 'Presque !' }}</h3>
+                <h3>{{ iaCorrect ? $t('quizPage.feedback.correct') : $t('quizPage.feedback.incorrect') }}</h3>
               </div>
               <div class="feedback-content">
                 <p>{{ iaFeedback }}</p>
                 <button @click="nextIaQuestion" class="next-btn">
-                  {{ isLastIaQuestion ? 'Voir résultats' : 'Question suivante' }}
+                  {{ isLastIaQuestion ? $t('quizPage.question.seeResults') : $t('quizPage.question.nextQuestion') }}
                   <i class="fas fa-arrow-right"></i>
                 </button>
               </div>
@@ -151,7 +151,7 @@
             <div v-if="iaAnswered" class="next-section">
               <button @click="nextIaQuestion" class="next-btn-large">
                 <i class="fas fa-arrow-right"></i>
-                {{ isLastIaQuestion ? 'Voir mes résultats' : 'Question suivante' }}
+                {{ isLastIaQuestion ? $t('quizPage.question.seeMyResults') : $t('quizPage.question.nextQuestion') }}
               </button>
             </div>
           </div>
@@ -160,7 +160,7 @@
         <!-- Résultats IA -->
         <div v-else-if="quizFinished" class="ia-results">
           <div class="results-header">
-            <h1>Résultats du Quiz IA</h1>
+            <h1>{{ $t('quizPage.results.title') }}</h1>
             <div class="mascotte-celebration">
               <img src="/assets/images/ui/mascotte-quiz.svg" alt="Mascotte">
               <div class="confetti"></div>
@@ -169,22 +169,22 @@
 
           <div class="score-display" :class="scoreClass">
             <div class="score-value">{{ iaScore }}/5</div>
-            <div class="score-label">Score final</div>
+            <div class="score-label">{{ $t('quizPage.results.finalScore') }}</div>
           </div>
 
           <div class="performance-message">
-            <p v-if="iaScore === 5">Performance exceptionnelle ! 🏆</p>
-            <p v-else-if="iaScore >= 4">Excellent travail ! ✨</p>
-            <p v-else-if="iaScore >= 3">Bon résultat, continuez ainsi ! 👍</p>
-            <p v-else>À perfectionner, vous progresserez ! 💪</p>
+            <p v-if="iaScore === 5">{{ $t('quizPage.results.performance.perfect') }}</p>
+            <p v-else-if="iaScore >= 4">{{ $t('quizPage.results.performance.excellent') }}</p>
+            <p v-else-if="iaScore >= 3">{{ $t('quizPage.results.performance.good') }}</p>
+            <p v-else>{{ $t('quizPage.results.performance.needsImprovement') }}</p>
           </div>
 
           <div class="result-actions">
             <button @click="restartIaQuiz" class="action-btn primary">
-              <i class="fas fa-redo"></i> Recommencer
+              <i class="fas fa-redo"></i> {{ $t('quizPage.results.actions.restart') }}
             </button>
             <button @click="changeQuizMode" class="action-btn secondary">
-              <i class="fas fa-exchange-alt"></i> Changer de mode
+              <i class="fas fa-exchange-alt"></i> {{ $t('quizPage.results.actions.changeMode') }}
             </button>
           </div>
         </div>
@@ -202,9 +202,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
 const courseId = route.params.id
+const authStore = useAuthStore()
+const { t } = useI18n()
 
 // États du quiz
 const quizStarted = ref(false)
@@ -230,7 +234,7 @@ const coursesData = {
   'introduction-meteo': {
     id: 'introduction-meteo',
     title: 'Introduction à la Météorologie',
-    instructor: 'Dr. Jean Dupont',
+    instructor: 'Agence de Météo',
     duration: '20 minutes',
     lessons: [
       {
@@ -261,7 +265,7 @@ const coursesData = {
   'secrets-du-ciel': {
     id: 'secrets-du-ciel',
     title: 'Les Secrets du Ciel',
-    instructor: 'Dr. Marie Dubois',
+    instructor: 'Agence de Météo',
     duration: '30 minutes',
     lessons: [
       {
@@ -292,7 +296,7 @@ const coursesData = {
   'instruments-meteo': {
     id: 'instruments-meteo',
     title: 'Les Instruments Météo',
-    instructor: 'Prof. Pierre Martin',
+    instructor: 'Agence de Météo',
     duration: '45 minutes',
     lessons: [
       {
@@ -316,7 +320,7 @@ const coursesData = {
   'saisons': {
     id: 'saisons',
     title: 'Les Saisons',
-    instructor: 'Dr. Sophie Bernard',
+    instructor: 'Agence de Météo',
     duration: '40 minutes',
     lessons: [
       {
@@ -356,7 +360,7 @@ const coursesData = {
   'phenomenes-meteo': {
     id: 'phenomenes-meteo',
     title: 'Les Phénomènes Météo',
-    instructor: 'Dr. Thomas Leroy',
+    instructor: 'Agence de Météo',
     duration: '50 minutes',
     lessons: [
       {
@@ -422,133 +426,80 @@ function startIaQuiz() {
   fetchIaQuestion()
 }
 
-async function fetchIaQuestion() {
-  iaStreaming.value = true;
-  iaStreamingText.value = '';
-  iaQuestion.value = null;
-  iaUserAnswer.value = '';
-  selectedIaAnswer.value = null;
-  iaAnswered.value = false;
-
-  const prompt = `
-Tu es un expert en météorologie. Génère UNIQUEMENT une question de quiz QCM au format JSON strict.
-
-RÈGLES STRICTES :
-- Réponds UNIQUEMENT avec un objet JSON valide
-- Pas de texte avant ou après le JSON
-- Pas de commentaires ou d'explications
-- Format exact requis :
-
-{
-  "question": "Question claire et précise sur la météorologie",
-  "choices": ["Choix A", "Choix B", "Choix C", "Choix D"],
-  "answerIndex": 0
+function startClassicQuiz() {
+  quizStarted.value = true
+  iaMode.value = false
+  // TODO: Implémenter le quiz classique
+  console.log('Quiz classique non encore implémenté')
 }
 
-COURS ACTUEL :
-Titre : "${currentCourse.value?.title || 'Météorologie générale'}"
-Contenu du cours : "${courseContent.value || 'Concepts généraux de météorologie'}"
+const fetchIaQuestion = async () => {
+  if (!authStore.isAuthenticated) {
+    // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
+    navigateTo('/login')
+    return
+  }
 
-Questions précédentes : ${JSON.stringify(iaHistory.value.map(h => h.question))}
+  // Réinitialiser l'état pour la nouvelle question
+  iaAnswered.value = false
+  selectedIaAnswer.value = null
+  iaUserAnswer.value = ''
+  iaQuestion.value = null
+  
+  iaStreaming.value = true
+  
+  // Construction du prompt pour l'IA
+  const prompt = `
+    Tu es un expert en météorologie spécialisé sur le Bénin. Ton mode de réponse est JSON. Génère UNIQUEMENT un objet JSON valide.
+    
+    RÈGLES STRICTES :
+    - Le JSON doit être parfait et suivre scrupuleusement le format demandé.
+    - N'inclus aucun texte, commentaire, ou explication en dehors de l'objet JSON.
+    - Le format JSON doit être exactement comme suit :
+      {
+        "question": "Une question claire et précise sur la météorologie, spécifiquement liée au contexte du Bénin et au cours suivi.",
+        "choices": ["Choix A", "Choix B", "Choix C", "Choix D"],
+        "answerIndex": 0,
+        "explanation": "Une brève explication (1-2 phrases) sur la bonne réponse."
+      }
 
-Génère une question spécifiquement basée sur le contenu du cours ci-dessus. UNIQUEMENT le JSON :`;
+    CONTEXTE DU QUIZ :
+    - PAYS : Bénin.
+    - COURS ACTUEL : "${currentCourse.value?.title || 'Météorologie générale'}"
+    - CONTENU DU COURS : "${courseContent.value || 'Concepts généraux de météorologie'}"
+    - HISTORIQUE DES QUESTIONS (ne pas les répéter) : ${JSON.stringify(iaHistory.value.map(h => h.question))}
+    
+    INSTRUCTION :
+    Crée une nouvelle question unique et pertinente basée sur le contenu du cours, en l'appliquant au contexte béninois.
+  `
 
   try {
-    const response = await fetch('/api/quiz-ia-stream', {
+    const finalJson = await $fetch('/api/quiz-ia-stream', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    if (!response.body) throw new Error("No response body");
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let done = false;
-    let fullText = '';
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n').filter(line => line.trim().startsWith('data:'));
-
-      for (const line of lines) {
-        const data = line.replace('data: ', '');
-        if (data === '[DONE]') break;
-        
-        try {
-          const json = JSON.parse(data);
-          const content = json.choices?.[0]?.delta?.content;
-          if (content) {
-            fullText += content;
-            iaStreamingText.value = fullText;
-          }
-        } catch (e) { 
-          console.log('Parsing chunk error:', e);
-        }
+      headers: {
+        'Authorization': `Bearer ${authStore.token}`,
+        'x-user-email': authStore.user.email
+      },
+      body: { 
+        messages: [{ role: 'user', content: prompt }]
       }
+    })
+
+    if (finalJson.error) {
+      throw new Error(finalJson.error)
     }
 
-    iaStreaming.value = false;
-    console.log('Full response text:', fullText);
+    iaQuestion.value = finalJson
     
-    // Nettoyage et extraction du JSON
-    let jsonText = fullText.trim();
-    
-    // Supprime les caractères avant le premier {
-    const firstBrace = jsonText.indexOf('{');
-    if (firstBrace > 0) {
-      jsonText = jsonText.substring(firstBrace);
-    }
-    
-    // Supprime les caractères après le dernier }
-    const lastBrace = jsonText.lastIndexOf('}');
-    if (lastBrace > 0 && lastBrace < jsonText.length - 1) {
-      jsonText = jsonText.substring(0, lastBrace + 1);
-    }
-    
-    console.log('Cleaned JSON text:', jsonText);
-    
-    try {
-      const parsedQuestion = JSON.parse(jsonText);
-      // Vérifier que la question a tous les champs requis
-      if (parsedQuestion.question && parsedQuestion.choices && parsedQuestion.choices.length === 4 && typeof parsedQuestion.answerIndex === 'number') {
-        iaQuestion.value = parsedQuestion;
-        console.log('Question générée:', iaQuestion.value);
-      } else {
-        throw new Error("Question incomplète - champs manquants");
-      }
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      console.error('Failed JSON text:', jsonText);
-      
-      // Fallback: utiliser une question prédéfinie
-      iaQuestion.value = {
-        question: "Quel instrument météorologique mesure la pression atmosphérique ?",
-        choices: [
-          "Le thermomètre",
-          "Le baromètre", 
-          "L'hygromètre",
-          "L'anémomètre"
-        ],
-        answerIndex: 1
-      };
-      console.log('Utilisation de la question de fallback');
-    }
-
   } catch (error) {
-    console.error('Error fetching IA question:', error);
-    iaStreaming.value = false;
+    console.error('Error fetching IA question:', error)
     iaQuestion.value = {
-      question: "Désolé, une erreur est survenue lors de la génération de la question. Veuillez réessayer.",
-      choices: ["Option A", "Option B", "Option C", "Option D"],
-      answerIndex: 0
-    };
+      question: t('quizPage.errors.iaQuestionFetchError'),
+      choices: [],
+      error: true
+    }
+  } finally {
+    iaStreaming.value = false
   }
 }
 
@@ -586,15 +537,35 @@ async function submitAnswer() {
   }
   
   // Vérifie si la réponse est correcte
-  iaCorrect.value = selectedIaAnswer.value === iaQuestion.value.answerIndex;
+  let isCorrect = false;
+  if (selectedIaAnswer.value !== null) {
+    // Cas 1: L'utilisateur a cliqué sur une option
+    isCorrect = selectedIaAnswer.value === iaQuestion.value.answerIndex;
+  } else if (iaUserAnswer.value.trim()) {
+    // Cas 2: L'utilisateur a répondu par texte ou voix
+    const userAnswer = iaUserAnswer.value.trim().toLowerCase();
+    const choicesLower = iaQuestion.value.choices.map(c => c.trim().toLowerCase());
+    
+    // Recherche une correspondance exacte, puis une correspondance partielle.
+    let matchedChoiceIndex = choicesLower.findIndex(c => c === userAnswer);
+    if (matchedChoiceIndex === -1) {
+      matchedChoiceIndex = choicesLower.findIndex(c => userAnswer.includes(c));
+    }
+    
+    if (matchedChoiceIndex !== -1) {
+      isCorrect = matchedChoiceIndex === iaQuestion.value.answerIndex;
+    }
+  }
+  iaCorrect.value = isCorrect;
   console.log('Answer correct:', iaCorrect.value);
   console.log('Expected answer:', iaQuestion.value.answerIndex);
   
-  // Feedback simple pour le mode test
+  // Feedback
   if (iaCorrect.value) {
-    iaFeedback.value = "Excellente réponse ! Vous maîtrisez bien ce concept.";
+    iaFeedback.value = t('quizPage.feedback.excellent');
   } else {
-    iaFeedback.value = `Pas tout à fait. La bonne réponse était l'option ${String.fromCharCode(65 + iaQuestion.value.answerIndex)}: ${iaQuestion.value.choices[iaQuestion.value.answerIndex]}.`;
+    // Utilise l'explication fournie par l'IA, avec un fallback
+    iaFeedback.value = iaQuestion.value.explanation || `${t('quizPage.feedback.wrongAnswer')} ${String.fromCharCode(65 + iaQuestion.value.answerIndex)}: ${iaQuestion.value.choices[iaQuestion.value.answerIndex]}.`;
   }
   
   // Met à jour le score
@@ -623,9 +594,53 @@ function nextIaQuestion() {
   if (isLastIaQuestion.value) {
     console.log('Setting quizFinished to true');
     quizFinished.value = true;
+    
+    // Sauvegarder les résultats du quiz
+    saveQuizResults();
   } else {
     console.log('Fetching next question');
     fetchIaQuestion()
+  }
+}
+
+async function saveQuizResults() {
+  try {
+    // Récupérer l'utilisateur connecté depuis le store
+    const authStore = useAuthStore();
+    if (!authStore.isAuthenticated || !authStore.user) {
+      console.log('Utilisateur non connecté, résultats non sauvegardés');
+      return;
+    }
+
+    // Récupérer l'ID du cours depuis l'URL
+    const courseId = route.params.id;
+    
+    // Sauvegarder le résultat
+    const response = await $fetch('/api/quiz/save-result', {
+      method: 'POST',
+      body: {
+        userId: authStore.user.id,
+        courseId: courseId,
+        score: iaScore.value,
+        maxScore: 5
+      }
+    });
+
+    console.log('Résultats sauvegardés:', response);
+
+    // Afficher une notification si un certificat a été obtenu
+    if (response.earnedCertificate && response.certificate) {
+      const percentage = response.certificate.percentage;
+      const message = `🎉 Félicitations ! Vous avez obtenu un certificat avec un score de ${percentage.toFixed(1)}% !`;
+      
+      // Afficher une notification ou une alerte
+      setTimeout(() => {
+        alert(message);
+      }, 1000);
+    }
+
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde des résultats:', error);
   }
 }
 
@@ -645,7 +660,7 @@ function changeQuizMode() {
 
 function startSpeechToText() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('La reconnaissance vocale n\'est pas supportée par votre navigateur.');
+    alert($t('quizPage.errors.speechNotSupported'));
     return;
   }
 
@@ -994,6 +1009,11 @@ onMounted(() => {
 }
 
 /* IA Question Screen */
+.ia-question-screen {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .course-header-quiz {
   text-align: center;
   margin-bottom: 2rem;
@@ -1473,19 +1493,19 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  max-width: 450px;
   width: 100%;
-  padding: 1.5rem 2rem;
+  margin: 0 auto;
+  padding: 1.2rem 1.8rem;
   background: linear-gradient(90deg, #1976d2 60%, #43a047 100%);
   color: #fff;
   border: none;
   border-radius: 16px;
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 24px rgba(25, 118, 210, 0.18);
-  text-shadow: 0 2px 8px rgba(0,0,0,0.12);
 }
 
 .next-btn-large:hover {
@@ -1496,5 +1516,19 @@ onMounted(() => {
 
 .next-btn-large:active {
   transform: translateY(0) scale(0.98);
+}
+
+.question-image-container {
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.question-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
 }
 </style>  

@@ -1,4 +1,12 @@
 export default defineEventHandler(async (event) => {
+  // 1. Vérifier que l'utilisateur est authentifié
+  if (!event.context.user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Authentification requise pour accéder à cette ressource.'
+    })
+  }
+
   try {
     console.log('=== Quiz IA Stream Endpoint Called ===');
     
@@ -30,7 +38,7 @@ export default defineEventHandler(async (event) => {
       body: JSON.stringify({
         "model": "mistralai/mistral-7b-instruct:free",
         "messages": messages,
-        "stream": true
+        "response_format": { "type": "json_object" }
       })
     });
 
@@ -46,16 +54,28 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    console.log('OpenRouter API response successful, returning stream');
+    const data = await response.json();
     
-    // Transfère directement le flux de réponse
-    return new Response(response.body, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    });
+    // Extraire le contenu JSON de la réponse de l'IA
+    let jsonText = data.choices[0].message.content.trim();
+
+    // Nettoyage robuste pour garantir un JSON valide
+    const firstBrace = jsonText.indexOf('{');
+    const lastBrace = jsonText.lastIndexOf('}');
+
+    if (firstBrace === -1 || lastBrace === -1 || lastBrace < firstBrace) {
+      throw new Error("Could not find a valid JSON object in the AI response.");
+    }
+
+    jsonText = jsonText.substring(firstBrace, lastBrace + 1);
+    
+    // Tentative de correction des erreurs JSON courantes (ex: virgules finales)
+    jsonText = jsonText.replace(/,\\s*([}\]])/g, '$1');
+
+    const jsonContent = JSON.parse(jsonText);
+
+    return jsonContent;
+
   } catch (error) {
     console.error('=== Error in quiz-ia-stream endpoint ===');
     console.error('Error type:', error.constructor.name);
