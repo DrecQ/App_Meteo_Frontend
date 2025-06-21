@@ -49,6 +49,32 @@
         </div>
 
         <div class="form-group">
+          <label for="domaineActivite">Domaine d'activité</label>
+          <div class="input-group">
+            <i class="fas fa-briefcase input-icon"></i>
+            <select
+              id="domaineActivite"
+              v-model="form.domaineActivite"
+              required
+              class="select-input"
+            >
+              <option value="">Sélectionnez votre domaine</option>
+              <option value="Agriculture">Agriculture</option>
+              <option value="Aviation">Aviation</option>
+              <option value="Éducation">Éducation</option>
+              <option value="Environnement">Environnement</option>
+              <option value="Météorologie">Météorologie</option>
+              <option value="Maritime">Maritime</option>
+              <option value="Médias">Médias</option>
+              <option value="Recherche">Recherche</option>
+              <option value="Transport">Transport</option>
+              <option value="Tourisme">Tourisme</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="password">Mot de passe</label>
           <div class="input-group">
             <i class="fas fa-lock input-icon"></i>
@@ -144,6 +170,7 @@ const authStore = useAuthStore()
 const form = ref({
   name: '',
   email: '',
+  domaineActivite: '',
   password: '',
   confirmPassword: '',
   acceptTerms: false
@@ -192,6 +219,7 @@ const formValid = computed(() => {
   return (
     form.value.name &&
     form.value.email &&
+    form.value.domaineActivite &&
     form.value.password &&
     form.value.confirmPassword &&
     passwordsMatch.value &&
@@ -205,6 +233,7 @@ const handleSubmit = async () => {
     const success = await authStore.register({
       name: form.value.name,
       email: form.value.email,
+      domaineActivite: form.value.domaineActivite,
       password: form.value.password
     })
     
@@ -357,6 +386,23 @@ const signInWithGoogle = () => {
 }
 
 .input-group input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.select-input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.2rem;
+  border: 1px solid #e0e6ed;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s;
+  background-color: white;
+  cursor: pointer;
+}
+
+.select-input:focus {
   outline: none;
   border-color: #3498db;
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);

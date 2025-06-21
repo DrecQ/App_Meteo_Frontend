@@ -17,9 +17,9 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="auth-form">
-        <!-- <div v-if="authStore.error" class="error-message">
-          {{ authStore.error }}
-        </div> -->
+        <div v-if="errorMessage || authStore.error" class="error-message">
+          {{ errorMessage || authStore.error }}
+        </div>
 
         <div class="form-group">
           <label for="email">Email</label>

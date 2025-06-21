@@ -18,21 +18,23 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        // Authentification simple : email et mot de passe en dur pour la démo
-        if (
-          (credentials.email === 'demo@benin.com' && credentials.password === 'demo1234') ||
-          (credentials.email === 'test@benin.com' && credentials.password === 'test1234')
-        ) {
+        const response = await $fetch('/api/auth/login', {
+          method: 'POST',
+          body: credentials
+        })
+
+        if (response.success) {
+          this.user = response.user
+          // Pour l'instant, on utilise un token fictif
           this.token = 'fake-jwt-token'
-          this.user = { email: credentials.email, name: 'Utilisateur Bénin', role: 'user' }
           localStorage.setItem('auth_token', this.token)
           localStorage.setItem('user_data', JSON.stringify(this.user))
           return { token: this.token, user: this.user }
         } else {
-          throw new Error('Email ou mot de passe incorrect')
+          throw new Error(response.message || 'Erreur de connexion')
         }
       } catch (error) {
-        this.error = error.message
+        this.error = error.message || 'Erreur de connexion'
         throw error
       } finally {
         this.loading = false
@@ -43,14 +45,23 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        // Enregistrement fictif : accepte tout, pas d'appel API
-        this.token = 'fake-jwt-token'
-        this.user = { email: userData.email, name: userData.name, role: 'user' }
-        localStorage.setItem('auth_token', this.token)
-        localStorage.setItem('user_data', JSON.stringify(this.user))
-        return { token: this.token, user: this.user }
+        const response = await $fetch('/api/auth/register', {
+          method: 'POST',
+          body: userData
+        })
+
+        if (response.success) {
+          this.user = response.user
+          // Pour l'instant, on utilise un token fictif
+          this.token = 'fake-jwt-token'
+          localStorage.setItem('auth_token', this.token)
+          localStorage.setItem('user_data', JSON.stringify(this.user))
+          return { token: this.token, user: this.user }
+        } else {
+          throw new Error(response.message || 'Erreur d\'inscription')
+        }
       } catch (error) {
-        this.error = error.message
+        this.error = error.message || 'Erreur d\'inscription'
         throw error
       } finally {
         this.loading = false
