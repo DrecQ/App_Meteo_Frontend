@@ -81,7 +81,8 @@
       buttonColor: '#3498db',
       badgeText: 'Populaire',
       badgeColor: '#3498db',
-      isHovered: false
+      isHovered: false,
+      link: '/courses'
     },
     {
       id: 2,
@@ -92,7 +93,8 @@
       buttonColor: '#2ecc71',
       badgeText: 'En Direct',
       badgeColor: '#2ecc71',
-      isHovered: false
+      isHovered: false,
+      link: '/courses'
     },
     {
       id: 3,
@@ -103,7 +105,8 @@
       buttonColor: '#e74c3c',
       badgeText: 'Nouveau',
       badgeColor: '#e74c3c',
-      isHovered: false
+      isHovered: false,
+      link: '/courses'
     },
     {
       id: 4,
@@ -114,7 +117,8 @@
       buttonColor: '#9b59b6',
       badgeText: 'Essentiel',
       badgeColor: '#9b59b6',
-      isHovered: false
+      isHovered: false,
+      link: '/courses'
     }
   ]);
 

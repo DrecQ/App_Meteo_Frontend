@@ -1,5 +1,5 @@
 <template>
-  <div class="teachers-admin-container">
+  <div>
     <div class="admin-header">
       <div class="header-title">
         <h1>Gestion des enseignants</h1>
@@ -364,12 +364,6 @@ watch([specialityFilter, statusFilter, sortBy], () => {
 </script>
 
 <style scoped>
-.teachers-admin-container {
-  padding: 2rem;
-  background-color: #f8fafc;
-  min-height: 100vh;
-}
-
 .admin-header {
   display: flex;
   justify-content: space-between;

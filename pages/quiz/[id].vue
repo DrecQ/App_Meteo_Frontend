@@ -192,8 +192,89 @@
 
       <!-- Mode Quiz Classique -->
       <div v-else class="classic-quiz-flow">
-        <!-- Contenu du quiz classique... -->
-        <!-- (Conserver votre implémentation existante) -->
+        <div v-if="loadingClassicQuiz" class="loading-classic">
+          <p>Chargement du quiz...</p>
+        </div>
+        <div v-else-if="!classicQuizExists" class="no-quiz-found">
+          <p>Désolé, il n'y a pas de quiz classique pour ce cours pour le moment.</p>
+           <button @click="changeQuizMode" class="action-btn secondary">
+              <i class="fas fa-arrow-left"></i> Retour
+            </button>
+        </div>
+        <div v-else-if="!classicQuizFinished" class="classic-question-screen">
+            <div class="course-header-quiz">
+              <h2 class="course-title-quiz">{{ classicQuiz.title }}</h2>
+            </div>
+            <div class="quiz-progress">
+              <div class="progress-track">
+                <div class="progress-fill" :style="{ width: `${classicProgressPercent}%` }"></div>
+              </div>
+              <div class="question-counter">
+                <span class="current">{{ currentClassicQuestionIndex + 1 }}</span>
+                <span class="separator">/</span>
+                <span class="total">{{ classicQuiz.questions.length }}</span>
+              </div>
+            </div>
+            <div v-if="currentClassicQuestion" class="question-card classic-card">
+              <h2 class="question-text">{{ currentClassicQuestion.text }}</h2>
+              <div class="qcm-options">
+                <button
+                  v-for="(option, index) in currentClassicQuestion.options"
+                  :key="index"
+                  @click="selectClassicAnswer(index)"
+                  class="option-btn"
+                  :class="{ 
+                    'selected': classicUserAnswers[currentClassicQuestionIndex] === index,
+                    'answered': classicUserAnswers[currentClassicQuestionIndex] !== undefined
+                  }"
+                  :disabled="classicUserAnswers[currentClassicQuestionIndex] !== undefined"
+                >
+                  <span class="option-letter">{{ String.fromCharCode(65 + index) }}</span>
+                  <span class="option-text">{{ option.text }}</span>
+                </button>
+              </div>
+              <div v-if="classicUserAnswers[currentClassicQuestionIndex] !== undefined" class="next-section">
+                <button @click="nextClassicQuestion" class="next-btn-large" >
+                  {{ isLastClassicQuestion ? 'Voir les résultats' : 'Question Suivante' }}
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+        </div>
+        <div v-else class="classic-results">
+            <div class="results-header">
+              <h1>Résultats du Quiz</h1>
+            </div>
+            <div class="score-display" :class="classicScoreClass">
+              <div class="score-value">{{ classicScore }}/{{ classicQuiz.questions.length }}</div>
+              <div class="score-label">Score Final</div>
+            </div>
+
+            <div class="detailed-correction">
+              <h3>Correction détaillée</h3>
+              <div v-for="result in classicResultsDetails" :key="result.questionId" class="correction-item" :class="{ 'correct': result.isCorrect, 'incorrect': !result.isCorrect }">
+                <p class="question-text">{{ result.questionText }}</p>
+                <div class="user-answer">
+                  <strong>Votre réponse :</strong> 
+                  <span v-if="result.userAnswerIndex !== null">{{ String.fromCharCode(65 + result.userAnswerIndex) }}. {{ result.options[result.userAnswerIndex] }}</span>
+                  <span v-else><i>Pas de réponse</i></span>
+                </div>
+                <div v-if="!result.isCorrect" class="correct-answer">
+                  <strong>Réponse correcte :</strong> {{ String.fromCharCode(65 + result.correctAnswerIndex) }}. {{ result.options[result.correctAnswerIndex] }}
+                </div>
+                <p class="explanation">{{ result.explanation }}</p>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button @click="restartClassicQuiz" class="action-btn primary">
+                <i class="fas fa-redo"></i> Recommencer
+              </button>
+              <button @click="changeQuizMode" class="action-btn secondary">
+                <i class="fas fa-exchange-alt"></i> Changer de mode
+              </button>
+            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -228,6 +309,16 @@ const isListening = ref(false)
 const isReading = ref(false)
 const enableAudio = ref(true)
 const quizTopic = ref('Météorologie de base')
+
+// États pour le quiz classique
+const loadingClassicQuiz = ref(false)
+const classicQuiz = ref(null)
+const classicQuizExists = ref(true)
+const currentClassicQuestionIndex = ref(0)
+const classicUserAnswers = ref([])
+const classicScore = ref(0)
+const classicQuizFinished = ref(false)
+const classicResultsDetails = ref(null)
 
 // Données des cours (copiées depuis pages/course/[id].vue)
 const coursesData = {
@@ -407,8 +498,13 @@ const courseContent = computed(() => {
 })
 
 // Calculs
-const progressPercent = computed(() => (iaHistory.value.length / 5) * 100)
-const isLastIaQuestion = computed(() => iaHistory.value.length >= 5)
+const progressPercent = computed(() => {
+  if (quizFinished.value) return 100
+  return (iaHistory.value.length / 5) * 100
+})
+const isLastIaQuestion = computed(() => {
+  return iaHistory.value.length === 4 // 5 questions au total (0 à 4)
+})
 const canSubmit = computed(() => selectedIaAnswer.value !== null || iaUserAnswer.value.trim() !== '')
 const scoreClass = computed(() => {
   if (iaScore.value === 5) return 'perfect'
@@ -416,6 +512,33 @@ const scoreClass = computed(() => {
   if (iaScore.value >= 3) return 'good'
   return 'average'
 })
+
+const currentClassicQuestion = computed(() => {
+  if (classicQuiz.value && classicQuiz.value.questions) {
+    return classicQuiz.value.questions[currentClassicQuestionIndex.value]
+  }
+  return null
+})
+
+const classicProgressPercent = computed(() => {
+  if (!classicQuiz.value || !classicQuiz.value.questions.length) return 0;
+  return ((currentClassicQuestionIndex.value + 1) / classicQuiz.value.questions.length) * 100;
+});
+
+const isLastClassicQuestion = computed(() => {
+  if (!classicQuiz.value || !classicQuiz.value.questions) return false
+  return currentClassicQuestionIndex.value === classicQuiz.value.questions.length - 1
+})
+
+const classicScoreClass = computed(() => {
+  const score = classicScore.value;
+  const total = classicQuiz.value?.questions.length;
+  if (total === 0) return 'average';
+  const percentage = (score / total) * 100;
+  if (percentage >= 80) return 'good'; // Similaire à 'excellent'
+  if (percentage >= 50) return 'average';
+  return 'average'; // Pour les scores faibles
+});
 
 // Méthodes
 function startIaQuiz() {
@@ -426,11 +549,26 @@ function startIaQuiz() {
   fetchIaQuestion()
 }
 
-function startClassicQuiz() {
+async function startClassicQuiz() {
   quizStarted.value = true
   iaMode.value = false
-  // TODO: Implémenter le quiz classique
-  console.log('Quiz classique non encore implémenté')
+  loadingClassicQuiz.value = true
+  
+  try {
+    const quizData = await $fetch(`/api/courses/${courseId}/quiz`)
+    if (quizData.classicQuizExists) {
+      classicQuiz.value = quizData
+      classicUserAnswers.value = new Array(quizData.questions.length).fill(undefined)
+      classicQuizExists.value = true
+    } else {
+      classicQuizExists.value = false
+    }
+  } catch (error) {
+    console.error("Erreur lors du chargement du quiz classique:", error)
+    classicQuizExists.value = false // Afficher un message d'erreur
+  } finally {
+    loadingClassicQuiz.value = false
+  }
 }
 
 const fetchIaQuestion = async () => {
@@ -750,6 +888,56 @@ async function testApi() {
     console.error('Test API error:', error);
     alert(`❌ Erreur de test: ${error.message}\n\nVérifiez que le serveur fonctionne.`);
   }
+}
+
+function selectClassicAnswer(index) {
+  if (classicUserAnswers.value[currentClassicQuestionIndex.value] === undefined) {
+    // Utilisation de splice pour garantir la réactivité de Vue
+    classicUserAnswers.value.splice(currentClassicQuestionIndex.value, 1, index);
+  }
+}
+
+async function nextClassicQuestion() {
+  if (isLastClassicQuestion.value) {
+    await submitClassicQuiz();
+    classicQuizFinished.value = true
+  } else {
+    currentClassicQuestionIndex.value++
+  }
+}
+
+async function submitClassicQuiz() {
+  try {
+    const answersPayload = classicQuiz.value.questions.map((q, index) => ({
+      questionId: q.id,
+      answerIndex: classicUserAnswers.value[index],
+    }));
+
+    const resultData = await $fetch('/api/quiz/submit-classic', {
+      method: 'POST',
+      body: {
+        quizId: classicQuiz.value.id,
+        answers: answersPayload,
+      }
+    });
+
+    classicScore.value = resultData.score;
+    classicResultsDetails.value = resultData.results;
+
+  } catch (error) {
+    console.error("Erreur lors de la soumission du quiz:", error);
+    // Gérer l'erreur, par exemple afficher un message à l'utilisateur
+  }
+}
+
+function restartClassicQuiz() {
+  classicQuizFinished.value = false
+  currentClassicQuestionIndex.value = 0
+  if(classicQuiz.value) {
+    classicUserAnswers.value = new Array(classicQuiz.value.questions.length).fill(undefined)
+  }
+  classicScore.value = 0
+  classicResultsDetails.value = null
 }
 
 // Initialisation
@@ -1530,5 +1718,125 @@ onMounted(() => {
   max-height: 300px;
   object-fit: cover;
   display: block;
+}
+
+.classic-results .results-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.classic-results .score-display {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 2rem auto;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(145deg, #4caf50, #81c784);
+}
+
+.classic-results .score-display.average {
+  background: linear-gradient(145deg, #fb8c00, #ffb74d);
+}
+.classic-results .score-display.good {
+  background: linear-gradient(145deg, #2196f3, #64b5f6);
+}
+
+.classic-results .score-value {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.classic-results .score-label {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.detailed-correction {
+  margin-top: 3rem;
+}
+
+.detailed-correction h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.correction-item {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-left: 5px solid;
+  transition: all 0.3s ease;
+}
+
+.correction-item.correct {
+  border-color: var(--success);
+}
+
+.correction-item.incorrect {
+  border-color: var(--error);
+}
+
+.correction-item .question-text {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.correction-item .user-answer,
+.correction-item .correct-answer {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.correction-item .user-answer::before,
+.correction-item .correct-answer::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  font-size: 1.2rem;
+}
+
+.correction-item.correct .user-answer::before {
+  content: '\f058'; /* fa-check-circle */
+  color: var(--success);
+}
+
+.correction-item.incorrect .user-answer::before {
+  content: '\f057'; /* fa-times-circle */
+  color: var(--error);
+}
+
+.correction-item .correct-answer::before {
+    content: '\f058'; /* fa-check-circle */
+    color: var(--success);
+}
+
+.explanation {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  border: 1px solid #e2e8f0;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
 }
 </style>  

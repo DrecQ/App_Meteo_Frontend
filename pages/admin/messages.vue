@@ -1,5 +1,5 @@
 <template>
-  <div class="messages-page">
+  <div>
     <div class="page-header">
       <h1>Gestion des messages</h1>
     </div>

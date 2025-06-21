@@ -42,6 +42,7 @@
     "@iconify-json/fa6-solid": "^1.2.3",
     "@nuxtjs/tailwindcss": "^7.0.0-beta.0",
     "@primevue/nuxt-module": "^4.3.5",
+    "@sidebase/nuxt-auth": "^0.10.1",
     "@tailwindcss/postcss": "^4.1.8",
     "@unocss/preset-icons": "^66.1.3"
   }

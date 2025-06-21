@@ -3,6 +3,17 @@
     <div class="course-header">
       <h1 class="course-title">{{ course.title }}</h1>
       <p class="course-description">{{ course.description }}</p>
+      <div v-if="course.videoUrl" class="video-container">
+        <iframe 
+          width="560" 
+          height="315" 
+          :src="course.videoUrl" 
+          title="YouTube video player" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen>
+        </iframe>
+      </div>
       <div class="course-meta">
         <span class="duration">⏱️ {{ course.duration }}</span>
         <span class="level">📊 {{ course.level }}</span>
@@ -84,6 +95,7 @@ const coursesData = {
     description: "Un voyage interactif pour comprendre les phénomènes météorologiques quotidiens",
     duration: "30 minutes",
     level: "Niveau débutant",
+    videoUrl: "https://www.youtube.com/embed/5YpcgS3pv0I",
     sections: [
       {
         title: "Le Mystère du Ciel Bleu",
@@ -232,6 +244,25 @@ const course = computed(() => {
   font-size: 1.2rem;
   color: #666;
   margin-bottom: 1.5rem;
+}
+
+.video-container {
+  margin: 2rem 0;
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: #000;
+  border-radius: 8px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .course-meta {

@@ -31,8 +31,8 @@
   "home": {
     "heroTitle": "Bienvenue sur METEO-BENIN",
     "heroSubtitle": "La plateforme météo et éducation pour tous",
-    "ctaCourses": "Explorer les cours",
-    "ctaRegister": "Commencer maintenant",
+    "exploreCourses": "Explorer les cours",
+    "startNow": "Commencer maintenant",
     "whyTitle": "Pourquoi choisir notre plateforme ?",
     "whySubtitle": "Découvrez les avantages qui font la différence",
     "why": {

@@ -1,307 +1,159 @@
 <template>
-  <div v-if="modelValue" class="modal-overlay" @click="closeModal">
-    <div class="modal-content" @click.stop>
+  <div class="modal-overlay" @click.self="$emit('close')">
+    <div class="modal-content">
       <div class="modal-header">
-        <h2>{{ isEditing ? 'Modifier le cours' : 'Ajouter un cours' }}</h2>
-        <button class="close-button" @click="closeModal">
-          <i class="fas fa-times"></i>
-        </button>
+        <h2 class="text-2xl font-bold">{{ isEditing ? 'Modifier le cours' : 'Ajouter un nouveau cours' }}</h2>
+        <button @click="$emit('close')" class="close-btn">&times;</button>
       </div>
-
-      <form @submit.prevent="handleSubmit" class="modal-form">
-        <div class="form-group">
-          <label for="title">Titre du cours</label>
-          <input
-            id="title"
-            v-model="formData.title"
-            type="text"
-            required
-            placeholder="Entrez le titre du cours"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea
-            id="description"
-            v-model="formData.description"
-            rows="4"
-            required
-            placeholder="Entrez la description du cours"
-          ></textarea>
-        </div>
-
-        <div class="form-row">
+      <div class="modal-body">
+        <form @submit.prevent="submitForm">
           <div class="form-group">
-            <label for="category">Catégorie</label>
-            <select id="category" v-model="formData.category" required>
-              <option value="">Sélectionnez une catégorie</option>
-              <option v-for="cat in categories" :key="cat" :value="cat">
-                {{ cat }}
+            <label for="title">Titre du cours</label>
+            <input id="title" v-model="form.title" type="text" placeholder="Ex: Introduction à la météo" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="slug">Slug (URL)</label>
+            <input id="slug" v-model="form.slug" type="text" placeholder="Ex: introduction-meteo" required>
+            <p class="form-hint">Sera généré depuis le titre si laissé vide.</p>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" v-model="form.description" rows="4" placeholder="Décrivez brièvement le cours..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="teacher">Enseignant</label>
+            <select id="teacher" v-model="form.teacherId" required>
+              <option :value="null" disabled>Sélectionnez un enseignant</option>
+              <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
+                {{ teacher.name }}
               </option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="level">Niveau</label>
-            <select id="level" v-model="formData.level" required>
-              <option value="">Sélectionnez un niveau</option>
-              <option v-for="lvl in levels" :key="lvl" :value="lvl">
-                {{ lvl }}
-              </option>
-            </select>
+            <label for="imageUrl">URL de l'image de couverture</label>
+            <input id="imageUrl" v-model="form.imageUrl" type="text" placeholder="https://exemple.com/image.jpg">
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="duration">Durée (en heures)</label>
-          <input
-            id="duration"
-            v-model.number="formData.duration"
-            type="number"
-            min="1"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="image">Image du cours</label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            @change="handleImageUpload"
-          />
-          <div v-if="formData.imagePreview" class="image-preview">
-            <img :src="formData.imagePreview" alt="Aperçu" />
+          <div class="form-group-inline">
+            <input type="checkbox" id="published" v-model="form.published" class="mr-2">
+            <label for="published">Publier le cours</label>
           </div>
-        </div>
 
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" @click="closeModal">
-            Annuler
-          </button>
-          <button type="submit" class="btn-submit">
-            {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
-          </button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" @click="$emit('close')">Annuler</button>
+            <button type="submit" class="btn-primary" :disabled="isSaving">
+              {{ isSaving ? 'Enregistrement...' : (isEditing ? 'Mettre à jour' : 'Créer le cours') }}
+            </button>
+          </div>
+          
+          <p v-if="error" class="error-message">{{ error }}</p>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 
 const props = defineProps({
-  modelValue: Boolean,
   course: {
     type: Object,
-    default: () => ({})
-  },
-  isEditing: {
-    type: Boolean,
-    default: false
+    default: null
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'submit']);
+const emit = defineEmits(['close', 'saved']);
 
-const categories = [
-  'Météorologie',
-  'Climatologie',
-  'Instruments météorologiques',
-  'Prévisions météo',
-  'Phénomènes météorologiques'
-];
+const isEditing = computed(() => !!props.course);
+const isSaving = ref(false);
+const error = ref(null);
 
-const levels = ['Débutant', 'Intermédiaire', 'Avancé'];
-
-const formData = ref({
+const form = ref({
   title: '',
+  slug: '',
   description: '',
-  category: '',
-  level: '',
-  duration: 1,
-  image: null,
-  imagePreview: null
+  teacherId: null,
+  imageUrl: '',
+  published: false,
 });
 
-watch(() => props.course, (newCourse) => {
-  if (newCourse && Object.keys(newCourse).length > 0) {
-    formData.value = {
-      ...newCourse,
-      imagePreview: newCourse.image
-    };
+const teachers = ref([]);
+
+// Charger les enseignants (utilisateurs avec rôle 'expert' ou 'admin')
+onMounted(async () => {
+  try {
+    // Note: l'API /api/admin/teachers/list n'existe pas encore. On la créera.
+    // Pour l'instant, on simule ou on utilise l'api users/list et on filtre.
+    const allUsers = await $fetch('/api/admin/users/list');
+    teachers.value = allUsers.filter(u => u.role === 'expert' || u.role === 'admin');
+    
+    if (props.course) {
+      form.value = { ...props.course };
+    } else {
+        // Valeurs par défaut pour un nouveau cours
+        form.value.teacherId = teachers.value.length > 0 ? teachers.value[0].id : null;
+    }
+  } catch (err) {
+    console.error("Erreur lors du chargement des enseignants", err);
+    error.value = "Impossible de charger la liste des enseignants.";
   }
-}, { immediate: true });
+});
 
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    formData.value.image = file;
-    formData.value.imagePreview = URL.createObjectURL(file);
+// Générer le slug à partir du titre
+watch(() => form.value.title, (newTitle) => {
+  if (!isEditing.value) { // Seulement pour les nouveaux cours
+    form.value.slug = newTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
-};
+});
 
-const handleSubmit = () => {
-  emit('submit', { ...formData.value });
-};
+const submitForm = async () => {
+  isSaving.value = true;
+  error.value = null;
 
-const closeModal = () => {
-  emit('update:modelValue', false);
-  formData.value = {
-    title: '',
-    description: '',
-    category: '',
-    level: '',
-    duration: 1,
-    image: null,
-    imagePreview: null
-  };
+  try {
+    const method = isEditing.value ? 'PUT' : 'POST';
+    const endpoint = isEditing.value ? `/api/admin/courses/${props.course.id}` : '/api/admin/courses/create';
+    
+    await $fetch(endpoint, {
+      method,
+      body: form.value
+    });
+
+    emit('saved');
+  } catch (err) {
+    console.error("Erreur lors de la sauvegarde du cours", err);
+    error.value = err.data?.message || 'Une erreur est survenue.';
+  } finally {
+    isSaving.value = false;
+  }
 };
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
-  color: #2d3748;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: #718096;
-  cursor: pointer;
-  font-size: 1.25rem;
-}
-
-.modal-form {
-  padding: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #4a5568;
-  font-weight: 500;
-}
-
-input[type="text"],
-input[type="number"],
-textarea,
-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #2d3748;
-}
-
-input[type="file"] {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px dashed #e2e8f0;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.image-preview {
-  margin-top: 1rem;
-  max-width: 200px;
-}
-
-.image-preview img {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.btn-cancel,
-.btn-submit {
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-cancel {
-  background: #e2e8f0;
-  color: #4a5568;
-  border: none;
-}
-
-.btn-submit {
-  background: #4299e1;
-  color: white;
-  border: none;
-}
-
-.btn-cancel:hover {
-  background: #cbd5e0;
-}
-
-.btn-submit:hover {
-  background: #3182ce;
-}
-
-@media (max-width: 640px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .modal-content {
-    width: 95%;
-  }
-}
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-content { background: white; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-height: 90vh; }
+.modal-header { padding: 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+.close-btn { background: none; border: none; font-size: 2rem; cursor: pointer; color: #9ca3af; }
+.modal-body { padding: 1.5rem; overflow-y: auto; }
+.form-group { margin-bottom: 1.25rem; }
+.form-group-inline { display: flex; align-items: center; margin-bottom: 1.25rem; }
+label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151; }
+input[type="text"], input[type="email"], textarea, select { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; transition: border-color 0.2s; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); }
+.form-hint { font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem; }
+.modal-footer { padding: 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 0.75rem; }
+.btn-secondary { background-color: #e5e7eb; color: #374151; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; transition: background-color 0.2s; border: none; }
+.btn-secondary:hover { background-color: #d1d5db; }
+.btn-primary { background-color: #3b82f6; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; transition: background-color 0.2s; border: none; }
+.btn-primary:hover { background-color: #2563eb; }
+.btn-primary:disabled { background-color: #93c5fd; cursor: not-allowed; }
+.error-message { color: #ef4444; margin-top: 1rem; text-align: center; }
 </style> 

@@ -126,17 +126,6 @@
                 {{ isUserLoggedIn && course.progress > 0 ? $t('coursesPage.continue') : $t('coursesPage.start') }}
               </NuxtLink>
             </div>
-
-            <!-- Bouton de debug temporaire (à supprimer en production) -->
-            <div class="debug-section" style="margin-top: 0.5rem; text-align: center;">
-              <button 
-                @click.stop="showAvailableVoices" 
-                class="debug-btn"
-                style="font-size: 0.7rem; padding: 0.3rem 0.6rem; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;"
-              >
-                Debug Voix
-              </button>
-            </div>
           </div>
         </div>
       </div>

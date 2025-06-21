@@ -127,11 +127,18 @@ const handleSubmit = async () => {
   errorMessage.value = null
   
   try {
-    await authStore.login({
+    const { user } = await authStore.login({
       email: form.value.email,
       password: form.value.password
     })
-    router.push('/user')
+
+    // Rediriger en fonction du rôle
+    if (user?.role === 'ADMIN') {
+      router.push('/admin')
+    } else {
+      router.push('/user')
+    }
+    
   } catch (error) {
     console.error('Erreur de connexion:', error)
     

@@ -24,10 +24,11 @@ model User {
   phone             String?  // Numéro de téléphone optionnel
   address           String?  // Adresse optionnelle
   avatar            String?  // URL de la photo de profil
-  role              String?  @default("user") // user, admin, expert
+  role              Role     @default(USER) // Utilisation de l'enum Role
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   courses           UserCourse[]
+  taughtCourses     Course[] @relation("TeacherCourses") // Cours enseignés par cet utilisateur
   quizzes           QuizResult[]
   certificates      Certificate[]
   questions         CommunityQuestion[]
@@ -43,6 +44,8 @@ model Course {
   title       String
   description String?
   instructor  String?
+  teacherId   String? // ID de l'enseignant (User)
+  teacher     User?    @relation("TeacherCourses", fields: [teacherId], references: [id])
   duration    String?
   level       String?       @default("beginner") // beginner, intermediate, advanced
   category    String?       // meteo, climat, agriculture, etc.
@@ -58,6 +61,7 @@ model Course {
   certificates Certificate[]
   favorites   UserFavorite[]
   feedbacks   CourseFeedback[]
+  quiz        Quiz?
 }
 
 model Lesson {
@@ -67,6 +71,7 @@ model Lesson {
   duration  String?
   courseId  String
   course    Course   @relation(fields: [courseId], references: [id])
+  questions Question[]
 }
 
 model UserCourse {
@@ -78,7 +83,9 @@ model UserCourse {
   startedAt DateTime @default(now())
   completedAt DateTime?
   user      User     @relation(fields: [userId], references: [id])
-  course    Course   @relation(fields: [courseId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
 }
 
 model QuizResult {
@@ -109,6 +116,8 @@ model Certificate {
   updatedAt      DateTime  @updatedAt
   user           User      @relation(fields: [userId], references: [id])
   course         Course    @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
 }
 
 // Chat communautaire
@@ -124,6 +133,8 @@ model CommunityQuestion {
   user      User     @relation(fields: [userId], references: [id])
   answers   CommunityAnswer[]
   likes     CommunityLike[]
+
+  @@index([userId])
 }
 
 model CommunityAnswer {
@@ -136,6 +147,9 @@ model CommunityAnswer {
   question   CommunityQuestion @relation(fields: [questionId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
   likes      CommunityLike[]
+
+  @@index([questionId])
+  @@index([userId])
 }
 
 model CommunityLike {
@@ -147,6 +161,9 @@ model CommunityLike {
   user       User     @relation(fields: [userId], references: [id])
   question   CommunityQuestion? @relation(fields: [questionId], references: [id])
   answer     CommunityAnswer? @relation(fields: [answerId], references: [id])
+
+  @@unique([userId, questionId])
+  @@unique([userId, answerId])
 }
 
 // Favoris et feedback
@@ -157,6 +174,8 @@ model UserFavorite {
   createdAt DateTime @default(now())
   user     User     @relation(fields: [userId], references: [id])
   course   Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
 }
 
 model CourseFeedback {
@@ -168,4 +187,33 @@ model CourseFeedback {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   course    Course   @relation(fields: [courseId], references: [id])
+
+  @@index([userId, courseId])
+}
+
+model Quiz {
+  id          String     @id @default(cuid())
+  title       String
+  courseId    String     @unique // Chaque cours a un seul quiz classique
+  course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  text      String
+  quizId    String?
+  lessonId  String?  // Une question peut être liée à une leçon spécifique
+  quiz      Quiz?    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  lesson    Lesson?  @relation(fields: [lessonId], references: [id])
+  options   Json     // ex: [{ "text": "Option 1", "isCorrect": false }, { "text": "Option 2", "isCorrect": true }]
+  explanation String?
+}
+
+enum Role {
+  USER
+  EXPERT
+  ADMIN
 }
