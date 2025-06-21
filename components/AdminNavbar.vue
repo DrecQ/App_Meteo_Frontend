@@ -18,7 +18,7 @@
 
       <NuxtLink to="/admin/teachers" class="nav-item" active-class="active">
         <i class="fas fa-chalkboard-teacher"></i>
-        <span>Enseignants</span>
+        <span>Bulletin</span>
       </NuxtLink>
 
       <NuxtLink to="/admin/users" class="nav-item" active-class="active">

@@ -13,7 +13,7 @@
     <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
       <div class="sidebar-header">
         <i class="fas fa-user-circle sidebar-logo"></i>
-        <span class="sidebar-title">Espace Membre</span>
+        <span class="sidebar-title">Michel Ange</span>
       </div>
       <nav class="sidebar-nav">
         <button @click="handleHomeClick" class="sidebar-link home-link">
@@ -28,6 +28,9 @@
         </NuxtLink>
         <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-certificate"></i> Certificats
+        </NuxtLink>
+        <NuxtLink to="/user/community-chat" class="sidebar-link" active-class="active" @click="closeSidebar">
+          <i class="fas fa-comments"></i> Chat communautaire
         </NuxtLink>
         <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-user"></i> Profil
@@ -52,7 +55,7 @@
               <i class="fas fa-book"></i>
             </div>
             <div class="stat-info">
-              <h3>0</h3>
+              <h3>{{ stats.courses }}</h3>
               <p>Cours suivis</p>
             </div>
           </div>
@@ -61,7 +64,7 @@
               <i class="fas fa-certificate"></i>
             </div>
             <div class="stat-info">
-              <h3>0</h3>
+              <h3>{{ stats.certificates }}</h3>
               <p>Certificats</p>
             </div>
           </div>
@@ -70,7 +73,7 @@
               <i class="fas fa-clock"></i>
             </div>
             <div class="stat-info">
-              <h3>0h</h3>
+              <h3>{{ stats.learningTime }}</h3>
               <p>Temps d'apprentissage</p>
             </div>
           </div>
@@ -80,12 +83,18 @@
         <div class="recent-courses">
           <h2>Cours récents</h2>
           <div class="courses-grid">
-            <div class="empty-state">
-              <i class="fas fa-book-open"></i>
-              <p>Vous n'avez pas encore commencé de cours</p>
-              <NuxtLink to="/courses" class="btn-primary">
-                Découvrir les cours
-              </NuxtLink>
+            <div v-for="course in recentCourses" :key="course.title" class="course-card">
+              <div class="course-card-header">
+                <h4 class="course-title">{{ course.title }}</h4>
+                <span class="course-date">{{ course.date }}</span>
+              </div>
+              <div class="course-progress-bar">
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" :style="{ width: course.progress + '%' }"></div>
+                </div>
+                <span class="progress-label">{{ course.progress }}% complété</span>
+              </div>
+              <button class="btn-primary" style="margin-top: 1rem;" @click="router.push(`/user/course/${course.id}`)">Accéder au cours</button>
             </div>
           </div>
         </div>
@@ -107,6 +116,19 @@ definePageMeta({
 const authStore = useAuthStore()
 const router = useRouter()
 const isSidebarOpen = ref(false)
+
+// Valeurs statiques pour la simulation
+const stats = ref({
+  courses: 5,
+  certificates: 2,
+  learningTime: '12h',
+})
+
+const recentCourses = ref([
+  { title: 'Introduction à la météorologie', date: '10/06/2024', progress: 100 },
+  { title: 'Prévisions saisonnières', date: '05/06/2024', progress: 60 },
+  { title: 'Climat du Bénin', date: '01/06/2024', progress: 80 },
+])
 
 // Vérifier si l'utilisateur est connecté
 if (!authStore.isAuthenticated) {
@@ -478,5 +500,77 @@ onUnmounted(() => {
     height: 40px;
     font-size: 1.2rem;
   }
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.course-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+.course-card:hover {
+  box-shadow: 0 6px 18px rgba(44, 62, 80, 0.13);
+}
+.course-card-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+.course-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+.course-date {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+}
+.course-progress-bar {
+  width: 100%;
+  margin: 0.5rem 0 0.2rem 0;
+}
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: #e0e6ed;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3498db, #10b981);
+  border-radius: 4px;
+  transition: width 0.4s;
+}
+.progress-label {
+  font-size: 0.92rem;
+  color: #2563eb;
+  margin-top: 0.2rem;
+  display: inline-block;
+}
+.btn-primary {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary:hover {
+  background: #2563eb;
 }
 </style>

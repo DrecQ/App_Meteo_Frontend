@@ -250,25 +250,32 @@ onUnmounted(() => {
 
 // État initial
 const user = ref({
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  address: '',
-  avatar: null,
-  createdAt: new Date(),
-  lastLogin: new Date(),
-  certificates: [],
-  courses: []
+  firstName: 'Michel',
+  lastName: 'Ange',
+  email: 'michel.ange@email.com',
+  phone: '+229 90 00 00 00',
+  address: 'Cotonou, Bénin',
+  avatar: 'https://api.dicebear.com/6.x/adventurer/svg?seed=michelange',
+  createdAt: new Date('2022-01-15'),
+  lastLogin: new Date('2024-06-10T08:30:00'),
+  certificates: [
+    { id: 1, title: 'Certificat en Météorologie de Base' },
+    { id: 2, title: 'Expert en Prévisions Météorologiques' }
+  ],
+  courses: [
+    { id: 1, title: 'Introduction à la météorologie' },
+    { id: 2, title: 'Prévisions saisonnières' },
+    { id: 3, title: 'Climat du Bénin' }
+  ]
 })
 
 // Formulaire principal
 const formData = reactive({
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  address: ''
+  firstName: 'Michel',
+  lastName: 'Ange',
+  email: 'michel.ange@email.com',
+  phone: '+229 90 00 00 00',
+  address: 'Cotonou, Bénin'
 })
 
 // Formulaire de mot de passe

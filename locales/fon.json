@@ -1,0 +1,272 @@
+{
+  "nav": {
+    "home": "Aklɔ",
+    "weather": "Zã",
+    "education": "Sɔ̀nù",
+    "about": "Gbɛ",
+    "login": "Wɛ gbɔ",
+    "register": "Kpɔxɔ",
+    "contact": "Kpɔntákt"
+  },
+  "courses": {
+    "title": "Sɔ̀nù",
+    "search": "Wɛ sɔ̀nù, xwɛ, kpɔxɔ...",
+    "category": "Kpɛ",
+    "level": "Dɔ",
+    "duration": "Gblɔ",
+    "all": "Gbogbo",
+    "beginner": "Dɔ xɔxɔ",
+    "intermediate": "Dɔ ɖeɖe",
+    "advanced": "Dɔ tɔgbɛ",
+    "short": "Gblɔ kɛ 2h",
+    "medium": "2-5h",
+    "long": "Gblɔ tɔ 5h",
+    "sort": {
+      "popular": "Wɛwɛ",
+      "recent": "Tɔxɔ",
+      "duration": "Gblɔ"
+    },
+    "start": "Dɔ"
+  },
+  "home": {
+    "heroTitle": "Kpɔ sɔ̀nù ɖe ɖokpo ɖokpo",
+    "heroSubtitle": "Sɔ̀nù xɔxɔ lɛ wɛ gbɔ ɖe wɛ ɖe, wɛ zã lɛ wɛ gbɔ ɖe ɖokpo ɖokpo.",
+    "exploreCourses": "Wɛ sɔ̀nù",
+    "startNow": "Dɔ nɔn",
+    "whyTitle": "Nù wɛ kpɔ xɔxɔ lɛ?",
+    "whySubtitle": "Wɛ kpɔ ɖe wɛwɛ lɛ wɛ xɔxɔ kpɛ",
+    "why": {
+      "reasons": [
+        { "title": "Sɔ̀nù xɔxɔ tɔgbɛ", "desc": "Sɔ̀nù lɛ wɛ kpɔ ɖe wɛwɛ lɛ, wɛ xɔxɔ kpɛ" },
+        { "title": "Sɔ̀nùwɛ tɔgbɛ", "desc": "Sɔ̀nùwɛ lɛ wɛ kpɔ ɖe wɛwɛ lɛ, wɛ xɔxɔ kpɛ" },
+        { "title": "Xɔxɔ lɛ tɔgbɛ", "desc": "Xɔxɔ lɛ wɛ kpɔ ɖe wɛwɛ lɛ, wɛ xɔxɔ kpɛ" },
+        { "title": "Dɔ tɔgbɛ", "desc": "Dɔ lɛ wɛ kpɔ ɖe wɛwɛ lɛ, wɛ xɔxɔ kpɛ" }
+      ]
+    },
+    "typesTitle": "Sɔ̀nù xɔxɔ kpɛ",
+    "typesSubtitle": "Wɛ kpɔ ɖe sɔ̀nù xɔxɔ kpɛ kpɛ",
+    "types": {
+      "0": { "badge": "Wɛwɛ", "title": "Sɔ̀nù Vidéo", "desc": "Kpɔ sɔ̀nù ɖe vidéo kpɛ kpɛ.", "button": "Wɛ kpɔ" },
+      "1": { "badge": "ɖeɖe", "title": "Sɔ̀nù Interactif", "desc": "Kpɔ sɔ̀nù ɖe interactif kpɛ kpɛ.", "button": "Wɛ kpɔ" },
+      "2": { "badge": "Nouveau", "title": "Quiz kpɛ kpɛ", "desc": "Kpɔ quiz kpɛ kpɛ.", "button": "Wɛ kpɔ" },
+      "3": { "badge": "Essentiel", "title": "Ressources kpɛ kpɛ", "desc": "Kpɔ ressources kpɛ kpɛ.", "button": "Wɛ kpɔ" },
+      "progress": "kpɔxɔ",
+      "viewAll": "Wɛ sɔ̀nù gbogbo"
+    },
+    "stats": [
+      "Akɔkpa sɔ̀nù",
+      "Sɔ̀nù kpɛ kpɛ",
+      "Sɔ̀nùwɛ kpɛ kpɛ",
+      "Gblɔ kpɛ kpɛ"
+    ],
+    "faqTitle": "Gbɛ xɔxɔ kpɛ kpɛ",
+    "faqSubtitle": "Wɛ kpɔ ɖe gbɛ kpɛ kpɛ",
+    "faq": {
+      "explored": "gbɛ kpɛ kpɛ",
+      "learnMore": "Wɛ kpɔ kpɛ kpɛ",
+      "0": { "q": "Nù wɛ kpɔ sɔ̀nù?", "a": "Wɛ kpɔ sɔ̀nù ɖe xɔxɔ kpɛ kpɛ." },
+      "1": { "q": "Wɛ kpɔ sɔ̀nù ɖe mobile?", "a": "Wɛ kpɔ sɔ̀nù ɖe mobile kpɛ kpɛ." },
+      "2": { "q": "Wɛ kpɔ certificat?", "a": "Wɛ kpɔ certificat kpɛ kpɛ." },
+      "3": { "q": "Wɛ kpɔ rythme?", "a": "Wɛ kpɔ rythme kpɛ kpɛ." },
+      "4": { "q": "Wɛ kpɔ abonnement?", "a": "Wɛ kpɔ abonnement kpɛ kpɛ." }
+    },
+    "footer": {
+      "stayInformed": "Wɛ kpɔ gbɛ kpɛ kpɛ",
+      "subscribe": "Wɛ kpɔ actualités kpɛ kpɛ",
+      "yourEmail": "Wɛ email",
+      "signup": "Kpɔxɔ",
+      "navigation": "Navigation",
+      "home": "Aklɔ",
+      "courses": "Sɔ̀nù",
+      "pricing": "Tarifs",
+      "contact": "Kpɔntákt",
+      "resources": "Ressources",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "guides": "Guides",
+      "webinars": "Webinaires",
+      "legal": "Légal",
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "cookies": "Cookies",
+      "contact2": "Kpɔntákt",
+      "email": "contact@meteo-benin.com",
+      "phone": "+33 1 23 45 67 89",
+      "copyright": "© 2025 EduMétéo - Gbogbo dɔ kpɛ kpɛ"
+    }
+  },
+  "about": {
+    "title": "Gbɛ",
+    "subtitle": "Wɛ kpɔ wɛ mission, wɛ valeurs kple wɛ équipe",
+    "missionTitle": "Wɛ Mission",
+    "missionDesc": "EduMétéo lɛ kpɔ sɔ̀nù ɖe zã lɛ kpɛ kpɛ. Wɛ plateforme lɛ kpɔ expertise scientifique kple pédagogie innovante ɖe wɛwɛ lɛ kpɛ kpɛ.",
+    "stats": {
+      "courses": "Sɔ̀nù kpɛ kpɛ",
+      "students": "Akɔkpa sɔ̀nù",
+      "experts": "Sɔ̀nùwɛ kpɛ kpɛ"
+    },
+    "valuesTitle": "Wɛ Valeurs",
+    "valuesSubtitle": "Nù wɛ kpɔ ɖe wɛwɛ lɛ kpɛ kpɛ",
+    "values": {
+      "0": { "title": "Excellence", "desc": "Wɛ kpɔ excellence ɖe sɔ̀nù kpɛ kpɛ" },
+      "1": { "title": "Innovation", "desc": "Méthodes pédagogiques innovantes ɖe kpɔ sɔ̀nù kpɛ kpɛ" },
+      "2": { "title": "Accessibilité", "desc": "Sɔ̀nù kpɛ kpɛ ɖe gbogbo" }
+    },
+    "teamTitle": "Wɛ Équipe",
+    "teamSubtitle": "Wɛ passionnés lɛ kpɔ EduMétéo kpɛ kpɛ",
+    "team": {
+      "0": { "role": "Directrice Pédagogique", "bio": "15 ans d'expérience ɖe sɔ̀nù scientifique" },
+      "1": { "role": "Responsable Technique", "bio": "Spécialiste plateformes éducatives" },
+      "2": { "role": "Coordinatrice des Cours", "bio": "Expertise ɖe météorologie appliquée" }
+    }
+  },
+  "homePage": {
+    "heroTitle": "Wɛ METEO-BENIN lɛ",
+    "heroSubtitle": "Zã kple sɔ̀nù xɔxɔ kpɛ kpɛ",
+    "ctaCourses": "Wɛ sɔ̀nù",
+    "ctaRegister": "Dɔ nɔn"
+  },
+  "contact": {
+    "title": "Kpɔntákt",
+    "subtitle": "Gbɛ? Wɛ équipe lɛ kpɔ kpɛ kpɛ",
+    "infoTitle": "Wɛ coordonnées",
+    "addressTitle": "Adresse",
+    "address": "123 Rue de la Météo<br>75000 Paris, France",
+    "emailTitle": "Email",
+    "email": "contact@meteo-benin.com",
+    "phoneTitle": "Téléphone",
+    "phone": "+33 1 23 45 67 89",
+    "hoursTitle": "Horaires",
+    "hours": "Lun-Ven: 9h-18h<br>Sam: 10h-16h",
+    "formTitle": "Wɛ kpɔ gbɛ",
+    "form": {
+      "nameLabel": "Wɛ xwɛ",
+      "namePlaceholder": "Koffi Akplogan",
+      "emailLabel": "Wɛ email",
+      "emailPlaceholder": "koffi@email.com",
+      "subjectLabel": "Gbɛ xwɛ",
+      "subjectPlaceholder": "Gbɛ ɖe sɔ̀nù",
+      "messageLabel": "Wɛ gbɛ",
+      "messagePlaceholder": "Wɛ gbɛ kpɛ kpɛ...",
+      "send": "Kpɔ gbɛ"
+    }
+  },
+  "coursesPage": {
+    "title": "Sɔ̀nù kpɛ kpɛ",
+    "subtitle": "Wɛ kpɔ sɔ̀nù kpɛ kpɛ ɖe zã lɛ",
+    "searchPlaceholder": "Wɛ sɔ̀nù, xwɛ, kpɔxɔ...",
+    "searchBtn": "Wɛ kpɔ",
+    "category": "Kpɛ",
+    "allCategories": "Gbogbo",
+    "meteo": "Zã",
+    "climat": "Climatologie",
+    "previsions": "Prévisions",
+    "level": "Dɔ",
+    "allLevels": "Gbogbo",
+    "beginner": "Dɔ xɔxɔ",
+    "intermediate": "Dɔ ɖeɖe",
+    "advanced": "Dɔ tɔgbɛ",
+    "duration": "Gblɔ",
+    "allDurations": "Gbogbo",
+    "short": "Gblɔ kɛ 2h",
+    "medium": "2-5h",
+    "long": "Gblɔ tɔ 5h",
+    "coursesAvailable": "sɔ̀nù kpɛ kpɛ",
+    "sortPopular": "Wɛwɛ",
+    "sortRecent": "Tɔxɔ",
+    "sortDuration": "Gblɔ",
+    "levels": {
+      "débutant": "Dɔ xɔxɔ",
+      "intermédiaire": "Dɔ ɖeɖe",
+      "avancé": "Dɔ tɔgbɛ"
+    },
+    "free": "Wɛ kpɔ",
+    "lessons": "xwɛ",
+    "completed": "kpɔxɔ",
+    "continue": "Kpɔxɔ",
+    "start": "Dɔ"
+  },
+  "weatherPage": {
+    "title": "Bulletin Zã",
+    "subtitle": "Prévisions zã kpɛ kpɛ",
+    "searchPlaceholder": "Wɛ kɔntɔn...",
+    "searchBtn": "Wɛ kpɔ",
+    "forecastTabs": {
+      "hourly": "Heure",
+      "daily": "7 jours"
+    },
+    "alertsTitle": "Alertes zã",
+    "agriTitle": "Conseils agricoles kpɛ kpɛ",
+    "agriNote": "Wɛ conseils lɛ kpɛ kpɛ, kpɔ ɖe wɛ région kpɛ kpɛ.",
+    "current": {
+      "location": "Kɔntɔn",
+      "date": "Gblɔ",
+      "feelsLike": "Ressenti",
+      "humidity": "Humidité",
+      "wind": "Afɔ",
+      "visibility": "Wɛ kpɔ kpɛ kpɛ",
+      "sunrise": "Zã xɔxɔ",
+      "sunset": "Zã xɔxɔ tɔgbɛ"
+    },
+    "details": {
+      "hour": "Heure",
+      "temp": "Température",
+      "precipitation": "Précipitation",
+      "max": "Max",
+      "min": "Min"
+    },
+    "tabs": {
+      "hourly": "Prévisions heure",
+      "daily": "Prévisions jour"
+    },
+    "alerts": {
+      "title": "Titre alerte",
+      "desc": "Description alerte",
+      "period": "Période"
+    },
+    "agri": {
+      "soil": "Sɔ̀nù kpɛ kpɛ : kpɔ zã kpɛ kpɛ ɖe kpɔ kpɛ kpɛ.",
+      "sowing": "Semis : kpɔ kpɛ kpɛ ɖe kpɔ kpɛ kpɛ.",
+      "treatment": "Traitement : kpɔ kpɛ kpɛ ɖe kpɔ kpɛ kpɛ.",
+      "irrigation": "Irrigation : kpɔ kpɛ kpɛ ɖe kpɔ kpɛ kpɛ.",
+      "harvest": "Récolte : kpɔ kpɛ kpɛ ɖe kpɔ kpɛ kpɛ.",
+      "market": "Marché : kpɔ kpɛ kpɛ ɖe kpɔ kpɛ kpɛ.",
+      "note": "Wɛ conseils lɛ kpɛ kpɛ, kpɔ ɖe wɛ région kpɛ kpɛ."
+    }
+  },
+  "login": {
+    "title": "Wɛ gbɔ",
+    "subtitle": "Wɛ gbɔ ɖe wɛ espace",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Wɛ email",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Wɛ mot de passe",
+    "rememberMe": "Kpɔ gbɔ",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Wɛ gbɔ",
+    "loading": "Gbɔ kpɛ kpɛ...",
+    "or": "ou",
+    "google": "Wɛ gbɔ Google",
+    "noAccount": "Kpɔxɔ kpɛ kpɛ ?",
+    "register": "Kpɔxɔ"
+  },
+  "register": {
+    "title": "Kpɔxɔ",
+    "subtitle": "Kpɔxɔ ɖe sɔ̀nù kpɛ kpɛ",
+    "nameLabel": "Xwɛ",
+    "namePlaceholder": "Wɛ xwɛ",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Wɛ email",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Wɛ mot de passe",
+    "confirmPasswordLabel": "Confirmer mot de passe",
+    "confirmPasswordPlaceholder": "Confirmer mot de passe",
+    "acceptTerms": "Kpɔ <a href=\"/terms\" target=\"_blank\">conditions</a> kple <a href=\"/privacy\" target=\"_blank\">confidentialité</a>",
+    "submit": "Kpɔxɔ",
+    "loading": "Kpɔxɔ kpɛ kpɛ...",
+    "or": "ou",
+    "google": "Kpɔxɔ Google",
+    "alreadyAccount": "Déjà inscrit ?",
+    "login": "Wɛ gbɔ"
+  }
+} 

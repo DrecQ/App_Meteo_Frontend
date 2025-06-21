@@ -3,18 +3,18 @@
     <div class="footer-content">
       <!-- Section Newsletter améliorée -->
       <div class="newsletter-section">
-        <h3 class="newsletter-title">Restez informé</h3>
-        <p class="newsletter-text">Abonnez-vous pour recevoir nos actualités et offres</p>
+        <h3 class="newsletter-title">{{ $t('home.footer.stayInformed') }}</h3>
+        <p class="newsletter-text">{{ $t('home.footer.subscribe') }}</p>
         <form @submit.prevent="subscribeNewsletter" class="newsletter-form">
           <input 
             type="email" 
             v-model="email" 
-            placeholder="Votre email" 
+            :placeholder="$t('home.footer.yourEmail')" 
             required
             class="newsletter-input"
           >
           <button type="submit" class="btn-subscribe">
-            <i class="fas fa-paper-plane"></i> S'inscrire
+            <i class="fas fa-paper-plane"></i> {{ $t('home.footer.signup') }}
           </button>
         </form>
       </div>
@@ -22,39 +22,39 @@
       <!-- Grille réorganisée -->
       <div class="footer-grid">
         <div class="footer-column">
-          <h4 class="column-title">Navigation</h4>
+          <h4 class="column-title">{{ $t('home.footer.navigation') }}</h4>
           <ul class="footer-links">
-            <li><nuxt-link to="/">Accueil</nuxt-link></li>
-            <li><nuxt-link to="/courses">Cours</nuxt-link></li>
-            <li><nuxt-link to="/pricing">Tarifs</nuxt-link></li>
-            <li><nuxt-link to="/contact">Contact</nuxt-link></li>
+            <li><nuxt-link to="/">{{ $t('home.footer.home') }}</nuxt-link></li>
+            <li><nuxt-link to="/courses">{{ $t('home.footer.courses') }}</nuxt-link></li>
+            <li><nuxt-link to="/pricing">{{ $t('home.footer.pricing') }}</nuxt-link></li>
+            <li><nuxt-link to="/contact">{{ $t('home.footer.contact') }}</nuxt-link></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="column-title">Ressources</h4>
+          <h4 class="column-title">{{ $t('home.footer.resources') }}</h4>
           <ul class="footer-links">
-            <li><nuxt-link to="/blog">Blog</nuxt-link></li>
-            <li><nuxt-link to="/faq">FAQ</nuxt-link></li>
-            <li><nuxt-link to="/guides">Guides</nuxt-link></li>
-            <li><nuxt-link to="/webinars">Webinaires</nuxt-link></li>
+            <li><nuxt-link to="/blog">{{ $t('home.footer.blog') }}</nuxt-link></li>
+            <li><nuxt-link to="/faq">{{ $t('home.footer.faq') }}</nuxt-link></li>
+            <li><nuxt-link to="/guides">{{ $t('home.footer.guides') }}</nuxt-link></li>
+            <li><nuxt-link to="/webinars">{{ $t('home.footer.webinars') }}</nuxt-link></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="column-title">Légal</h4>
+          <h4 class="column-title">{{ $t('home.footer.legal') }}</h4>
           <ul class="footer-links">
-            <li><nuxt-link to="/privacy">Confidentialité</nuxt-link></li>
-            <li><nuxt-link to="/terms">Conditions</nuxt-link></li>
-            <li><nuxt-link to="/cookies">Cookies</nuxt-link></li>
+            <li><nuxt-link to="/privacy">{{ $t('home.footer.privacy') }}</nuxt-link></li>
+            <li><nuxt-link to="/terms">{{ $t('home.footer.terms') }}</nuxt-link></li>
+            <li><nuxt-link to="/cookies">{{ $t('home.footer.cookies') }}</nuxt-link></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h4 class="column-title">Contact</h4>
+          <h4 class="column-title">{{ $t('home.footer.contact2') }}</h4>
           <div class="contact-info">
-            <p><i class="fas fa-envelope"></i> contact@meteo-benin.com</p>
-            <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
+            <p><i class="fas fa-envelope"></i> {{ $t('home.footer.email') }}</p>
+            <p><i class="fas fa-phone"></i> {{ $t('home.footer.phone') }}</p>
           </div>
           <div class="social-links">
             <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -67,7 +67,7 @@
 
     <!-- Copyright simplifié -->
     <div class="footer-bottom">
-      <p class="copyright">&copy; {{ new Date().getFullYear() }} EduMétéo - Tous droits réservés</p>
+      <p class="copyright">{{ $t('home.footer.copyright') }}</p>
       <div class="trust-icons">
         <i class="fas fa-shield-alt" title="Sécurité des données"></i>
         <i class="fas fa-lock" title="Paiements sécurisés"></i>
@@ -77,6 +77,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const email = ref('');
 
 const subscribeNewsletter = () => {

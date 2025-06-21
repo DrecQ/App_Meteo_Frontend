@@ -6,7 +6,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/google-fonts',
+    '@nuxt/image',
+    '@vee-validate/nuxt',
     '@pinia/nuxt',
+    'nuxt-icon',
+    // '@nuxtjs/i18n'
   ],
   css: [
     '~/assets/css/main.css',
@@ -38,5 +44,13 @@ export default defineNuxtConfig({
     options: {
       strict: false
     }
-  }
+  },
+  runtimeConfig: {
+    openrouterApiKey: process.env.NUXT_OPENROUTER_API_KEY || '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', // Test temporaire
+    public: {
+      // Clés publiques
+    }
+  },
+  // i18n: {
+  //   locales: [
 })

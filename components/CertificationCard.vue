@@ -1,6 +1,7 @@
 <template>
   <div class="certificate-card">
     <div class="certificate-header">
+      <img v-if="certificate.image" :src="certificate.image" alt="Illustration certificat" class="certificate-img" />
       <div class="certificate-progress">
         <div class="progress-circle">
           <svg viewBox="0 0 36 36" class="circular-chart">
@@ -126,6 +127,7 @@ interface Certificate {
   status: 'valid' | 'expiring' | 'expired';
   obtained: boolean;
   conditions: Condition[];
+  image?: string;
 }
 
 const props = defineProps<{
@@ -558,5 +560,17 @@ onUnmounted(() => {
 
 .confirm-btn:disabled:hover {
   background-color: #cbd5e0;
+}
+
+.certificate-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-right: 1rem;
+  background: #f1f5f9;
+  box-shadow: 0 2px 6px rgba(52,152,219,0.08);
+  display: inline-block;
+  vertical-align: middle;
 }
 </style> 

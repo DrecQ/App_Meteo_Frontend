@@ -3,8 +3,8 @@
     <!-- Bannière améliorée -->
     <div class="page-banner">
       <div class="banner-content">
-        <h1>À Propos</h1>
-        <p>Découvrez notre mission, nos valeurs et notre équipe</p>
+        <h1>{{ $t('about.title') }}</h1>
+        <p>{{ $t('about.subtitle') }}</p>
       </div>
     </div>
 
@@ -13,24 +13,22 @@
       <div class="container">
         <div class="mission-grid">
           <div class="mission-text">
-            <h2 class="section-title">Notre Mission</h2>
+            <h2 class="section-title">{{ $t('about.missionTitle') }}</h2>
             <p class="mission-description">
-              EduMétéo s'engage à rendre l'apprentissage de la météorologie accessible à tous. 
-              Notre plateforme combine expertise scientifique et pédagogie innovante pour former 
-              la prochaine génération de météorologues et de passionnés du climat.
+              {{ $t('about.missionDesc') }}
             </p>
             <div class="mission-stats">
               <div class="stat-item">
                 <div class="stat-value">50+</div>
-                <div class="stat-label">Cours disponibles</div>
+                <div class="stat-label">{{ $t('about.stats.courses') }}</div>
               </div>
               <div class="stat-item">
                 <div class="stat-value">10K+</div>
-                <div class="stat-label">Étudiants formés</div>
+                <div class="stat-label">{{ $t('about.stats.students') }}</div>
               </div>
               <div class="stat-item">
                 <div class="stat-value">20+</div>
-                <div class="stat-label">Experts météo</div>
+                <div class="stat-label">{{ $t('about.stats.experts') }}</div>
               </div>
             </div>
           </div>
@@ -46,32 +44,29 @@
     <!-- Section Nos Valeurs -->
     <div class="values-section">
       <div class="container">
-        <h2 class="section-title">Nos Valeurs</h2>
-        <p class="section-subtitle">Ce qui guide chacune de nos actions</p>
-        
+        <h2 class="section-title">{{ $t('about.valuesTitle') }}</h2>
+        <p class="section-subtitle">{{ $t('about.valuesSubtitle') }}</p>
         <div class="values-grid">
           <div class="value-card" data-aos="fade-up">
             <div class="value-icon" style="background-color: #3498db;">
               <i class="fas fa-star"></i>
             </div>
-            <h3>Excellence</h3>
-            <p>Nous visons l'excellence académique dans chaque cours proposé</p>
+            <h3>{{ $t('about.values.0.title') }}</h3>
+            <p>{{ $t('about.values.0.desc') }}</p>
           </div>
-          
           <div class="value-card" data-aos="fade-up" data-aos-delay="100">
             <div class="value-icon" style="background-color: #2ecc71;">
               <i class="fas fa-lightbulb"></i>
             </div>
-            <h3>Innovation</h3>
-            <p>Méthodes pédagogiques innovantes pour un apprentissage optimal</p>
+            <h3>{{ $t('about.values.1.title') }}</h3>
+            <p>{{ $t('about.values.1.desc') }}</p>
           </div>
-          
           <div class="value-card" data-aos="fade-up" data-aos-delay="200">
             <div class="value-icon" style="background-color: #f39c12;">
               <i class="fas fa-globe-africa"></i>
             </div>
-            <h3>Accessibilité</h3>
-            <p>Des cours accessibles à tous, quel que soit le niveau initial</p>
+            <h3>{{ $t('about.values.2.title') }}</h3>
+            <p>{{ $t('about.values.2.desc') }}</p>
           </div>
         </div>
       </div>
@@ -80,37 +75,34 @@
     <!-- Section Notre Équipe -->
     <div class="team-section">
       <div class="container">
-        <h2 class="section-title">Notre Équipe</h2>
-        <p class="section-subtitle">Les passionnés qui font vivre EduMétéo</p>
-        
+        <h2 class="section-title">{{ $t('about.teamTitle') }}</h2>
+        <p class="section-subtitle">{{ $t('about.teamSubtitle') }}</p>
         <div class="team-grid">
           <div class="team-member" data-aos="fade-up">
             <div class="member-avatar" style="background-color: #3498db;">ML</div>
             <h3>Marie Laurent</h3>
-            <p class="member-title">Directrice Pédagogique</p>
-            <p class="member-bio">15 ans d'expérience en éducation scientifique</p>
+            <p class="member-title">{{ $t('about.team.0.role') }}</p>
+            <p class="member-bio">{{ $t('about.team.0.bio') }}</p>
             <div class="member-social">
               <a href="#"><i class="fab fa-linkedin"></i></a>
               <a href="#"><i class="fas fa-envelope"></i></a>
             </div>
           </div>
-          
           <div class="team-member" data-aos="fade-up" data-aos-delay="100">
             <div class="member-avatar" style="background-color: #e74c3c;">PM</div>
             <h3>Pierre Martin</h3>
-            <p class="member-title">Responsable Technique</p>
-            <p class="member-bio">Spécialiste des plateformes éducatives</p>
+            <p class="member-title">{{ $t('about.team.1.role') }}</p>
+            <p class="member-bio">{{ $t('about.team.1.bio') }}</p>
             <div class="member-social">
               <a href="#"><i class="fab fa-linkedin"></i></a>
               <a href="#"><i class="fas fa-envelope"></i></a>
             </div>
           </div>
-          
           <div class="team-member" data-aos="fade-up" data-aos-delay="200">
             <div class="member-avatar" style="background-color: #9b59b6;">SD</div>
             <h3>Sophie Dubois</h3>
-            <p class="member-title">Coordinatrice des Cours</p>
-            <p class="member-bio">Expertise en météorologie appliquée</p>
+            <p class="member-title">{{ $t('about.team.2.role') }}</p>
+            <p class="member-bio">{{ $t('about.team.2.bio') }}</p>
             <div class="member-social">
               <a href="#"><i class="fab fa-linkedin"></i></a>
               <a href="#"><i class="fas fa-envelope"></i></a>
@@ -123,7 +115,8 @@
 </template>
 
 <script setup>
-// Initialiser AOS (Animate On Scroll) si nécessaire
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 import { onMounted } from 'vue';
 
 onMounted(() => {

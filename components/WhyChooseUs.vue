@@ -2,8 +2,8 @@
     <section class="why-choose-us">
       <div class="container">
         <!-- Titre et sous-titre avec les mêmes styles que CourseTypes -->
-        <h2 class="section-title">Pourquoi choisir notre plateforme ?</h2>
-        <p class="section-subtitle">Découvrez les avantages qui font la différence</p>
+        <h2 class="section-title">{{ $t('home.whyTitle') }}</h2>
+        <p class="section-subtitle">{{ $t('home.whySubtitle') }}</p>
         
         <!-- Grille de raisons - structure similaire à courses-grid -->
         <div class="reasons-grid">
@@ -15,8 +15,8 @@
             
             <!-- Contenu texte - même structure que course-content -->
             <div class="reason-content">
-              <h3 class="reason-title">{{ reason.title }}</h3>
-              <p class="reason-description">{{ reason.description }}</p>
+              <h3 class="reason-title">{{ $t(`home.why.reasons.${index}.title`) }}</h3>
+              <p class="reason-description">{{ $t(`home.why.reasons.${index}.desc`) }}</p>
             </div>
           </div>
         </div>
@@ -24,39 +24,15 @@
     </section>
   </template>
   
-  <script>
-  export default {
-    data() {
-      return {
-        reasons: [
-          {
-            icon: 'fas fa-graduation-cap',
-            title: 'Pédagogie innovante',
-            description: 'Méthodes d\'apprentissage éprouvées et adaptées à chacun',
-            color: '#3498db'
-          },
-          {
-            icon: 'fas fa-chalkboard-teacher',
-            title: 'Experts qualifiés',
-            description: 'Enseignants sélectionnés pour leur expertise et pédagogie',
-            color: '#e74c3c'
-          },
-          {
-            icon: 'fas fa-laptop-code',
-            title: 'Plateforme intuitive',
-            description: 'Interface claire et facile à prendre en main',
-            color: '#2ecc71'
-          },
-          {
-            icon: 'fas fa-clock',
-            title: 'Flexibilité totale',
-            description: 'Apprenez à votre rythme, quand vous voulez',
-            color: '#f39c12'
-          }
-        ]
-      }
-    }
-  }
+  <script setup>
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
+  const reasons = [
+    { icon: 'fas fa-graduation-cap', color: '#3498db' },
+    { icon: 'fas fa-chalkboard-teacher', color: '#e74c3c' },
+    { icon: 'fas fa-laptop-code', color: '#2ecc71' },
+    { icon: 'fas fa-clock', color: '#f39c12' }
+  ];
   </script>
   
   <style scoped>

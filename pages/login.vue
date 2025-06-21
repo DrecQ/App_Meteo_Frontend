@@ -10,7 +10,6 @@
       <!-- En-tête avec logo -->
       <div class="auth-header">
         <div class="logo">
-          <i class="fas fa-cloud-sun-rain"></i>
           <NuxtLink to="/" class="logo-link">METEO-BENIN</NuxtLink>
         </div>
         <h1>Connexion</h1>
@@ -18,9 +17,9 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="auth-form">
-        <div v-if="authStore.error" class="error-message">
+        <!-- <div v-if="authStore.error" class="error-message">
           {{ authStore.error }}
-      </div>
+        </div> -->
 
         <div class="form-group">
           <label for="email">Email</label>
@@ -116,29 +115,17 @@ const form = ref({
 
 const showPassword = ref(false)
 const loading = ref(false)
+const errorMessage = ref(null)
 
 const handleSubmit = async () => {
-  loading.value = true
   try {
-    // Simuler une requête API
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    // Vérifier les identifiants (à remplacer par votre logique d'API)
-    if (form.value.email && form.value.password) {
-      // Simuler une connexion réussie
-      authStore.setUser({
-        email: form.value.email,
-        name: 'Utilisateur Test'
-      })
-      authStore.setToken('test-token')
-      
-      // Rediriger vers la page d'accueil
-      router.push('/')
-    }
+    await authStore.login({
+      email: form.value.email,
+      password: form.value.password
+    })
+    router.push('/user')
   } catch (error) {
-    console.error('Erreur de connexion:', error)
-  } finally {
-    loading.value = false
+    errorMessage.value = error.message
   }
 }
 
@@ -199,20 +186,20 @@ const signInWithGoogle = () => {
 
 .auth-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   background: white;
-  padding: 3rem;
+  padding: 2.5rem;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: relative;
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .logo {
@@ -223,7 +210,7 @@ const signInWithGoogle = () => {
   font-size: 1.8rem;
   font-weight: 700;
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .logo i {
@@ -231,21 +218,21 @@ const signInWithGoogle = () => {
 }
 
 .auth-header h1 {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   color: #2c3e50;
   margin-bottom: 0.5rem;
 }
 
 .auth-header p {
   color: #7f8c8d;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .form-group {
@@ -255,7 +242,7 @@ const signInWithGoogle = () => {
 }
 
 .form-group label {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #2c3e50;
   font-weight: 500;
 }
@@ -275,7 +262,7 @@ const signInWithGoogle = () => {
 
 .input-group input {
   width: 100%;
-  padding: 0.9rem 1rem 0.9rem 2.5rem;
+  padding: 0.8rem 1rem 0.8rem 2.2rem;
   border: 1px solid #e0e6ed;
   border-radius: 8px;
   font-size: 1rem;
@@ -360,7 +347,7 @@ const signInWithGoogle = () => {
 
 .btn-submit {
   width: 100%;
-  padding: 1rem;
+  padding: 0.8rem;
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
   border: none;
@@ -421,7 +408,7 @@ const signInWithGoogle = () => {
 
 .btn-google {
   width: 100%;
-  padding: 1rem;
+  padding: 0.8rem;
   background: white;
   border: 1px solid #e0e6ed;
   border-radius: 8px;

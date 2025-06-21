@@ -4,12 +4,23 @@
       <div class="stats-grid">
         <div class="stat-item" v-for="(stat, index) in stats" :key="index">
           <div class="stat-value" :data-target="stat.value">{{ stat.value }}</div>
-          <div class="stat-label">{{ stat.label }}</div>
+          <div class="stat-label">{{ $t(`home.stats.${index}`) }}</div>
         </div>
       </div>
     </div>
   </section>
 </template>
+
+<script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+const stats = [
+  { value: 10000 },
+  { value: 500 },
+  { value: 200 },
+  { value: 99 }
+];
+</script>
 
 <script>
 export default {

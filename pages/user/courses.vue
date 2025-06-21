@@ -129,7 +129,7 @@ const filteredCourses = computed(() => {
 })
 
 const viewCourse = (courseId) => {
-  router.push(`/course/${courseId}`)
+  router.push(`/user/course/${courseId}`)
 }
 
 const toggleSidebar = () => {

@@ -9,22 +9,22 @@
         <nuxt-link to="/">METEO-BENIN</nuxt-link>
       </div>
       <div class="nav-links">
-        <NuxtLink to="/" class="nav-link">Accueil</NuxtLink>
-        <NuxtLink to="/courses" class="nav-link">Cours</NuxtLink>
-        <NuxtLink to="/teachers" class="nav-link">Enseignants</NuxtLink>
-        <NuxtLink to="/about" class="nav-link">À propos</NuxtLink>
-        <NuxtLink to="/contact" class="nav-link">Contact</NuxtLink>
+        <NuxtLink to="/" class="nav-link">{{ $t('nav.home') }}</NuxtLink>
+        <NuxtLink to="/courses" class="nav-link">{{ $t('nav.education') }}</NuxtLink>
+        <NuxtLink to="/teachers" class="nav-link">{{ $t('nav.weather') }}</NuxtLink>
+        <NuxtLink to="/about" class="nav-link">{{ $t('nav.about') }}</NuxtLink>
+        <NuxtLink to="/contact" class="nav-link">{{ $t('nav.contact') }}</NuxtLink>
       </div>
     </div>
 
     <!-- Menu mobile -->
     <div class="mobile-menu" :class="{ 'open': isMobileMenuOpen }">
       <div class="mobile-nav-links">
-        <NuxtLink to="/" class="mobile-nav-link" @click="closeMobileMenu">Accueil</NuxtLink>
-        <NuxtLink to="/courses" class="mobile-nav-link" @click="closeMobileMenu">Cours</NuxtLink>
-        <NuxtLink to="/teachers" class="mobile-nav-link" @click="closeMobileMenu">Enseignants</NuxtLink>
-        <NuxtLink to="/about" class="mobile-nav-link" @click="closeMobileMenu">À propos</NuxtLink>
-        <NuxtLink to="/contact" class="mobile-nav-link" @click="closeMobileMenu">Contact</NuxtLink>
+        <NuxtLink to="/" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.home') }}</NuxtLink>
+        <NuxtLink to="/courses" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.education') }}</NuxtLink>
+        <NuxtLink to="/teachers" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.weather') }}</NuxtLink>
+        <NuxtLink to="/about" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.about') }}</NuxtLink>
+        <NuxtLink to="/contact" class="mobile-nav-link" @click="closeMobileMenu">{{ $t('nav.contact') }}</NuxtLink>
       </div>
       <div class="mobile-language-switcher">
         <button class="mobile-language-btn" @click="toggleLanguageDropdown">
@@ -49,6 +49,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const route = useRoute();
 const { locale } = useI18n();

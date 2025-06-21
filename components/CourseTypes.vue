@@ -1,9 +1,9 @@
 <template>
     <section class="course-types">
       <div class="container">
-        <h2 class="section-title" data-aos="fade-up">Nos Types de Cours</h2>
+        <h2 class="section-title" data-aos="fade-up">{{ $t('home.typesTitle') }}</h2>
         <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
-          Découvrez une variété de formats adaptés à tous les styles d'apprentissage
+          {{ $t('home.typesSubtitle') }}
         </p>
         
         <div class="courses-grid">
@@ -23,12 +23,12 @@
                 :class="{ 'image-hover': hoverIndex === index }"
               ></div>
               <div class="course-badge" :style="{ backgroundColor: course.badgeColor }">
-                {{ course.badgeText }}
+                {{ $t(`home.types.${index}.badge`) }}
               </div>
             </div>
             <div class="course-content">
-              <h3>{{ course.title }}</h3>
-              <p>{{ course.description }}</p>
+              <h3>{{ $t(`home.types.${index}.title`) }}</h3>
+              <p>{{ $t(`home.types.${index}.desc`) }}</p>
               <div class="course-meta">
                 <span><i :class="course.durationIcon"></i> {{ course.duration }}</span>
                 <span><i :class="course.studentsIcon"></i> {{ course.students }}</span>
@@ -41,14 +41,14 @@
                   class="progress-bar" 
                   :style="{ width: course.progress + '%', backgroundColor: course.badgeColor }"
                 ></div>
-                <span>{{ course.progress }}% complété</span>
+                <span>{{ course.progress }}% {{ $t('home.types.progress') }}</span>
               </div>
               <nuxt-link 
                 :to="course.link" 
                 class="btn-course-action"
                 :style="{ backgroundColor: course.buttonColor }"
               >
-                {{ course.buttonText }}
+                {{ $t(`home.types.${index}.button`) }}
               </nuxt-link>
             </div>
           </div>
@@ -56,7 +56,7 @@
         
         <div class="text-center" data-aos="fade-up" data-aos-delay="450">
           <nuxt-link to="/courses" class="btn-view-all">
-            Voir tous les cours <i class="fas fa-arrow-right"></i>
+            {{ $t('home.types.viewAll') }} <i class="fas fa-arrow-right"></i>
           </nuxt-link>
         </div>
       </div>
@@ -65,6 +65,9 @@
   
   <script setup>
   import { ref, onMounted } from 'vue';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const hoverIndex = ref(null);
 

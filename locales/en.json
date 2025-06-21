@@ -26,5 +26,246 @@
     "lessons": "lessons",
     "students": "students",
     "rating": "rating"
+  },
+  "home": {
+    "heroTitle": "Learn from every angle",
+    "heroSubtitle": "An e-learning platform that adapts to your pace, just like the weather adapts to the seasons.",
+    "exploreCourses": "Explore courses",
+    "startNow": "Start now",
+    "whyTitle": "Why choose our platform?",
+    "whySubtitle": "Discover the advantages that make the difference",
+    "why": {
+      "reasons": [
+        { "title": "Innovative pedagogy", "desc": "Proven learning methods adapted to everyone" },
+        { "title": "Qualified experts", "desc": "Teachers selected for their expertise and pedagogy" },
+        { "title": "Intuitive platform", "desc": "Clear and easy-to-use interface" },
+        { "title": "Total flexibility", "desc": "Learn at your own pace, whenever you want" }
+      ]
+    },
+    "typesTitle": "Our Course Types",
+    "typesSubtitle": "Discover a variety of formats for all learning styles",
+    "types": {
+      "0": { "badge": "Popular", "title": "Video Courses", "desc": "Learn through explanatory videos and detailed tutorials.", "button": "Discover" },
+      "1": { "badge": "Live", "title": "Interactive Courses", "desc": "Join live sessions and interact with teachers.", "button": "Discover" },
+      "2": { "badge": "New", "title": "Quizzes & Exercises", "desc": "Test your knowledge with quizzes and practical exercises.", "button": "Discover" },
+      "3": { "badge": "Essential", "title": "Learning Resources", "desc": "Access a complete library of learning resources.", "button": "Discover" },
+      "progress": "completed",
+      "viewAll": "View all courses"
+    },
+    "stats": [
+      "Registered students",
+      "Available courses",
+      "Expert teachers",
+      "Satisfaction rate"
+    ],
+    "faqTitle": "Frequently Asked Questions",
+    "faqSubtitle": "Find quick answers to your questions",
+    "faq": {
+      "explored": "questions explored",
+      "learnMore": "Learn more",
+      "0": { "q": "How do I access the courses?", "a": "After registration, you get immediate access to your member area with all available resources." },
+      "1": { "q": "Can I take courses on mobile?", "a": "Yes, our platform is fully responsive and adapts to all devices." },
+      "2": { "q": "Is there a certificate at the end?", "a": "All our complete programs deliver a certificate of achievement after validation." },
+      "3": { "q": "What is the recommended pace?", "a": "We recommend 2-3 courses per week for optimal progress, at your own pace." },
+      "4": { "q": "How do I cancel my subscription?", "a": "You can manage your subscription at any time in the 'My Account' section." }
+    },
+    "footer": {
+      "stayInformed": "Stay informed",
+      "subscribe": "Subscribe to receive our news and offers",
+      "yourEmail": "Your email",
+      "signup": "Sign up",
+      "navigation": "Navigation",
+      "home": "Home",
+      "courses": "Courses",
+      "pricing": "Pricing",
+      "contact": "Contact",
+      "resources": "Resources",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "guides": "Guides",
+      "webinars": "Webinars",
+      "legal": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies",
+      "contact2": "Contact",
+      "email": "contact@meteo-benin.com",
+      "phone": "+33 1 23 45 67 89",
+      "copyright": "© 2025 EduMétéo - All rights reserved"
+    }
+  },
+  "homePage": {
+    "heroTitle": "Welcome to METEO-BENIN",
+    "heroSubtitle": "The weather and education platform for everyone",
+    "ctaCourses": "Explore courses",
+    "ctaRegister": "Start now"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "Discover our mission, values and team",
+    "missionTitle": "Our Mission",
+    "missionDesc": "EduMétéo is committed to making meteorology learning accessible to all. Our platform combines scientific expertise and innovative pedagogy to train the next generation of meteorologists and climate enthusiasts.",
+    "stats": {
+      "courses": "Courses available",
+      "students": "Students trained",
+      "experts": "Weather experts"
+    },
+    "valuesTitle": "Our Values",
+    "valuesSubtitle": "What guides each of our actions",
+    "values": {
+      "0": { "title": "Excellence", "desc": "We aim for academic excellence in every course offered" },
+      "1": { "title": "Innovation", "desc": "Innovative teaching methods for optimal learning" },
+      "2": { "title": "Accessibility", "desc": "Courses accessible to all, regardless of initial level" }
+    },
+    "teamTitle": "Our Team",
+    "teamSubtitle": "The passionate people behind EduMétéo",
+    "team": {
+      "0": { "role": "Head of Education", "bio": "15 years of experience in science education" },
+      "1": { "role": "Technical Lead", "bio": "Specialist in educational platforms" },
+      "2": { "role": "Course Coordinator", "bio": "Expertise in applied meteorology" }
+    }
+  },
+  "contact": {
+    "title": "Contact us",
+    "subtitle": "A question? Our team is here for you",
+    "infoTitle": "Our contact details",
+    "addressTitle": "Address",
+    "address": "123 Weather Street<br>75000 Paris, France",
+    "emailTitle": "Email",
+    "email": "contact@meteo-benin.com",
+    "phoneTitle": "Phone",
+    "phone": "+33 1 23 45 67 89",
+    "hoursTitle": "Hours",
+    "hours": "Mon-Fri: 9am-6pm<br>Sat: 10am-4pm",
+    "formTitle": "Send a message",
+    "form": {
+      "nameLabel": "Your full name",
+      "namePlaceholder": "John Smith",
+      "emailLabel": "Your email",
+      "emailPlaceholder": "john.smith@email.com",
+      "subjectLabel": "Message subject",
+      "subjectPlaceholder": "Question about courses",
+      "messageLabel": "Your message",
+      "messagePlaceholder": "Describe your request in detail...",
+      "send": "Send message"
+    }
+  },
+  "coursesPage": {
+    "title": "Our Courses",
+    "subtitle": "Find the perfect course to develop your meteorology skills",
+    "searchPlaceholder": "Search for a course, topic, keyword...",
+    "searchBtn": "Search",
+    "category": "Category",
+    "allCategories": "All",
+    "meteo": "Meteorology",
+    "climat": "Climatology",
+    "previsions": "Forecasts",
+    "level": "Level",
+    "allLevels": "All",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "duration": "Duration",
+    "allDurations": "All",
+    "short": "Less than 2h",
+    "medium": "2-5h",
+    "long": "More than 5h",
+    "coursesAvailable": "courses available",
+    "sortPopular": "Most popular",
+    "sortRecent": "Most recent",
+    "sortDuration": "Duration",
+    "levels": {
+      "débutant": "Beginner",
+      "intermédiaire": "Intermediate",
+      "avancé": "Advanced"
+    },
+    "free": "Free",
+    "lessons": "lessons",
+    "completed": "completed",
+    "continue": "Continue",
+    "start": "Start"
+  },
+  "weatherPage": {
+    "title": "Weather Bulletin",
+    "subtitle": "Real-time weather forecasts",
+    "searchPlaceholder": "Search for a city...",
+    "searchBtn": "Search",
+    "forecastTabs": {
+      "hourly": "Hourly",
+      "daily": "7 days"
+    },
+    "alertsTitle": "Weather alerts",
+    "agriTitle": "Today's agricultural tips",
+    "agriNote": "These tips are for information only and should be adapted to your region and specific crops.",
+    "current": {
+      "location": "Location",
+      "date": "Date",
+      "feelsLike": "Feels like",
+      "humidity": "Humidity",
+      "wind": "Wind",
+      "visibility": "Visibility",
+      "sunrise": "Sunrise",
+      "sunset": "Sunset"
+    },
+    "details": {
+      "hour": "Hour",
+      "temp": "Temperature",
+      "precipitation": "Precipitation",
+      "max": "Max",
+      "min": "Min"
+    },
+    "tabs": {
+      "hourly": "Hourly forecast",
+      "daily": "Daily forecast"
+    },
+    "alerts": {
+      "title": "Alert title",
+      "desc": "Alert description",
+      "period": "Period"
+    },
+    "agri": {
+      "soil": "Soil preparation: Take advantage of recent rains to plow and enrich your fields.",
+      "sowing": "Sowing: Conditions are favorable for planting maize, cassava, and peanuts.",
+      "treatment": "Phytosanitary treatments: Watch for fungal diseases due to high humidity.",
+      "irrigation": "Irrigation: Limit irrigation during heavy rains to avoid root asphyxiation.",
+      "harvest": "Harvest: Prefer harvesting early in the morning to keep products fresh.",
+      "market": "Market: Check local prices before selling your crops to optimize your income.",
+      "note": "These tips are for information only and should be adapted to your region and specific crops."
+    }
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Log in to access your space",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "submit": "Log in",
+    "loading": "Logging in...",
+    "or": "or",
+    "google": "Continue with Google",
+    "noAccount": "No account yet?",
+    "register": "Create an account"
+  },
+  "register": {
+    "title": "Register",
+    "subtitle": "Create your account to access all courses",
+    "nameLabel": "Full name",
+    "namePlaceholder": "Your full name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Your password",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "acceptTerms": "I accept the <a href=\"/terms\" target=\"_blank\">terms of use</a> and the <a href=\"/privacy\" target=\"_blank\">privacy policy</a>",
+    "submit": "Create my account",
+    "loading": "Creating account...",
+    "or": "or",
+    "google": "Sign up with Google",
+    "alreadyAccount": "Already registered?",
+    "login": "Log in"
   }
 } 

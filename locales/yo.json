@@ -1,0 +1,237 @@
+{
+  "nav": {
+    "home": "Ilé",
+    "weather": "Ojú-ọjọ́",
+    "education": "Ẹ̀kọ́",
+    "about": "Nípa",
+    "login": "Wọlé",
+    "register": "Forúkọsílẹ̀",
+    "contact": "Kọntákti"
+  },
+  "courses": {
+    "title": "Ẹ̀kọ́",
+    "search": "Wá ẹ̀kọ́, kókó, ọrọ̀...",
+    "category": "Ẹ̀ka",
+    "level": "Ipele",
+    "duration": "Akoko",
+    "all": "Gbogbo",
+    "beginner": "Akẹ́kọ̀ọ́ tuntun",
+    "intermediate": "Aarin",
+    "advanced": "Tó gíga",
+    "short": "Kéré ju 2wákàtí lọ",
+    "medium": "2-5wákàtí",
+    "long": "Tó ju 5wákàtí lọ",
+    "sort": {
+      "popular": "Tó gbajúmọ̀",
+      "recent": "Tuntun",
+      "duration": "Akoko"
+    },
+    "start": "Bẹrẹ"
+  },
+  "home": {
+    "heroTitle": "Kọ ẹ̀kọ́ láti gbogbo igun",
+    "heroSubtitle": "Pẹpẹ ẹ̀kọ́ ori ayelujara tó ń bá ìpele rẹ lọ, bí ojú-ọjọ́ ṣe ń yípo.",
+    "exploreCourses": "Ṣàwárí ẹ̀kọ́",
+    "startNow": "Bẹrẹ nísinsin yìí",
+    "whyTitle": "Kí ló dé tó fi yẹ kí o yan pẹpẹ wa?",
+    "whySubtitle": "Ṣàwárí àǹfààní tó yàtọ̀ síi",
+    "why": {
+      "reasons": [
+        { "title": "Ẹ̀kọ́ tuntun", "desc": "Ọ̀nà ẹ̀kọ́ tó dá lórí ìrírí àti ìmúlò" },
+        { "title": "Amọ̀ja tó ní ìmọ̀", "desc": "Olùkọ́ tó ní ìmọ̀ àti ìrírí" },
+        { "title": "Pẹpẹ tó rọrùn", "desc": "Ìbáṣepọ̀ tó rọrùn àti tó mọ́" },
+        { "title": "Ààyè pátápátá", "desc": "Kọ ẹ̀kọ́ ní ìpele tirẹ, nígbà tí o bá fẹ́" }
+      ]
+    },
+    "typesTitle": "Ìrú Ẹ̀kọ́ Wa",
+    "typesSubtitle": "Ṣàwárí oríṣìíríṣìí àtẹ̀jáde ẹ̀kọ́",
+    "types": {
+      "0": { "badge": "Gbajúmọ̀", "title": "Ẹ̀kọ́ Fídíò", "desc": "Kọ ẹ̀kọ́ pẹ̀lú fídíò àti ìtọ́́sọ́nà.", "button": "Ṣàwárí" },
+      "1": { "badge": "Taara", "title": "Ẹ̀kọ́ Ifọwọ́sowọpọ̀", "desc": "Darapọ̀ mọ́ ìpàdé taara, bá olùkọ́ sọ̀rọ̀.", "button": "Ṣàwárí" },
+      "2": { "badge": "Tuntun", "title": "Kíwì àti Ìdánwò", "desc": "Dán ìmọ̀ rẹ wò pẹ̀lú kíwì àti ìdánwò.", "button": "Ṣàwárí" },
+      "3": { "badge": "Pátápátá", "title": "Àwọn orísun ẹ̀kọ́", "desc": "Gba ìkànsí gbogbo àwọn orísun ẹ̀kọ́.", "button": "Ṣàwárí" },
+      "progress": "parí",
+      "viewAll": "Wo gbogbo ẹ̀kọ́"
+    },
+    "stats": [
+      "Àwọn akẹ́kọ̀ọ́",
+      "Ẹ̀kọ́ tó wà",
+      "Olùkọ́ amọ̀ja",
+      "Ìtẹ́lọ́run"
+    ],
+    "faqTitle": "Ìbéèrè tí wọ́pọ̀",
+    "faqSubtitle": "Rí ìdáhùn sí ìbéèrè rẹ",
+    "faq": {
+      "explored": "ìbéèrè tí a ti ṣàwárí",
+      "learnMore": "Kọ́ ẹ̀kọ́ síi",
+      "0": { "q": "Báwo ni mo ṣe le wọlé sí ẹ̀kọ́?", "a": "Lẹ́yìn ìforúkọsílẹ̀, o ní ààyè sí gbogbo àwọn orísun wa." },
+      "1": { "q": "Ṣe mo le kó ẹ̀kọ́ lórí fónutologbolori?", "a": "Bẹ́ẹ̀ni, pẹpẹ wa rọrùn lórí gbogbo ẹrọ." },
+      "2": { "q": "Ṣe a máa fun ni iwe-ẹ̀rí?", "a": "Gbogbo eto wa ni iwe-ẹ̀rí lẹ́yìn ìparí." },
+      "3": { "q": "Kí ni ìpele tó dáa jùlọ?", "a": "A ṣedájọ́ 2-3 ẹ̀kọ́ l'ọ̀sẹ̀ fún ìlò tó péye." },
+      "4": { "q": "Báwo ni mo ṣe le fagilé ìforúkọsílẹ̀ mi?", "a": "O le ṣàkóso ìforúkọsílẹ̀ rẹ nígbàkúgbà nínú apá 'Àkọọlẹ Mi'." }
+    },
+    "footer": {
+      "stayInformed": "Máa mọ̀ ìròyìn wa",
+      "subscribe": "Forúkọsílẹ̀ láti gba ìròyìn àti ìpèsè wa",
+      "yourEmail": "Ìmẹ́lì rẹ",
+      "signup": "Forúkọsílẹ̀",
+      "navigation": "Ìtọsọ́nà",
+      "home": "Ilé",
+      "courses": "Ẹ̀kọ́",
+      "pricing": "Ìye owo",
+      "contact": "Kọntákti",
+      "resources": "Àwọn orísun",
+      "blog": "Bùlógù",
+      "faq": "FAQ",
+      "guides": "Ìtọ́́sọ́nà",
+      "webinars": "Àpérò",
+      "legal": "Ofin",
+      "privacy": "Àṣírí",
+      "terms": "Àwọn òfin",
+      "cookies": "Kùkì",
+      "contact2": "Kọntákti",
+      "email": "contact@meteo-benin.com",
+      "phone": "+33 1 23 45 67 89",
+      "copyright": "© 2025 EduMétéo - Gbogbo ẹtọ wa lórí rẹ"
+    }
+  },
+  "about": {
+    "title": "Nípa",
+    "subtitle": "Ṣàwárí ìlànà wa, ànfààní wa àti ẹgbẹ́ wa",
+    "missionTitle": "Ìlànà Wa",
+    "missionDesc": "EduMétéo pinnu láti jẹ́ kí ẹ̀kọ́ ojú-ọjọ́ wúlò fún gbogbo ènìyàn. Pẹpẹ wa darapọ̀ mọ́ ìmọ̀ sáyẹ́nsì àti ẹ̀kọ́ tuntun láti kọ́ ìran tuntun ti àwọn amọ̀ja ojú-ọjọ́.",
+    "stats": {
+      "courses": "Ẹ̀kọ́ tó wà",
+      "students": "Àwọn akẹ́kọ̀ọ́",
+      "experts": "Amọ̀ja ojú-ọjọ́"
+    },
+    "valuesTitle": "Ànfààní Wa",
+    "valuesSubtitle": "Kí ni ń tọ́ wa lọ́run ní gbogbo ìgbésẹ wa",
+    "values": {
+      "0": { "title": "Ìtẹ́lọ́run", "desc": "A n wa ìtẹ́lọ́run gíga nínú gbogbo ẹ̀kọ́ wa" },
+      "1": { "title": "Ìmúlò tuntun", "desc": "Ọ̀nà ẹ̀kọ́ tuntun fún ẹ̀kọ́ tó péye" },
+      "2": { "title": "Ìraye Gbogbo ènìyàn", "desc": "Ẹ̀kọ́ tó wà fún gbogbo ènìyàn, laibikita ipele" }
+    },
+    "teamTitle": "Ẹgbẹ́ Wa",
+    "teamSubtitle": "Àwọn akẹ́kọ̀ọ́ tó nífẹ̀ẹ́ pẹpẹ EduMétéo",
+    "team": {
+      "0": { "role": "Olùdarí Ẹ̀kọ́", "bio": "Ìrírí ọdún 15 nínú ẹ̀kọ́ sáyẹ́nsì" },
+      "1": { "role": "Olùdarí Ẹ̀rọ", "bio": "Amọ̀ja pẹpẹ ẹ̀kọ́" },
+      "2": { "role": "Olùkópa Ẹ̀kọ́", "bio": "Ìmọ̀ ní ojú-ọjọ́ tó wúlò" }
+    }
+  },
+  "homePage": {
+    "heroTitle": "Kaabo si METEO-BENIN",
+    "heroSubtitle": "Pẹpẹ oju-ọjọ́ ati ẹ̀kọ́ fún gbogbo ènìyàn",
+    "ctaCourses": "Ṣàwárí ẹ̀kọ́",
+    "ctaRegister": "Bẹrẹ nísinsin yìí"
+  },
+  "contact": {
+    "title": "Kọntákti",
+    "subtitle": "Ìbéèrè? Ẹgbẹ́ wa wà fún ọ",
+    "infoTitle": "Àdírẹ́sì wa",
+    "addressTitle": "Àdírẹ́sì",
+    "address": "123 Rue de la Météo<br>75000 Paris, France",
+    "emailTitle": "Ìmẹ́lì",
+    "email": "contact@meteo-benin.com",
+    "phoneTitle": "Fóònù",
+    "phone": "+33 1 23 45 67 89",
+    "hoursTitle": "Àkókò",
+    "hours": "Mọnde-Sannde: 9am-6pm<br>Satide: 10am-4pm",
+    "formTitle": "Firanṣẹ ifiranṣẹ",
+    "form": {
+      "nameLabel": "Orúkọ rẹ",
+      "namePlaceholder": "Adeola Akin",
+      "emailLabel": "Ìmẹ́lì rẹ",
+      "emailPlaceholder": "adeola@email.com",
+      "subjectLabel": "Kókó ifiranṣẹ",
+      "subjectPlaceholder": "Ìbéèrè nípa ẹ̀kọ́",
+      "messageLabel": "Ifiranṣẹ rẹ",
+      "messagePlaceholder": "Ṣàlàyé ìbéèrè rẹ...",
+      "send": "Firanṣẹ"
+    }
+  },
+  "coursesPage": {
+    "title": "Àwọn Ẹ̀kọ́ Wa",
+    "subtitle": "Wa ẹ̀kọ́ tó péye fún ìmọ̀ ojú-ọjọ́ rẹ",
+    "searchPlaceholder": "Wá ẹ̀kọ́, kókó, ọrọ̀...",
+    "searchBtn": "Wá",
+    "category": "Ẹ̀ka",
+    "allCategories": "Gbogbo",
+    "meteo": "Ojú-ọjọ́",
+    "climat": "Climatology",
+    "previsions": "Àṣàyàn",
+    "level": "Ipele",
+    "allLevels": "Gbogbo",
+    "beginner": "Akẹ́kọ̀ọ́ tuntun",
+    "intermediate": "Aarin",
+    "advanced": "Tó gíga",
+    "duration": "Akoko",
+    "allDurations": "Gbogbo",
+    "short": "Kéré ju 2wákàtí lọ",
+    "medium": "2-5wákàtí",
+    "long": "Tó ju 5wákàtí lọ",
+    "coursesAvailable": "ẹ̀kọ́ tó wà",
+    "sortPopular": "Tó gbajúmọ̀",
+    "sortRecent": "Tuntun",
+    "sortDuration": "Akoko",
+    "levels": {
+      "débutant": "Akẹ́kọ̀ọ́ tuntun",
+      "intermédiaire": "Aarin",
+      "avancé": "Tó gíga"
+    },
+    "free": "Ọfẹ",
+    "lessons": "kíláàsì",
+    "completed": "parí",
+    "continue": "Tesiwaju",
+    "start": "Bẹrẹ"
+  },
+  "weatherPage": {
+    "title": "Ìròyìn Ojú-ọjọ́",
+    "subtitle": "Àṣàyàn ojú-ọjọ́ ní àkókò gidi",
+    "searchPlaceholder": "Wá ìlú...",
+    "searchBtn": "Wá",
+    "forecastTabs": {
+      "hourly": "Wákàtí",
+      "daily": "Ọjọ meje"
+    },
+    "alertsTitle": "Ìkìlọ̀ ojú-ọjọ́",
+    "agriTitle": "Ìmòràn agbẹ lónìí",
+    "agriNote": "Ìmòràn yìí jẹ́ àpẹẹrẹ, ṣàtúnṣe sí agbègbè rẹ àti irugbin rẹ."
+  },
+  "login": {
+    "title": "Wọlé",
+    "subtitle": "Wọlé sí àyè rẹ",
+    "emailLabel": "Ìmẹ́lì",
+    "emailPlaceholder": "Ìmẹ́lì rẹ",
+    "passwordLabel": "Ọrọ aṣínà",
+    "passwordPlaceholder": "Ọrọ aṣínà rẹ",
+    "rememberMe": "Rántí mi",
+    "forgotPassword": "Gbagbe ọrọ aṣínà?",
+    "submit": "Wọlé",
+    "loading": "Nwọlé...",
+    "or": "tàbí",
+    "google": "Tẹ̀síwájú pẹ̀lú Google",
+    "noAccount": "Kò sí àkọọlẹ sibẹ?",
+    "register": "Forúkọsílẹ̀"
+  },
+  "register": {
+    "title": "Forúkọsílẹ̀",
+    "subtitle": "Forúkọsílẹ̀ láti wọlé sí gbogbo ẹ̀kọ́",
+    "nameLabel": "Orúkọ kikun",
+    "namePlaceholder": "Orúkọ rẹ",
+    "emailLabel": "Ìmẹ́lì",
+    "emailPlaceholder": "Ìmẹ́lì rẹ",
+    "passwordLabel": "Ọrọ aṣínà",
+    "passwordPlaceholder": "Ọrọ aṣínà rẹ",
+    "confirmPasswordLabel": "Ṣe àfihàn ọrọ aṣínà",
+    "confirmPasswordPlaceholder": "Ṣe àfihàn ọrọ aṣínà rẹ",
+    "acceptTerms": "Mo gba <a href=\"/terms\" target=\"_blank\">àwọn òfin</a> àti <a href=\"/privacy\" target=\"_blank\">àṣírí</a>",
+    "submit": "Forúkọsílẹ̀",
+    "loading": "Nforúkọsílẹ̀...",
+    "or": "tàbí",
+    "google": "Forúkọsílẹ̀ pẹ̀lú Google",
+    "alreadyAccount": "Ti forúkọsílẹ̀?",
+    "login": "Wọlé"
+  }
+} 

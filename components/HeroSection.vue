@@ -1,5 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const isMobile = ref(false);
 const rainContainer = ref(null);
@@ -42,11 +44,11 @@ const createRain = () => {
         <div class="rain" ref="rainContainer"></div>
       </div>
       <div class="hero-content">
-        <h1 class="hero-title">Apprenez sous tous les angles</h1>
-        <p class="hero-subtitle">Une plateforme d'e-learning qui s'adapte à votre rythme, comme la météo s'adapte aux saisons.</p>
+        <h1 class="hero-title">{{ $t('home.heroTitle') }}</h1>
+        <p class="hero-subtitle">{{ $t('home.heroSubtitle') }}</p>
         <div class="cta-buttons">
-          <nuxt-link to="/courses" class="btn-primary">Explorer les cours</nuxt-link>
-          <nuxt-link to="/register" class="btn-secondary">Commencer maintenant</nuxt-link>
+          <nuxt-link to="/courses" class="btn-primary">{{ $t('home.exploreCourses') }}</nuxt-link>
+          <nuxt-link to="/register" class="btn-secondary">{{ $t('home.startNow') }}</nuxt-link>
         </div>
       </div>
     </section>

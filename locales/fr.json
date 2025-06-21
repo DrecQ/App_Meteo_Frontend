@@ -5,7 +5,8 @@
     "education": "Éducation",
     "about": "À propos",
     "login": "Connexion",
-    "register": "Inscription"
+    "register": "Inscription",
+    "contact": "Contact"
   },
   "courses": {
     "title": "Nos Cours",
@@ -26,5 +27,240 @@
     "lessons": "leçons",
     "students": "étudiants",
     "rating": "note"
+  },
+  "home": {
+    "heroTitle": "Bienvenue sur METEO-BENIN",
+    "heroSubtitle": "La plateforme météo et éducation pour tous",
+    "ctaCourses": "Explorer les cours",
+    "ctaRegister": "Commencer maintenant",
+    "whyTitle": "Pourquoi choisir notre plateforme ?",
+    "whySubtitle": "Découvrez les avantages qui font la différence",
+    "why": {
+      "reasons": [
+        { "title": "Pédagogie innovante", "desc": "Méthodes d'apprentissage éprouvées et adaptées à chacun" },
+        { "title": "Experts qualifiés", "desc": "Enseignants sélectionnés pour leur expertise et pédagogie" },
+        { "title": "Plateforme intuitive", "desc": "Interface claire et facile à prendre en main" },
+        { "title": "Flexibilité totale", "desc": "Apprenez à votre rythme, quand vous voulez" }
+      ]
+    },
+    "typesTitle": "Nos Types de Cours",
+    "typesSubtitle": "Découvrez une variété de formats adaptés à tous les styles d'apprentissage",
+    "types": {
+      "0": { "badge": "Populaire", "title": "Cours Vidéo", "desc": "Apprenez à travers des vidéos explicatives et des tutoriels détaillés.", "button": "Découvrir" },
+      "1": { "badge": "En Direct", "title": "Cours Interactifs", "desc": "Participez à des sessions en direct et interagissez avec les enseignants.", "button": "Découvrir" },
+      "2": { "badge": "Nouveau", "title": "Quiz et Exercices", "desc": "Testez vos connaissances avec des quiz et des exercices pratiques.", "button": "Découvrir" },
+      "3": { "badge": "Essentiel", "title": "Ressources Pédagogiques", "desc": "Accédez à une bibliothèque complète de ressources d'apprentissage.", "button": "Découvrir" },
+      "progress": "complété",
+      "viewAll": "Voir tous les cours"
+    },
+    "stats": [
+      "Étudiants inscrits",
+      "Cours disponibles",
+      "Enseignants experts",
+      "Taux de satisfaction"
+    ],
+    "faqTitle": "Questions Fréquentes",
+    "faqSubtitle": "Trouvez rapidement des réponses à vos questions",
+    "faq": {
+      "explored": "questions explorées",
+      "learnMore": "En savoir plus",
+      "0": { "q": "Comment accéder aux cours ?", "a": "Après inscription, vous recevez un accès immédiat à votre espace membre avec toutes les ressources disponibles." },
+      "1": { "q": "Puis-je suivre les cours sur mobile ?", "a": "Oui, notre plateforme est entièrement responsive et s'adapte à tous les appareils." },
+      "2": { "q": "Y a-t-il un certificat à la fin ?", "a": "Tous nos parcours complets délivrent un certificat de réussite après validation des acquis." },
+      "3": { "q": "Quel est le rythme recommandé ?", "a": "Nous recommandons 2-3 cours par semaine pour une progression optimale, à votre rythme." },
+      "4": { "q": "Comment annuler mon abonnement ?", "a": "Vous pouvez gérer votre abonnement à tout moment dans la section 'Mon compte'." }
+    },
+    "footer": {
+      "stayInformed": "Restez informé",
+      "subscribe": "Abonnez-vous pour recevoir nos actualités et offres",
+      "yourEmail": "Votre email",
+      "signup": "S'inscrire",
+      "navigation": "Navigation",
+      "home": "Accueil",
+      "courses": "Cours",
+      "pricing": "Tarifs",
+      "contact": "Contact",
+      "resources": "Ressources",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "guides": "Guides",
+      "webinars": "Webinaires",
+      "legal": "Légal",
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "cookies": "Cookies",
+      "contact2": "Contact",
+      "email": "contact@meteo-benin.com",
+      "phone": "+33 1 23 45 67 89",
+      "copyright": "© 2025 EduMétéo - Tous droits réservés"
+    }
+  },
+  "about": {
+    "title": "À propos",
+    "subtitle": "Découvrez notre mission, nos valeurs et notre équipe",
+    "missionTitle": "Notre Mission",
+    "missionDesc": "EduMétéo s'engage à rendre l'apprentissage de la météorologie accessible à tous. Notre plateforme combine expertise scientifique et pédagogie innovante pour former la prochaine génération de météorologues et de passionnés du climat.",
+    "stats": {
+      "courses": "Cours disponibles",
+      "students": "Étudiants formés",
+      "experts": "Experts météo"
+    },
+    "valuesTitle": "Nos Valeurs",
+    "valuesSubtitle": "Ce qui guide chacune de nos actions",
+    "values": {
+      "0": { "title": "Excellence", "desc": "Nous visons l'excellence académique dans chaque cours proposé" },
+      "1": { "title": "Innovation", "desc": "Méthodes pédagogiques innovantes pour un apprentissage optimal" },
+      "2": { "title": "Accessibilité", "desc": "Des cours accessibles à tous, quel que soit le niveau initial" }
+    },
+    "teamTitle": "Notre Équipe",
+    "teamSubtitle": "Les passionnés qui font vivre EduMétéo",
+    "team": {
+      "0": { "role": "Directrice Pédagogique", "bio": "15 ans d'expérience en éducation scientifique" },
+      "1": { "role": "Responsable Technique", "bio": "Spécialiste des plateformes éducatives" },
+      "2": { "role": "Coordinatrice des Cours", "bio": "Expertise en météorologie appliquée" }
+    }
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Une question ? Notre équipe est à votre écoute",
+    "infoTitle": "Nos coordonnées",
+    "addressTitle": "Adresse",
+    "address": "123 Rue de la Météo<br>75000 Paris, France",
+    "emailTitle": "Email",
+    "email": "contact@meteo-benin.com",
+    "phoneTitle": "Téléphone",
+    "phone": "+33 1 23 45 67 89",
+    "hoursTitle": "Horaires",
+    "hours": "Lun-Ven: 9h-18h<br>Sam: 10h-16h",
+    "formTitle": "Envoyez un message",
+    "form": {
+      "nameLabel": "Votre nom complet",
+      "namePlaceholder": "Jean Dupont",
+      "emailLabel": "Votre email",
+      "emailPlaceholder": "jean.dupont@email.com",
+      "subjectLabel": "Sujet du message",
+      "subjectPlaceholder": "Question sur les cours",
+      "messageLabel": "Votre message",
+      "messagePlaceholder": "Décrivez votre demande en détail...",
+      "send": "Envoyer le message"
+    }
+  },
+  "coursesPage": {
+    "title": "Nos Cours",
+    "subtitle": "Trouvez le cours parfait pour développer vos compétences en météorologie",
+    "searchPlaceholder": "Rechercher un cours, un sujet, un mot-clé...",
+    "searchBtn": "Rechercher",
+    "category": "Catégorie",
+    "allCategories": "Toutes",
+    "meteo": "Météorologie",
+    "climat": "Climatologie",
+    "previsions": "Prévisions",
+    "level": "Niveau",
+    "allLevels": "Tous",
+    "beginner": "Débutant",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé",
+    "duration": "Durée",
+    "allDurations": "Toutes",
+    "short": "Moins de 2h",
+    "medium": "2-5h",
+    "long": "Plus de 5h",
+    "coursesAvailable": "cours disponibles",
+    "sortPopular": "Plus populaires",
+    "sortRecent": "Plus récents",
+    "sortDuration": "Durée",
+    "levels": {
+      "débutant": "Débutant",
+      "intermédiaire": "Intermédiaire",
+      "avancé": "Avancé"
+    },
+    "free": "Gratuit",
+    "lessons": "leçons",
+    "completed": "complété",
+    "continue": "Continuer",
+    "start": "Commencer"
+  },
+  "weatherPage": {
+    "title": "Bulletin Météo",
+    "subtitle": "Les prévisions météorologiques en temps réel",
+    "searchPlaceholder": "Rechercher une ville...",
+    "searchBtn": "Rechercher",
+    "forecastTabs": {
+      "hourly": "Horaires",
+      "daily": "7 jours"
+    },
+    "alertsTitle": "Alertes météo",
+    "agriTitle": "Conseils agricoles du jour",
+    "agriNote": "Ces conseils sont donnés à titre indicatif et doivent être adaptés à votre région et à vos cultures spécifiques.",
+    "current": {
+      "location": "Lieu",
+      "date": "Date",
+      "feelsLike": "Ressenti",
+      "humidity": "Humidité",
+      "wind": "Vent",
+      "visibility": "Visibilité",
+      "sunrise": "Lever du soleil",
+      "sunset": "Coucher du soleil"
+    },
+    "details": {
+      "hour": "Heure",
+      "temp": "Température",
+      "precipitation": "Précipitation",
+      "max": "Max",
+      "min": "Min"
+    },
+    "tabs": {
+      "hourly": "Prévisions horaires",
+      "daily": "Prévisions quotidiennes"
+    },
+    "alerts": {
+      "title": "Titre de l'alerte",
+      "desc": "Description de l'alerte",
+      "period": "Période"
+    },
+    "agri": {
+      "soil": "Préparation des sols : Profitez des pluies récentes pour labourer et enrichir vos champs.",
+      "sowing": "Semis : Les conditions sont favorables pour semer le maïs, le manioc et l'arachide.",
+      "treatment": "Traitements phytosanitaires : Surveillez l'apparition de maladies fongiques dues à l'humidité élevée.",
+      "irrigation": "Irrigation : Limitez l'irrigation en période de fortes pluies pour éviter l'asphyxie des racines.",
+      "harvest": "Récolte : Privilégiez la récolte tôt le matin pour conserver la fraîcheur des produits.",
+      "market": "Marché : Consultez les prix locaux avant de vendre vos récoltes pour optimiser vos revenus.",
+      "note": "Ces conseils sont donnés à titre indicatif et doivent être adaptés à votre région et à vos cultures spécifiques."
+    }
+  },
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Connectez-vous pour accéder à votre espace",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Votre email",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Votre mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+    "loading": "Connexion...",
+    "or": "ou",
+    "google": "Continuer avec Google",
+    "noAccount": "Pas encore de compte ?",
+    "register": "Créer un compte"
+  },
+  "register": {
+    "title": "Inscription",
+    "subtitle": "Créez votre compte pour accéder à tous les cours",
+    "nameLabel": "Nom complet",
+    "namePlaceholder": "Votre nom complet",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Votre email",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Votre mot de passe",
+    "confirmPasswordLabel": "Confirmer le mot de passe",
+    "confirmPasswordPlaceholder": "Confirmez votre mot de passe",
+    "acceptTerms": "J'accepte les <a href=\"/terms\" target=\"_blank\">conditions d'utilisation</a> et la <a href=\"/privacy\" target=\"_blank\">politique de confidentialité</a>",
+    "submit": "Créer mon compte",
+    "loading": "Création du compte...",
+    "or": "ou",
+    "google": "S'inscrire avec Google",
+    "alreadyAccount": "Déjà inscrit ?",
+    "login": "Se connecter"
   }
 } 

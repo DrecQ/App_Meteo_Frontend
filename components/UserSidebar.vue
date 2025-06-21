@@ -2,7 +2,7 @@
   <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
     <div class="sidebar-header">
       <i class="fas fa-user-circle sidebar-logo"></i>
-      <span class="sidebar-title">Espace Membre</span>
+      <span class="sidebar-title">Michel Ange</span>
     </div>
     <nav class="sidebar-nav">
       <button @click="handleHomeClick" class="sidebar-link home-link">
@@ -17,6 +17,9 @@
       </NuxtLink>
       <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
         <i class="fas fa-certificate"></i> Certificats
+      </NuxtLink>
+      <NuxtLink to="/user/community-chat" class="sidebar-link" active-class="active" @click="closeSidebar">
+        <i class="fas fa-comments"></i> Chat communautaire
       </NuxtLink>
       <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
         <i class="fas fa-user"></i> Profil

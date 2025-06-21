@@ -3,17 +3,17 @@
     <!-- Bannière améliorée -->
     <div class="page-banner">
       <div class="banner-content">
-        <h1>Cours</h1>
-        <p>Trouvez le cours parfait pour développer vos compétences en météorologie</p>
+        <h1>{{ $t('coursesPage.title') }}</h1>
+        <p>{{ $t('coursesPage.subtitle') }}</p>
         <div class="search-bar">
           <input 
             type="text" 
-            placeholder="Rechercher un cours, un sujet, un mot-clé..." 
+            :placeholder="$t('coursesPage.searchPlaceholder')" 
             v-model="searchQuery"
             class="search-input"
           />
           <button class="search-btn" @click="searchCourses">
-            <i class="fas fa-search"></i> Rechercher
+            <i class="fas fa-search"></i> {{ $t('coursesPage.searchBtn') }}
           </button>
         </div>
       </div>
@@ -25,43 +25,43 @@
         <!-- Filtres -->
         <div class="filters-section">
           <div class="filter-group">
-            <label>Catégorie :</label>
+            <label>{{ $t('coursesPage.category') }} :</label>
             <select v-model="selectedCategory" class="filter-select">
-              <option value="">Toutes</option>
-              <option value="meteo">Météorologie</option>
-              <option value="climat">Climatologie</option>
-              <option value="previsions">Prévisions</option>
+              <option value="">{{ $t('coursesPage.allCategories') }}</option>
+              <option value="meteo">{{ $t('coursesPage.meteo') }}</option>
+              <option value="climat">{{ $t('coursesPage.climat') }}</option>
+              <option value="previsions">{{ $t('coursesPage.previsions') }}</option>
             </select>
           </div>
 
           <div class="filter-group">
-            <label>Niveau :</label>
+            <label>{{ $t('coursesPage.level') }} :</label>
             <select v-model="selectedLevel" class="filter-select">
-              <option value="">Tous</option>
-              <option value="debutant">Débutant</option>
-              <option value="intermediaire">Intermédiaire</option>
-              <option value="avance">Avancé</option>
+              <option value="">{{ $t('coursesPage.allLevels') }}</option>
+              <option value="debutant">{{ $t('coursesPage.beginner') }}</option>
+              <option value="intermediaire">{{ $t('coursesPage.intermediate') }}</option>
+              <option value="avance">{{ $t('coursesPage.advanced') }}</option>
             </select>
           </div>
 
           <div class="filter-group">
-            <label>Durée :</label>
+            <label>{{ $t('coursesPage.duration') }} :</label>
             <select v-model="selectedDuration" class="filter-select">
-              <option value="">Toutes</option>
-              <option value="courte">Moins de 2h</option>
-              <option value="moyenne">2-5h</option>
-              <option value="longue">Plus de 5h</option>
+              <option value="">{{ $t('coursesPage.allDurations') }}</option>
+              <option value="courte">{{ $t('coursesPage.short') }}</option>
+              <option value="moyenne">{{ $t('coursesPage.medium') }}</option>
+              <option value="longue">{{ $t('coursesPage.long') }}</option>
             </select>
           </div>
         </div>
 
         <!-- Résultats -->
         <div class="results-info">
-          <p>{{ filteredCourses.length }} cours disponibles</p>
+          <p>{{ filteredCourses.length }} {{ $t('coursesPage.coursesAvailable') }}</p>
           <select v-model="sortOption" class="sort-select">
-            <option value="popular">Plus populaires</option>
-            <option value="recent">Plus récents</option>
-            <option value="duration">Durée</option>
+            <option value="popular">{{ $t('coursesPage.sortPopular') }}</option>
+            <option value="recent">{{ $t('coursesPage.sortRecent') }}</option>
+            <option value="duration">{{ $t('coursesPage.sortDuration') }}</option>
           </select>
         </div>
 
@@ -75,10 +75,10 @@
           >
             <div class="course-header">
               <div class="course-level" :class="course.level.toLowerCase()">
-                {{ course.level }}
+                {{ $t('coursesPage.levels.' + course.level.toLowerCase()) }}
               </div>
               <div v-if="course.isFree" class="course-badge-free">
-                Gratuit
+                {{ $t('coursesPage.free') }}
               </div>
               <h3 class="course-title">{{ course.title }}</h3>
             </div>
@@ -92,7 +92,7 @@
               </div>
               <div class="meta-item">
                 <i class="fas fa-book"></i>
-                <span>{{ course.lessons }} leçons</span>
+                <span>{{ course.lessons }} {{ $t('coursesPage.lessons') }}</span>
               </div>
             </div>
 
@@ -106,11 +106,11 @@
               <div class="progress-bar">
                 <div class="progress" :style="{ width: `${course.progress}%` }"></div>
               </div>
-              <span class="progress-text">{{ course.progress }}% complété</span>
+              <span class="progress-text">{{ course.progress }}% {{ $t('coursesPage.completed') }}</span>
             </div>
 
             <NuxtLink :to="`/course/${course.id}`" class="course-button">
-              {{ isUserLoggedIn && course.progress > 0 ? 'Continuer' : 'Commencer' }}
+              {{ isUserLoggedIn && course.progress > 0 ? $t('coursesPage.continue') : $t('coursesPage.start') }}
             </NuxtLink>
           </div>
         </div>
@@ -122,8 +122,10 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
+const { t } = useI18n();
 
 // Simuler l'état de connexion de l'utilisateur (à remplacer par votre logique d'authentification)
 const isUserLoggedIn = ref(false);

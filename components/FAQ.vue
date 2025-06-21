@@ -2,13 +2,13 @@
     <section class="faq-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Questions Fréquentes</h2>
-          <p class="section-subtitle">Trouvez rapidement des réponses à vos questions</p>
+          <h2 class="section-title">{{ $t('home.faqTitle') }}</h2>
+          <p class="section-subtitle">{{ $t('home.faqSubtitle') }}</p>
           
           <!-- Barre de progression -->
           <div class="progress-container">
             <div class="progress-bar" :style="{ width: progress + '%' }"></div>
-            <span class="progress-text">{{ answeredCount }} / {{ faqItems.length }} questions explorées</span>
+            <span class="progress-text">{{ answeredCount }} / {{ faqItems.length }} {{ $t('home.faq.explored') }}</span>
           </div>
         </div>
   
@@ -23,7 +23,7 @@
             <div class="faq-question" :aria-expanded="item.isOpen">
               <div class="question-content">
                 <div class="question-number">0{{ index + 1 }}</div>
-                <h3 class="question-text">{{ item.question }}</h3>
+                <h3 class="question-text">{{ $t(`home.faq.${index}.q`) }}</h3>
                 <div class="status-indicator" :class="{ 'visible': item.isOpen }">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -40,9 +40,9 @@
             </div>
             <div class="faq-answer" :class="{ 'open': item.isOpen }" :aria-hidden="!item.isOpen">
               <div class="answer-content">
-                <p>{{ item.answer }}</p>
+                <p>{{ $t(`home.faq.${index}.a`) }}</p>
                 <button v-if="item.link" class="learn-more-btn">
-                  En savoir plus
+                  {{ $t('home.faq.learnMore') }}
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
@@ -57,44 +57,18 @@
   
   <script setup>
   import { ref, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
+  const { t } = useI18n();
   
   const props = defineProps({
-    sectionTitle: {
-      type: String,
-      default: "Questions Fréquentes"
-    },
-    sectionDescription: {
-      type: String,
-      default: "Trouvez des réponses rapides à vos interrogations"
-    },
     items: {
       type: Array,
       default: () => [
-        {
-          question: "Comment accéder aux cours ?",
-          answer: "Après inscription, vous recevez un accès immédiat à votre espace membre avec toutes les ressources disponibles.",
-          link: true
-        },
-        {
-          question: "Puis-je suivre les cours sur mobile ?",
-          answer: "Oui, notre plateforme est entièrement responsive et s'adapte à tous les appareils.",
-          link: false
-        },
-        {
-          question: "Y a-t-il un certificat à la fin ?",
-          answer: "Tous nos parcours complets délivrent un certificat de réussite après validation des acquis.",
-          link: true
-        },
-        {
-          question: "Quel est le rythme recommandé ?",
-          answer: "Nous recommandons 2-3 cours par semaine pour une progression optimale, à votre rythme.",
-          link: false
-        },
-        {
-          question: "Comment annuler mon abonnement ?",
-          answer: "Vous pouvez gérer votre abonnement à tout moment dans la section 'Mon compte'.",
-          link: true
-        }
+        { link: true },
+        { link: false },
+        { link: true },
+        { link: false },
+        { link: true }
       ]
     }
   });

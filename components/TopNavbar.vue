@@ -3,7 +3,7 @@
     <div class="container">
       <div class="nav-right">
         <div class="logo-mobile">
-          <Logo />
+          <span class="logo-text">METEO-BENIN</span>
         </div>
         <div class="nav-actions">
           <div class="language-switcher">
@@ -22,8 +22,7 @@
           </div>
           <div class="auth-buttons" v-if="!isLoggedIn">
             <NuxtLink to="/login" class="btn-login">
-              <i class="fas fa-sign-in-alt"></i>
-              <span>Connexion</span>
+              <span>{{ $t('nav.login') }}</span>
             </NuxtLink>
           </div>
           <template v-else>
@@ -32,7 +31,7 @@
               <span>{{ authStore.currentUser?.name }}</span>
             </NuxtLink>
           </template>
-          <button class="mobile-menu-btn" @click="toggleMobileMenu" :class="{ 'active': isMobileMenuOpen }" :aria-label="isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'">
+          <button class="mobile-menu-btn" @click="toggleMobileMenu" :class="{ 'active': isMobileMenuOpen }" :aria-label="isMobileMenuOpen ? $t('nav.closeMenu') : $t('nav.openMenu')">
             <i class="fas" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
           </button>
         </div>
@@ -45,11 +44,12 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import Logo from './Logo.vue';
+import { useI18n } from 'vue-i18n';
 
 const route = useRoute();
 const authStore = useAuthStore();
-const currentLang = ref('fr');
+const { locale, t } = useI18n();
+const currentLang = ref(locale.value);
 const isMobileMenuOpen = ref(false);
 const isScrolled = ref(false);
 const isLanguageDropdownOpen = ref(false);
@@ -112,6 +112,7 @@ const toggleLanguageDropdown = () => {
 
 const changeLanguage = (lang) => {
   currentLang.value = lang;
+  locale.value = lang;
   emit('language-changed', lang);
   isLanguageDropdownOpen.value = false;
 };
@@ -277,6 +278,13 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
   border-radius: 4px;
 }
 
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: white;
+}
+
 @media (max-width: 768px) {
   .top-navbar {
     padding: 0.5rem 0;
@@ -329,6 +337,10 @@ const emit = defineEmits(['toggle-menu', 'language-changed']);
   .mobile-menu-btn.active {
     background: rgba(255, 255, 255, 0.2);
     border-color: white;
+  }
+
+  .logo-text {
+    font-size: 1.3rem;
   }
 }
 </style>

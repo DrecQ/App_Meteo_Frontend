@@ -9,7 +9,6 @@
     <div class="auth-container">
       <div class="auth-header">
         <div class="logo">
-          <i class="fas fa-cloud-sun-rain"></i>
           <NuxtLink to="/" class="logo-link">METEO-BENIN</NuxtLink>
         </div>
         <h1>Inscription</h1>
@@ -17,9 +16,9 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="auth-form">
-        <div v-if="authStore.error" class="error-message">
+        <!-- <div v-if="authStore.error" class="error-message">
           {{ authStore.error }}
-          </div>
+        </div> -->
 
           <div class="form-group">
           <label for="name">Nom complet</label>
@@ -276,13 +275,15 @@ const signInWithGoogle = () => {
 
 .auth-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   z-index: 1;
+  position: relative;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
 .auth-header {
@@ -295,8 +296,8 @@ const signInWithGoogle = () => {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.8rem;
+  font-weight: 700;
   color: #2c3e50;
   margin-bottom: 1rem;
 }
@@ -306,9 +307,10 @@ const signInWithGoogle = () => {
 }
 
 .auth-header h1 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #2c3e50;
   margin-bottom: 0.5rem;
+  font-weight: normal;
 }
 
 .auth-header p {
@@ -347,7 +349,7 @@ const signInWithGoogle = () => {
 
 .input-group input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.8rem 1rem 0.8rem 2.2rem;
   border: 1px solid #e0e6ed;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -407,7 +409,7 @@ const signInWithGoogle = () => {
 .btn-submit {
   background-color: #3498db;
   color: white;
-  padding: 0.75rem;
+  padding: 0.8rem;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -450,7 +452,7 @@ const signInWithGoogle = () => {
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.8rem;
   background-color: white;
   border: 1px solid #e0e6ed;
   border-radius: 0.5rem;
@@ -528,5 +530,13 @@ const signInWithGoogle = () => {
     width: 100px;
     height: 40px;
   }
+}
+
+.logo-link {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-decoration: none;
+  display: inline-block;
 }
 </style>

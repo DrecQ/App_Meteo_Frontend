@@ -13,7 +13,7 @@
     <aside class="user-sidebar" :class="{ 'open': isSidebarOpen }">
       <div class="sidebar-header">
         <i class="fas fa-user-circle sidebar-logo"></i>
-        <span class="sidebar-title">Espace Membre</span>
+        <span class="sidebar-title">Michel Ange</span>
       </div>
       <nav class="sidebar-nav">
         <button @click="handleHomeClick" class="sidebar-link home-link">
@@ -28,6 +28,9 @@
         </NuxtLink>
         <NuxtLink to="/user/certificates" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-certificate"></i> Certificats
+        </NuxtLink>
+        <NuxtLink to="/user/community-chat" class="sidebar-link" active-class="active" @click="closeSidebar">
+          <i class="fas fa-comments"></i> Chat communautaire
         </NuxtLink>
         <NuxtLink to="/user/profile" class="sidebar-link" active-class="active" @click="closeSidebar">
           <i class="fas fa-user"></i> Profil
@@ -130,6 +133,7 @@ const certificates = ref([
     expiryDate: '15/03/2027',
     status: 'valid',
     obtained: false,
+    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=meteo',
     conditions: [
       {
         text: 'Compléter tous les modules du cours de météorologie de base',
@@ -157,6 +161,7 @@ const certificates = ref([
     expiryDate: '01/02/2026',
     status: 'valid',
     obtained: false,
+    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=expert',
     conditions: [
       {
         text: 'Posséder le Certificat en Météorologie de Base',
@@ -188,6 +193,7 @@ const certificates = ref([
     expiryDate: '10/01/2025',
     status: 'expiring',
     obtained: false,
+    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=climat',
     conditions: [
       {
         text: 'Avoir suivi le cours de climatologie avancée',
@@ -219,6 +225,7 @@ const certificates = ref([
     expiryDate: '20/12/2024',
     status: 'expired',
     obtained: false,
+    image: 'https://api.dicebear.com/6.x/shapes/svg?seed=technicien',
     conditions: [
       {
         text: 'Compléter la formation technique sur les instruments météorologiques',

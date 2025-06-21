@@ -9,70 +9,77 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.token && !!state.user,
-    currentUser: (state) => state.user
+    isAuthenticated: (state) => !!state.token,
+    userRole: (state) => state.user?.role || null
   },
 
   actions: {
-    setToken(token) {
-      this.token = token
-      if (process.client) {
-        if (token) {
-          localStorage.setItem('auth_token', token)
-        } else {
-          localStorage.removeItem('auth_token')
-        }
-      }
-    },
-
-    setUser(user) {
-      this.user = user
-      if (process.client) {
-        if (user) {
-          localStorage.setItem('user_data', JSON.stringify(user))
-        } else {
-          localStorage.removeItem('user_data')
-        }
-      }
-    },
-
     async login(credentials) {
       this.loading = true
       this.error = null
       try {
-        // Simuler une réponse d'API
-        const response = {
-          token: 'fake-jwt-token',
-          user: {
-            id: 1,
-            firstName: credentials.email.split('@')[0],
-            lastName: 'User',
-            email: credentials.email,
-            role: 'user',
-            createdAt: new Date(),
-            lastLogin: new Date(),
-            certificates: [],
-            courses: []
-          }
+        // Authentification simple : email et mot de passe en dur pour la démo
+        if (
+          (credentials.email === 'demo@benin.com' && credentials.password === 'demo1234') ||
+          (credentials.email === 'test@benin.com' && credentials.password === 'test1234')
+        ) {
+          this.token = 'fake-jwt-token'
+          this.user = { email: credentials.email, name: 'Utilisateur Bénin', role: 'user' }
+          localStorage.setItem('auth_token', this.token)
+          localStorage.setItem('user_data', JSON.stringify(this.user))
+          return { token: this.token, user: this.user }
+        } else {
+          throw new Error('Email ou mot de passe incorrect')
         }
-
-        this.setToken(response.token)
-        this.setUser(response.user)
-        return response
       } catch (error) {
-        console.error('Erreur de connexion:', error)
+        this.error = error.message
         throw error
       } finally {
         this.loading = false
       }
     },
 
-    logout() {
-      this.token = null
-      this.user = null
-      if (process.client) {
+    async register(userData) {
+      this.loading = true
+      this.error = null
+      try {
+        // Enregistrement fictif : accepte tout, pas d'appel API
+        this.token = 'fake-jwt-token'
+        this.user = { email: userData.email, name: userData.name, role: 'user' }
+        localStorage.setItem('auth_token', this.token)
+        localStorage.setItem('user_data', JSON.stringify(this.user))
+        return { token: this.token, user: this.user }
+      } catch (error) {
+        this.error = error.message
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async logout() {
+      this.loading = true
+      this.error = null
+      try {
+        // Suppression des données locales
         localStorage.removeItem('auth_token')
         localStorage.removeItem('user_data')
+        this.token = null
+        this.user = null
+      } catch (error) {
+        this.error = error.message
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
+    initializeAuth() {
+      const token = localStorage.getItem('auth_token')
+      const userData = localStorage.getItem('user_data')
+      if (token && userData) {
+        this.token = token
+        this.user = JSON.parse(userData)
       }
     }
   }

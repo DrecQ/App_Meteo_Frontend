@@ -3,8 +3,8 @@
     <!-- Bannière améliorée -->
     <div class="page-banner">
       <div class="banner-content">
-        <h1>Contactez-nous</h1>
-        <p>Une question ? Notre équipe est à votre écoute</p>
+        <h1>{{ $t('contact.title') }}</h1>
+        <p>{{ $t('contact.subtitle') }}</p>
       </div>
     </div>
 
@@ -14,15 +14,15 @@
         <div class="contact-grid">
           <!-- Informations de contact -->
           <div class="contact-info" data-aos="fade-right">
-            <h2 class="section-title">Nos coordonnées</h2>
+            <h2 class="section-title">{{ $t('contact.infoTitle') }}</h2>
             
             <div class="info-card">
               <div class="info-icon">
                 <i class="fas fa-map-marker-alt"></i>
               </div>
               <div class="info-content">
-                <h3>Adresse</h3>
-                <p>123 Rue de la Météo<br>75000 Paris, France</p>
+                <h3>{{ $t('contact.addressTitle') }}</h3>
+                <p>{{ $t('contact.address') }}</p>
               </div>
             </div>
             
@@ -31,8 +31,8 @@
                 <i class="fas fa-envelope"></i>
               </div>
               <div class="info-content">
-                <h3>Email</h3>
-                <p>contact@meteo-benin.com</p>
+                <h3>{{ $t('contact.emailTitle') }}</h3>
+                <p>{{ $t('contact.email') }}</p>
               </div>
             </div>
             
@@ -41,8 +41,8 @@
                 <i class="fas fa-phone-alt"></i>
               </div>
               <div class="info-content">
-                <h3>Téléphone</h3>
-                <p>+33 1 23 45 67 89</p>
+                <h3>{{ $t('contact.phoneTitle') }}</h3>
+                <p>{{ $t('contact.phone') }}</p>
               </div>
             </div>
             
@@ -51,8 +51,8 @@
                 <i class="fas fa-clock"></i>
               </div>
               <div class="info-content">
-                <h3>Horaires</h3>
-                <p>Lun-Ven: 9h-18h<br>Sam: 10h-16h</p>
+                <h3>{{ $t('contact.hoursTitle') }}</h3>
+                <p>{{ $t('contact.hours') }}</p>
               </div>
             </div>
             
@@ -66,54 +66,54 @@
 
           <!-- Formulaire de contact -->
           <div class="contact-form" data-aos="fade-left">
-            <h2 class="section-title">Envoyez un message</h2>
+            <h2 class="section-title">{{ $t('contact.formTitle') }}</h2>
             <form @submit.prevent="submitForm" class="form-container">
               <div class="form-group">
-                <label for="name">Votre nom complet</label>
+                <label for="name">{{ $t('contact.form.nameLabel') }}</label>
                 <input 
                   type="text" 
                   id="name" 
                   v-model="form.name" 
-                  placeholder="Jean Dupont" 
+                  :placeholder="$t('contact.form.namePlaceholder')" 
                   required 
                 />
               </div>
               
               <div class="form-group">
-                <label for="email">Votre email</label>
+                <label for="email">{{ $t('contact.form.emailLabel') }}</label>
                 <input 
                   type="email" 
                   id="email" 
                   v-model="form.email" 
-                  placeholder="jean.dupont@email.com" 
+                  :placeholder="$t('contact.form.emailPlaceholder')" 
                   required 
                 />
               </div>
               
               <div class="form-group">
-                <label for="subject">Sujet du message</label>
+                <label for="subject">{{ $t('contact.form.subjectLabel') }}</label>
                 <input 
                   type="text" 
                   id="subject" 
                   v-model="form.subject" 
-                  placeholder="Question sur les cours" 
+                  :placeholder="$t('contact.form.subjectPlaceholder')" 
                   required 
                 />
               </div>
               
               <div class="form-group">
-                <label for="message">Votre message</label>
+                <label for="message">{{ $t('contact.form.messageLabel') }}</label>
                 <textarea 
                   id="message" 
                   v-model="form.message" 
                   rows="5" 
-                  placeholder="Décrivez votre demande en détail..." 
+                  :placeholder="$t('contact.form.messagePlaceholder')" 
                   required
                 ></textarea>
               </div>
               
               <button type="submit" class="btn-submit">
-                <i class="fas fa-paper-plane"></i> Envoyer le message
+                <i class="fas fa-paper-plane"></i> {{ $t('contact.form.send') }}
               </button>
             </form>
           </div>
@@ -124,6 +124,8 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 import { ref } from 'vue';
 
 const form = ref({
