@@ -212,6 +212,15 @@ model Question {
   explanation String?
 }
 
+// Bulletin météo
+model Bulletin {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  createdBy String?  // id de l'admin (User) qui a posté
+}
+
 enum Role {
   USER
   EXPERT

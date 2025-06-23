@@ -60,11 +60,11 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    // Vérifier si l'utilisateur mérite un certificat (score >= 70%)
+    // Vérifier si l'utilisateur mérite un certificat (score >= 80% soit 4/5)
     const percentage = (score / maxScore) * 100
     let certificate = null
 
-    if (percentage >= 70) {
+    if (percentage >= 80) {
       // Vérifier si un certificat existe déjà pour ce cours
       const existingCertificate = await prisma.certificate.findFirst({
         where: {
@@ -87,6 +87,7 @@ export default defineEventHandler(async (event) => {
             description: `Certificat de réussite pour le cours "${course.title}" avec un score de ${score}/${maxScore} (${percentage.toFixed(1)}%)`,
             score: score,
             maxScore: maxScore,
+            percentage: percentage,
             issuedAt: issuedAt,
             expiresAt: expiresAt,
             certificateUrl: null,

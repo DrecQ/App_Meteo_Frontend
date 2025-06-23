@@ -179,6 +179,7 @@
     "completed": "complété",
     "continue": "Continuer",
     "start": "Commencer",
+    "download": "Télécharger le cours",
     "audio": {
       "listen": "Écouter",
       "stop": "Arrêter",
@@ -373,9 +374,9 @@
     "voiceQuestion": "Enregistrer une question à l'oral",
     "examples": "Exemples",
     "exampleQuestions": {
-      "rain": "Comment savoir s'il va pleuvoir demain ?",
-      "corn": "Quels conseils pour semer le maïs cette saison ?",
-      "drought": "Comment protéger mes cultures de la sécheresse ?"
+      "rain": "Quels sont les signes annonciateurs d'une forte pluie dans le nord du Bénin ?",
+      "corn": "À quel moment faut-il commencer à irriguer le maïs en début de saison ?",
+      "drought": "Quelles pratiques adopter pour limiter l'impact de la sécheresse sur le manioc ?"
     },
     "askQuestion": "Poser une question",
     "answers": "réponses",

@@ -771,9 +771,13 @@ async function saveQuizResults() {
       const percentage = response.certificate.percentage;
       const message = `🎉 Félicitations ! Vous avez obtenu un certificat avec un score de ${percentage.toFixed(1)}% !`;
       
-      // Afficher une notification ou une alerte
+      // Afficher une notification avec option de redirection
       setTimeout(() => {
-        alert(message);
+        const shouldRedirect = confirm(`${message}\n\nVoulez-vous voir votre certificat maintenant ?`);
+        if (shouldRedirect) {
+          // Rediriger vers la page des certificats
+          navigateTo('/user/certificates');
+        }
       }, 1000);
     }
 
@@ -923,6 +927,39 @@ async function submitClassicQuiz() {
 
     classicScore.value = resultData.score;
     classicResultsDetails.value = resultData.results;
+
+    // Sauvegarder le résultat pour vérifier l'obtention d'un certificat
+    try {
+      const courseId = route.params.id;
+      const response = await $fetch('/api/quiz/save-result', {
+        method: 'POST',
+        body: {
+          userId: authStore.user.id,
+          courseId: courseId,
+          score: classicScore.value,
+          maxScore: classicQuiz.value.questions.length
+        }
+      });
+
+      console.log('Résultats classiques sauvegardés:', response);
+
+      // Afficher une notification si un certificat a été obtenu
+      if (response.earnedCertificate && response.certificate) {
+        const percentage = response.certificate.percentage;
+        const message = `🎉 Félicitations ! Vous avez obtenu un certificat avec un score de ${percentage.toFixed(1)}% !`;
+        
+        // Afficher une notification avec option de redirection
+        setTimeout(() => {
+          const shouldRedirect = confirm(`${message}\n\nVoulez-vous voir votre certificat maintenant ?`);
+          if (shouldRedirect) {
+            // Rediriger vers la page des certificats
+            navigateTo('/user/certificates');
+          }
+        }, 1000);
+      }
+    } catch (saveError) {
+      console.error('Erreur lors de la sauvegarde des résultats classiques:', saveError);
+    }
 
   } catch (error) {
     console.error("Erreur lors de la soumission du quiz:", error);

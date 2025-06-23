@@ -110,17 +110,6 @@
 
             <!-- Boutons d'action -->
             <div class="course-actions">
-              <!-- Bouton de lecture audio -->
-              <button 
-                @click.stop="playCourseAudio(course)" 
-                class="audio-btn"
-                :class="{ active: currentlyPlaying === course.id }"
-                :title="currentlyPlaying === course.id ? $t('coursesPage.audio.stopTitle') : $t('coursesPage.audio.listenTitle')"
-              >
-                <i :class="currentlyPlaying === course.id ? 'fas fa-stop' : 'fas fa-volume-up'"></i>
-                {{ currentlyPlaying === course.id ? $t('coursesPage.audio.stop') : $t('coursesPage.audio.listen') }}
-              </button>
-
               <!-- Bouton pour accéder au cours -->
               <NuxtLink :to="`/course/${course.id}`" class="course-button">
                 {{ isUserLoggedIn && course.progress > 0 ? $t('coursesPage.continue') : $t('coursesPage.start') }}
@@ -136,7 +125,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '~/stores/auth';
+import { useAuthStore } from '../stores/auth';
 import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
@@ -145,10 +134,6 @@ const { t, locale } = useI18n();
 
 // Simuler l'état de connexion de l'utilisateur (à remplacer par votre logique d'authentification)
 const isUserLoggedIn = ref(false);
-
-// État de la lecture audio
-const currentlyPlaying = ref(null);
-let speechSynthesis = null;
 
 // Données des cours
 const courses = ref([
@@ -266,162 +251,6 @@ const filteredCourses = computed(() => {
   return result;
 });
 
-// Fonction pour afficher les voix disponibles (debug)
-function showAvailableVoices() {
-  if (!('speechSynthesis' in window)) {
-    console.log('Synthèse vocale non supportée');
-    return;
-  }
-  
-  const voices = window.speechSynthesis.getVoices();
-  console.log('Voix disponibles:', voices.map(v => `${v.name} (${v.lang})`));
-  
-  // Grouper par langue
-  const voicesByLang = voices.reduce((acc, voice) => {
-    const lang = voice.lang.split('-')[0];
-    if (!acc[lang]) acc[lang] = [];
-    acc[lang].push(voice);
-    return acc;
-  }, {});
-  
-  console.log('Voix par langue:', voicesByLang);
-}
-
-// Fonction de lecture audio
-function playCourseAudio(course) {
-  // S'assure que l'API est disponible
-  if (!('speechSynthesis' in window)) {
-    alert(t('coursesPage.audio.notSupported'));
-    return;
-  }
-  
-  if (currentlyPlaying.value === course.id) {
-    stopAudio();
-    return;
-  }
-
-  // Arrêter toute lecture en cours
-  stopAudio();
-
-  // Créer le texte à lire selon la langue
-  let textToRead = '';
-  const currentLocale = locale.value;
-  
-  // Textes selon la langue
-  const audioTexts = {
-    'fr': `${course.title}. ${course.description}. Ce cours dure ${course.duration} et contient ${course.lessons} leçons.`,
-    'en': `${course.title}. ${course.description}. This course lasts ${course.duration} and contains ${course.lessons} lessons.`,
-    'ar': `${course.title}. ${course.description}. هذه الدورة تستغرق ${course.duration} وتحتوي على ${course.lessons} دروس.`,
-    'fon': `${course.title}. ${course.description}. Sɔ̀nù lɛ gblɔ ${course.duration} kple ${course.lessons} xwɛ.`,
-    'yo': `${course.title}. ${course.description}. Ẹ̀kọ́ yìí gba ${course.duration} ó sì ní ${course.lessons} kíláàsì.`
-  };
-
-  textToRead = audioTexts[currentLocale] || audioTexts['fr'];
-
-  // Créer l'énoncé
-  const utterance = new SpeechSynthesisUtterance(textToRead);
-  
-  // Fonction pour obtenir la meilleure voix disponible
-  function getBestVoice(langCode) {
-    const voices = window.speechSynthesis.getVoices();
-    
-    // Mapping des langues vers les codes de voix supportés
-    const voiceMapping = {
-      'fr': ['fr-FR', 'fr-CA', 'fr-BE', 'fr-CH'],
-      'en': ['en-US', 'en-GB', 'en-AU', 'en-CA'],
-      'ar': ['ar-SA', 'ar-EG', 'ar-AE'],
-      'fon': ['fr-FR', 'en-US'], // Fallback vers français ou anglais
-      'yo': ['en-US', 'en-GB']   // Fallback vers anglais
-    };
-    
-    const targetCodes = voiceMapping[langCode] || ['en-US'];
-    
-    // Chercher d'abord une voix exacte
-    for (const code of targetCodes) {
-      const voice = voices.find(v => v.lang === code);
-      if (voice) return voice;
-    }
-    
-    // Si pas trouvé, chercher une voix avec le même code de langue principal
-    const langPrefix = langCode.split('-')[0];
-    const fallbackVoice = voices.find(v => v.lang.startsWith(langPrefix));
-    if (fallbackVoice) return fallbackVoice;
-    
-    // Dernier recours : première voix disponible
-    return voices[0] || null;
-  }
-
-  // Attendre que les voix soient chargées
-  function speakWithBestVoice() {
-    const voices = window.speechSynthesis.getVoices();
-    
-    if (voices.length === 0) {
-      // Si les voix ne sont pas encore chargées, attendre
-      setTimeout(speakWithBestVoice, 100);
-      return;
-    }
-    
-    // Obtenir la meilleure voix pour la langue
-    const bestVoice = getBestVoice(currentLocale);
-    
-    if (bestVoice) {
-      utterance.voice = bestVoice;
-      utterance.lang = bestVoice.lang;
-    } else {
-      // Fallback vers anglais si aucune voix n'est trouvée
-      utterance.lang = 'en-US';
-    }
-    
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    // Gérer les événements
-    utterance.onstart = () => {
-      currentlyPlaying.value = course.id;
-      console.log(`Lecture audio démarrée en ${currentLocale} avec la voix: ${utterance.voice?.name || 'voix par défaut'}`);
-      
-      // Notification pour les langues non supportées
-      if (currentLocale === 'fon' || currentLocale === 'yo') {
-        const langName = currentLocale === 'fon' ? 'Fon' : 'Yoruba';
-        const fallbackLang = utterance.voice?.lang?.startsWith('fr') ? 'français' : 'anglais';
-        console.log(`Note: ${langName} non supporté, utilisation d'une voix en ${fallbackLang}`);
-      }
-    };
-
-    utterance.onend = () => {
-      currentlyPlaying.value = null;
-      console.log('Lecture audio terminée');
-    };
-
-    utterance.onerror = (event) => {
-      console.error('SpeechSynthesis Error:', event);
-      // Fallback au cas où l'erreur n'a pas de message spécifique
-      let errorMessage = t('coursesPage.audio.error');
-      if (event.error) {
-        errorMessage += ` (${event.error})`;
-      }
-      
-      alert(errorMessage);
-    };
-
-    // Lancer la lecture
-    speechSynthesis = window.speechSynthesis;
-    speechSynthesis.speak(utterance);
-  }
-
-  // Démarrer la lecture avec la meilleure voix
-  speakWithBestVoice();
-}
-
-// Fonction pour arrêter la lecture audio
-function stopAudio() {
-  if (speechSynthesis) {
-    speechSynthesis.cancel();
-  }
-  currentlyPlaying.value = null;
-}
-
 function searchCourses() {
   // Logique de recherche
 }
@@ -443,10 +272,89 @@ const toggleLogin = () => {
   isUserLoggedIn.value = !isUserLoggedIn.value;
 };
 
-// Nettoyer la synthèse vocale lors de la destruction du composant
-onUnmounted(() => {
-  stopAudio();
-});
+async function downloadCourse(course) {
+  try {
+    // Récupérer le contenu du document depuis l'API
+    const response = await $fetch(`/api/courses/${course.id}/download`, {
+      method: 'POST',
+      body: {
+        format: 'pdf'
+      }
+    })
+
+    if (response.success) {
+      await generatePDF(response.documentContent, response.course.title)
+    }
+  } catch (error) {
+    console.error('Erreur lors du téléchargement:', error)
+    alert('Erreur lors de la génération du document. Veuillez réessayer.')
+  }
+}
+
+const generatePDF = async (htmlContent, courseTitle) => {
+  try {
+    // Vérifier que nous sommes côté client
+    if (process.server) {
+      throw new Error('Génération PDF non disponible côté serveur')
+    }
+
+    // Importer jsPDF et html2canvas dynamiquement côté client
+    const [jsPDF, html2canvas] = await Promise.all([
+      import('jspdf'),
+      import('html2canvas')
+    ])
+
+    // Créer un élément temporaire pour le contenu HTML
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = htmlContent
+    tempDiv.style.position = 'absolute'
+    tempDiv.style.left = '-9999px'
+    tempDiv.style.top = '0'
+    tempDiv.style.width = '800px'
+    document.body.appendChild(tempDiv)
+
+    // Convertir en canvas
+    const canvas = await html2canvas.default(tempDiv, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      width: 800,
+      height: tempDiv.scrollHeight
+    })
+
+    // Nettoyer l'élément temporaire
+    document.body.removeChild(tempDiv)
+
+    // Créer le PDF
+    const imgData = canvas.toDataURL('image/png')
+    const pdf = new jsPDF.default('p', 'mm', 'a4')
+    
+    const imgWidth = 210
+    const pageHeight = 295
+    const imgHeight = (canvas.height * imgWidth) / canvas.width
+    let heightLeft = imgHeight
+
+    let position = 0
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+    heightLeft -= pageHeight
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight
+      pdf.addPage()
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+      heightLeft -= pageHeight
+    }
+
+    // Télécharger le PDF
+    const fileName = `${courseTitle.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+    pdf.save(fileName)
+
+  } catch (error) {
+    console.error('Erreur lors de la génération du PDF:', error)
+    throw error
+  }
+}
 </script>
 
 <style scoped>
@@ -719,43 +627,6 @@ onUnmounted(() => {
   display: flex;
   gap: 0.8rem;
   margin-top: 1rem;
-}
-
-.audio-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.2rem;
-  background: #9c27b0;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
-  min-width: 100px;
-}
-
-.audio-btn:hover {
-  background: #7b1fa2;
-  transform: translateY(-2px);
-}
-
-.audio-btn.active {
-  background: #f44336;
-  animation: pulse 1.5s infinite;
-}
-
-.audio-btn.active:hover {
-  background: #d32f2f;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
 }
 
 .course-button {

@@ -205,7 +205,42 @@
     },
     "alertsTitle": "Ìkìlọ̀ ojú-ọjọ́",
     "agriTitle": "Ìmòràn agbẹ lónìí",
-    "agriNote": "Ìmòràn yìí jẹ́ àpẹẹrẹ, ṣàtúnṣe sí agbègbè rẹ àti irugbin rẹ."
+    "agriNote": "Ìmòràn yìí jẹ́ àpẹẹrẹ, ṣàtúnṣe sí agbègbè rẹ àti irugbin rẹ.",
+    "current": {
+      "location": "Ibi",
+      "date": "Ọjọ́",
+      "feelsLike": "Ìrírí",
+      "humidity": "Ìtutù",
+      "wind": "Afẹ́fẹ́",
+      "visibility": "Ìríran",
+      "sunrise": "Ìjáde òòrùn",
+      "sunset": "Ìbọ̀ òòrùn"
+    },
+    "details": {
+      "hour": "Wákàtí",
+      "temp": "Ìgbóná",
+      "precipitation": "Òjò",
+      "max": "Tóbi jù",
+      "min": "Kéré jù"
+    },
+    "tabs": {
+      "hourly": "Àṣàyàn wákàtí",
+      "daily": "Àṣàyàn ọjọ́"
+    },
+    "alerts": {
+      "title": "Àkọlé ìkìlọ̀",
+      "desc": "Ìtàn ìkìlọ̀",
+      "period": "Ìgbà"
+    },
+    "agri": {
+      "soil": "Ìṣètò ilẹ̀: Lo òjò tí ó ṣẹlẹ̀ sẹ́yìn láti fi ọkọ̀ ṣe ilẹ̀ àti láti fi ọrọ̀ ṣe agbègbè rẹ.",
+      "sowing": "Gbígbìn: Àwọn ìpò dára fún gbígbìn ọkà, ègẹ́ àti èpà.",
+      "treatment": "Ìtọ́jú: Wo fún àrùn tí ó wá láti ìtutù tí ó pọ̀.",
+      "irrigation": "Ìṣan omi: Dín ìṣan omi kù nígbà òjò tí ó pọ̀ láti yago fún ìpọ́n gbòngbò.",
+      "harvest": "Kíkó: Yan kíkó ní kíákíá ní owúrọ̀ láti fi ọrọ̀ ṣe ọjà.",
+      "market": "Ọjà: Ṣààyẹ̀wò owo ibi tí ó wà ṣáájú tí o bá ta irugbin rẹ láti ṣe owo rẹ dára.",
+      "note": "Ìmòràn yìí jẹ́ àpẹẹrẹ, ṣàtúnṣe sí agbègbè rẹ àti irugbin rẹ."
+    }
   },
   "login": {
     "title": "Wọlé",

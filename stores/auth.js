@@ -65,12 +65,8 @@ export const useAuthStore = defineStore('auth', {
         })
 
         if (response.success) {
-          this.user = response.user
-          // Pour l'instant, on utilise un token fictif
-          this.token = 'fake-jwt-token'
-          localStorage.setItem('auth_token', this.token)
-          localStorage.setItem('user_data', JSON.stringify(this.user))
-          return { token: this.token, user: this.user }
+          // Ne pas connecter l'utilisateur automatiquement
+          return true
         } else {
           throw new Error(response.message || 'Erreur d\'inscription')
         }

@@ -16,9 +16,9 @@
         <span>Cours</span>
       </NuxtLink>
 
-      <NuxtLink to="/admin/teachers" class="nav-item" active-class="active">
-        <i class="fas fa-chalkboard-teacher"></i>
-        <span>Bulletin</span>
+      <NuxtLink to="/admin/stats" class="nav-item" active-class="active">
+        <i class="fas fa-chart-bar"></i>
+        <span>Statistiques</span>
       </NuxtLink>
 
       <NuxtLink to="/admin/users" class="nav-item" active-class="active">
@@ -29,6 +29,11 @@
       <NuxtLink to="/admin/messages" class="nav-item" active-class="active">
         <i class="fas fa-envelope"></i>
         <span>Messages</span>
+      </NuxtLink>
+
+      <NuxtLink to="/admin/bulletin" class="nav-item" active-class="active">
+        <i class="fas fa-newspaper"></i>
+        <span>Bulletin</span>
       </NuxtLink>
     </div>
 

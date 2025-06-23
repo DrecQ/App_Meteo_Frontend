@@ -51,32 +51,39 @@
         </div>
 
         <!-- Statistiques -->
-        <div class="stats-grid">
+        <div v-if="statsLoading" class="stats-placeholder">
+          <div v-for="i in 4" :key="i" class="stat-card-placeholder"></div>
+        </div>
+        <div v-else-if="statsError" class="stats-error">
+          <p>Impossible de charger vos statistiques pour le moment.</p>
+        </div>
+        <div v-else class="stats-grid">
           <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-book"></i>
-            </div>
+            <div class="stat-icon"><i class="fas fa-book-open"></i></div>
             <div class="stat-info">
-              <h3>{{ stats.courses }}</h3>
-              <p>Cours suivis</p>
+              <h3>{{ stats?.coursesStarted || 0 }}</h3>
+              <p>Cours commencés</p>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-certificate"></i>
-            </div>
+            <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
             <div class="stat-info">
-              <h3>{{ stats.certificates }}</h3>
+              <h3>{{ stats?.coursesCompleted || 0 }}</h3>
+              <p>Cours terminés</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-certificate"></i></div>
+            <div class="stat-info">
+              <h3>{{ stats?.certificatesCount || 0 }}</h3>
               <p>Certificats</p>
             </div>
           </div>
           <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-clock"></i>
-            </div>
+            <div class="stat-icon"><i class="fas fa-star-half-alt"></i></div>
             <div class="stat-info">
-              <h3>{{ stats.learningTime }}</h3>
-              <p>Temps d'apprentissage</p>
+              <h3>{{ stats?.averageScore || 0 }}%</h3>
+              <p>Score moyen</p>
             </div>
           </div>
         </div>
@@ -106,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
 import UserSidebar from '~/components/UserSidebar.vue'
@@ -119,27 +126,35 @@ definePageMeta({
 const authStore = useAuthStore()
 const router = useRouter()
 const isSidebarOpen = ref(false)
+const stats = ref(null)
+const statsLoading = ref(true)
+const statsError = ref(false)
 
-// Propriétés calculées pour les statistiques
-const stats = computed(() => {
-  const userCourses = authStore.user?.courses || []
-  const userCertificates = authStore.user?.certificates || []
-  
-  // Calcul du temps d'apprentissage en sommant la durée des cours
-  const totalMinutes = userCourses.reduce((sum, course) => {
-    // Extrait le nombre de la chaîne "XX minutes"
-    const durationInMinutes = parseInt(course.duration, 10) || 0
-    return sum + durationInMinutes
-  }, 0)
-  
-  const learningTimeHours = totalMinutes / 60
-  
-  return {
-    courses: userCourses.length,
-    certificates: userCertificates.length,
-    learningTime: `${learningTimeHours.toFixed(1)}h`
-  }
-})
+// Surveiller les changements sur l'objet utilisateur du store
+watch(
+  () => authStore.user,
+  async (newUser) => {
+    if (newUser?.id && authStore.token) {
+      statsLoading.value = true
+      statsError.value = false
+      try {
+        const data = await $fetch(`/api/user/${newUser.id}/stats`, {
+          headers: {
+            'Authorization': `Bearer ${authStore.token}`,
+            'x-user-email': newUser.email
+          }
+        })
+        stats.value = data
+      } catch (error) {
+        console.error("Erreur lors du chargement des statistiques de l'utilisateur:", error)
+        statsError.value = true
+      } finally {
+        statsLoading.value = false
+      }
+    }
+  },
+  { immediate: true } // Lancer le watcher immédiatement au montage
+)
 
 // Propriétés calculées pour les cours récents
 const recentCourses = computed(() => {
@@ -574,5 +589,33 @@ onUnmounted(() => {
 
 .user-details .user-domain i {
   margin-right: 0.5rem;
+}
+
+.stats-placeholder {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card-placeholder {
+  height: 100px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.stats-error {
+  text-align: center;
+  padding: 2rem;
+  background-color: #fff3f3;
+  color: #dc3545;
+  border-radius: 8px;
+  margin-bottom: 3rem;
 }
 </style>

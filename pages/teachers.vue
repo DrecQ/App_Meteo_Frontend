@@ -3,19 +3,19 @@
     <!-- Bannière conservée -->
     <div class="page-banner">
       <div class="banner-content">
-        <h1>Bulletin Météo</h1>
-        <p>Les prévisions météorologiques en temps réel</p>
+        <h1>{{ $t('weatherPage.title') }}</h1>
+        <p>{{ $t('weatherPage.subtitle') }}</p>
         <div class="search-bar">
           <input 
             type="text" 
-            placeholder="Rechercher une ville..." 
+            :placeholder="$t('weatherPage.searchPlaceholder')" 
             v-model="searchQuery"
             class="search-input"
             @keyup.enter="searchWeather"
           />
           <button class="search-btn" @click="searchWeather">
             <i class="fas fa-search"></i>
-            <span style="margin-left: 0.5em;">Rechercher</span>
+            <span style="margin-left: 0.5em;">{{ $t('weatherPage.searchBtn') }}</span>
           </button>
         </div>
       </div>
@@ -58,19 +58,19 @@
             <div class="weather-details">
               <div class="detail-item">
                 <div class="detail-value">{{ currentWeather.feels_like }}°{{ tempUnit }}</div>
-                <div class="detail-label">Ressenti</div>
+                <div class="detail-label">{{ $t('weatherPage.current.feelsLike') }}</div>
               </div>
               <div class="detail-item">
                 <div class="detail-value">{{ currentWeather.humidity }}%</div>
-                <div class="detail-label">Humidité</div>
+                <div class="detail-label">{{ $t('weatherPage.current.humidity') }}</div>
               </div>
               <div class="detail-item">
                 <div class="detail-value">{{ currentWeather.wind_speed }} {{ speedUnit }}</div>
-                <div class="detail-label">Vent</div>
+                <div class="detail-label">{{ $t('weatherPage.current.wind') }}</div>
               </div>
               <div class="detail-item">
                 <div class="detail-value">{{ currentWeather.visibility }} km</div>
-                <div class="detail-label">Visibilité</div>
+                <div class="detail-label">{{ $t('weatherPage.current.visibility') }}</div>
               </div>
             </div>
           </div>
@@ -93,13 +93,13 @@
             @click="selectedForecastType = 'hourly'"
             :class="{ active: selectedForecastType === 'hourly' }"
           >
-            <i class="fas fa-clock"></i> Horaires
+            <i class="fas fa-clock"></i> {{ $t('weatherPage.forecastTabs.hourly') }}
           </button>
           <button 
             @click="selectedForecastType = 'daily'"
             :class="{ active: selectedForecastType === 'daily' }"
           >
-            <i class="fas fa-calendar-alt"></i> 7 jours
+            <i class="fas fa-calendar-alt"></i> {{ $t('weatherPage.forecastTabs.daily') }}
           </button>
         </div>
 
@@ -145,7 +145,7 @@
         <div class="weather-alerts" v-if="weatherAlerts.length">
           <div class="alert-header">
             <i class="fas fa-exclamation-triangle"></i>
-            <h3>Alertes météo</h3>
+            <h3>{{ $t('weatherPage.alertsTitle') }}</h3>
           </div>
           <div class="alert-item" v-for="(alert, index) in weatherAlerts" :key="index">
             <p class="alert-title">{{ alert.title }}</p>
@@ -156,16 +156,16 @@
 
         <!-- Section infos agriculteurs -->
         <div class="agri-info-section">
-          <h2>Conseils agricoles du jour</h2>
+          <h2>{{ $t('weatherPage.agriTitle') }}</h2>
           <ul>
-            <li><strong>Préparation des sols :</strong> Profitez des pluies récentes pour labourer et enrichir vos champs.</li>
-            <li><strong>Semis :</strong> Les conditions sont favorables pour semer le maïs, le manioc et l'arachide.</li>
-            <li><strong>Traitements phytosanitaires :</strong> Surveillez l'apparition de maladies fongiques dues à l'humidité élevée.</li>
-            <li><strong>Irrigation :</strong> Limitez l'irrigation en période de fortes pluies pour éviter l'asphyxie des racines.</li>
-            <li><strong>Récolte :</strong> Privilégiez la récolte tôt le matin pour conserver la fraîcheur des produits.</li>
-            <li><strong>Marché :</strong> Consultez les prix locaux avant de vendre vos récoltes pour optimiser vos revenus.</li>
+            <li><strong>{{ $t('weatherPage.agri.soil').split(':')[0] }} :</strong> {{ $t('weatherPage.agri.soil').split(':')[1] }}</li>
+            <li><strong>{{ $t('weatherPage.agri.sowing').split(':')[0] }} :</strong> {{ $t('weatherPage.agri.sowing').split(':')[1] }}</li>
+            <li><strong>{{ $t('weatherPage.agri.treatment').split(':')[0] }} :</strong> {{ $t('weatherPage.agri.treatment').split(':')[1] }}</li>
+            <li><strong>{{ $t('weatherPage.agri.irrigation').split(':')[0] }} :</strong> {{ $t('weatherPage.agri.irrigation').split(':')[1] }}</li>
+            <li><strong>{{ $t('weatherPage.agri.harvest').split(':')[0] }} :</strong> {{ $t('weatherPage.agri.harvest').split(':')[1] }}</li>
+            <li><strong>{{ $t('weatherPage.agri.market').split(':')[0] }} :</strong> {{ $t('weatherPage.agri.market').split(':')[1] }}</li>
           </ul>
-          <p class="agri-note">Ces conseils sont donnés à titre indicatif et doivent être adaptés à votre région et à vos cultures spécifiques.</p>
+          <p class="agri-note">{{ $t('weatherPage.agriNote') }}</p>
         </div>
       </div>
     </div>

@@ -95,7 +95,7 @@ const coursesData = {
     description: "Un voyage interactif pour comprendre les phénomènes météorologiques quotidiens",
     duration: "30 minutes",
     level: "Niveau débutant",
-    videoUrl: "https://www.youtube.com/embed/5YpcgS3pv0I",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1",
     sections: [
       {
         title: "Le Mystère du Ciel Bleu",

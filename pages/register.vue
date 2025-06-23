@@ -246,7 +246,7 @@ const handleSubmit = async () => {
     })
     
     if (success) {
-      router.push('/user')
+      router.push('/login')
     }
   } catch (error) {
     console.error('Erreur d\'inscription:', error)

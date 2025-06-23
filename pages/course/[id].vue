@@ -186,18 +186,30 @@
                     <span class="lesson-duration">{{ lesson.duration }}</span>
                   </div>
                 </div>
-                <div class="lesson-status">
-                  <svg v-if="lesson.completed" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.86" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <svg v-else-if="index > 0 && !course.lessons[index - 1].completed && !lesson.completed" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
-                  </svg>
+                <div class="lesson-actions">
+                  <!-- Bouton audio pour la leçon -->
+                  <button 
+                    v-if="!lesson.locked"
+                    @click.stop="playLessonAudio(lesson)"
+                    class="lesson-audio-btn"
+                    :class="{ active: currentlyPlayingLesson === lesson.id }"
+                    :title="currentlyPlayingLesson === lesson.id ? 'Arrêter la lecture' : 'Écouter la leçon'"
+                  >
+                    <i :class="currentlyPlayingLesson === lesson.id ? 'fas fa-stop' : 'fas fa-volume-up'"></i>
+                  </button>
+                  <div class="lesson-status">
+                    <svg v-if="lesson.completed" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.86" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg v-else-if="index > 0 && !course.lessons[index - 1].completed && !lesson.completed" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
@@ -227,18 +239,9 @@
             </div>
           </div>
 
-          <!-- Ressources supplémentaires -->
-          <div class="sidebar-section resources" v-if="course.resources && course.resources.length">
-            <h3>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              Ressources
-            </h3>
+          <!-- Section des ressources -->
+          <div class="sidebar-section">
+            <h3>Ressources</h3>
             <div class="resources-list">
               <a 
                 v-for="resource in course.resources" 
@@ -259,6 +262,14 @@
                 <span>{{ resource.title }}</span>
               </a>
             </div>
+            
+            <!-- Bouton de téléchargement du cours -->
+            <div class="download-section">
+              <h4 style="text-align:center;margin-bottom:0.5rem;">Télécharger le cours</h4>
+              <div style="display:flex;justify-content:center;">
+                <CourseDownloader :course="course" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -267,7 +278,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
@@ -280,6 +291,7 @@ const isPlaying = ref(false)
 const videoPlayer = ref(null)
 const audioPlayer = ref(null)
 const showProgressNotification = ref(false)
+const currentlyPlayingLesson = ref(null)
 
 definePageMeta({
   middleware: ['auth']
@@ -648,6 +660,99 @@ const goToQuiz = () => {
   router.push(`/quiz/${courseId}`)
 }
 
+const playLessonAudio = (lesson) => {
+  // S'assure que l'API est disponible
+  if (!('speechSynthesis' in window)) {
+    alert('La synthèse vocale n\'est pas supportée par votre navigateur.');
+    return;
+  }
+  
+  if (currentlyPlayingLesson.value === lesson.id) {
+    stopLessonAudio();
+    return;
+  }
+
+  // Arrêter toute lecture en cours
+  stopLessonAudio();
+
+  // Créer le texte à lire
+  const textToRead = `${lesson.title}. ${lesson.content.replace(/<[^>]*>/g, '')}`;
+
+  // Créer l'énoncé
+  const utterance = new SpeechSynthesisUtterance(textToRead);
+  
+  // Fonction pour obtenir la meilleure voix disponible
+  function getBestVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    
+    // Chercher d'abord une voix française
+    const frenchVoice = voices.find(v => v.lang.startsWith('fr'));
+    if (frenchVoice) return frenchVoice;
+    
+    // Fallback vers anglais
+    const englishVoice = voices.find(v => v.lang.startsWith('en'));
+    if (englishVoice) return englishVoice;
+    
+    // Dernier recours : première voix disponible
+    return voices[0] || null;
+  }
+
+  // Attendre que les voix soient chargées
+  function speakWithBestVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    
+    if (voices.length === 0) {
+      // Si les voix ne sont pas encore chargées, attendre
+      setTimeout(speakWithBestVoice, 100);
+      return;
+    }
+    
+    // Obtenir la meilleure voix
+    const bestVoice = getBestVoice();
+    
+    if (bestVoice) {
+      utterance.voice = bestVoice;
+      utterance.lang = bestVoice.lang;
+    } else {
+      utterance.lang = 'fr-FR';
+    }
+    
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    // Gérer les événements
+    utterance.onstart = () => {
+      currentlyPlayingLesson.value = lesson.id;
+      console.log(`Lecture audio démarrée pour la leçon: ${lesson.title}`);
+    };
+
+    utterance.onend = () => {
+      currentlyPlayingLesson.value = null;
+      console.log('Lecture audio terminée');
+    };
+
+    utterance.onerror = (event) => {
+      console.error('SpeechSynthesis Error:', event);
+      currentlyPlayingLesson.value = null;
+      alert('Erreur lors de la lecture audio. Veuillez réessayer.');
+    };
+
+    // Lancer la lecture
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Démarrer la lecture avec la meilleure voix
+  speakWithBestVoice();
+}
+
+const stopLessonAudio = () => {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  currentlyPlayingLesson.value = null;
+}
+
 // Lifecycle hooks
 onMounted(() => {
   const courseId = route.params.id;
@@ -666,6 +771,11 @@ onMounted(() => {
   if (courseId !== 'introduction' && !authStore.isAuthenticated) {
     router.push('/login')
   }
+});
+
+// Nettoyer la synthèse vocale lors de la destruction du composant
+onUnmounted(() => {
+  stopLessonAudio();
 });
 </script>
 
@@ -1122,6 +1232,50 @@ onMounted(() => {
   color: #6b7280;
 }
 
+.lesson-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lesson-audio-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin: 0;
+  color: #4e6bff;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.lesson-audio-btn:hover {
+  background: #e3f2fd;
+  color: #3a56d4;
+  transform: scale(1.1);
+}
+
+.lesson-audio-btn.active {
+  background: #4e6bff;
+  color: white;
+  animation: pulse 1.5s infinite;
+}
+
+.lesson-audio-btn.active:hover {
+  background: #3a56d4;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .lesson-status svg {
   color: #e0e7ff;
 }
@@ -1316,5 +1470,38 @@ onMounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.download-section {
+  margin-top: 2.5rem;
+  padding: 2rem 1rem 1.5rem 1rem;
+  border-top: 2px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(78,107,255,0.04);
+}
+.download-section h4 {
+  font-size: 1.1rem;
+  color: #4e6bff;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.download-section .download-btn {
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  font-size: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  background: #4e6bff;
+  color: white;
+  font-weight: 600;
+  border: none;
+  transition: background 0.3s;
+}
+.download-section .download-btn:hover {
+  background: #3a56d4;
 }
 </style>

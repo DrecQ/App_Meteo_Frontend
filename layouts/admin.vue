@@ -27,9 +27,10 @@ const currentPageTitle = computed(() => {
   if (path.startsWith('/admin/quizzes/')) return 'Gestion des Questions'
   if (path.startsWith('/admin/courses/')) return 'Gestion des Quiz'
   if (path.startsWith('/admin/courses')) return 'Gestion des Cours'
-  if (path.startsWith('/admin/teachers')) return 'Gestion des Enseignants'
+  if (path.startsWith('/admin/stats')) return 'Statistiques'
   if (path.startsWith('/admin/users')) return 'Gestion des Utilisateurs'
   if (path.startsWith('/admin/messages')) return 'Gestion des Messages'
+  if (path.startsWith('/admin/bulletin')) return 'Gestion du Bulletin'
   if (path.startsWith('/admin')) return 'Tableau de Bord'
   
   return 'Administration'
