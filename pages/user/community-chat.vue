@@ -137,104 +137,94 @@
           <div 
             v-for="question in filteredQuestions" 
             :key="question.id" 
-            class="question-card"
+            class="question-card vertical"
             :class="{ answered: question.answered, featured: question.featured }"
           >
-            <div class="question-main">
-              <div class="question-meta">
-                <span class="category-badge" :class="question.category">
-                  {{ formatCategory(question.category) }}
-                </span>
-                <span class="date">{{ formatDate(question.createdAt) }}</span>
-              </div>
-              
-              <h3 class="question-title">{{ question.title }}</h3>
-              <p class="question-content">{{ question.content }}</p>
-              
-              <div class="question-author">
-                <img 
-                  :src="question.user?.avatar || '/default-avatar.svg'" 
-                  :alt="getUserName(question.user)"
-                  class="author-avatar"
-                  @error="handleAvatarError"
-                />
-                <div class="author-info">
-                  <span class="name">{{ getUserName(question.user) }}</span>
-                  <span class="role">{{ question.user?.role || $t('common.member') }}</span>
-                </div>
-              </div>
+            <div class="question-meta-row">
+              <span class="category-badge" :class="question.category">
+                {{ formatCategory(question.category) }}
+              </span>
+              <span class="date">{{ formatDate(question.createdAt) }}</span>
             </div>
-            
-            <div class="question-stats">
-              <div class="stat">
-                <i class="fas fa-comment"></i>
-                <span>{{ question.answersCount || 0 }} {{ $t('community.answers') }}</span>
-              </div>
-              <div class="stat">
-                <button 
-                  @click="toggleLike(question.id)"
-                  class="like-btn"
-                  :class="{ liked: isLiked(question.id) }"
-                >
-                  <i class="fas fa-heart"></i>
-                  <span>{{ question.likesCount || 0 }}</span>
-                </button>
-              </div>
+            <h3 class="question-title">{{ question.title }}</h3>
+            <div class="question-author-row">
+              <img 
+                :src="question.user?.avatar || '/default-avatar.svg'" 
+                :alt="getUserName(question.user)"
+                class="author-avatar"
+                @error="handleAvatarError"
+              />
+              <span class="author-name">{{ getUserName(question.user) }}</span>
+              <span class="author-role">{{ question.user?.role || $t('common.member') }}</span>
+            </div>
+            <p class="question-content">{{ question.content }}</p>
+            <div class="question-actions">
+              <button 
+                @click="toggleLike(question.id)"
+                class="like-btn"
+                :class="{ liked: isLiked(question.id) }"
+              >
+                <i class="fas fa-heart"></i>
+                <span>{{ question.likesCount || 0 }}</span>
+              </button>
               <button 
                 class="btn-answer"
                 @click="showAnswerForm(question.id)"
               >
                 <i class="fas fa-reply"></i> {{ $t('community.reply') }}
               </button>
+              <span class="answers-count">
+                <i class="fas fa-comment"></i> {{ question.answersCount || 0 }} {{ $t('community.answers') }}
+              </span>
             </div>
-
-            <!-- Réponses -->
-            <div v-if="question.answers && question.answers.length > 0" class="answers-section">
+            <!-- Champ de réponse juste sous la question -->
+            <div class="answer-form" v-if="showAnswerForQuestion === question.id">
+              <h4>{{ $t('community.yourAnswer') }}</h4>
+              <textarea 
+                v-model="newAnswer.content" 
+                :placeholder="$t('community.answerPlaceholder')"
+                rows="4"
+              ></textarea>
+              <div class="form-actions">
+                <button @click="cancelAnswer" class="btn-cancel">
+                  {{ $t('common.cancel') }}
+                </button>
+                <button @click="submitAnswer" class="btn-submit" :disabled="isSubmittingAnswer">
+                  {{ isSubmittingAnswer ? $t('common.submitting') : $t('community.publishAnswer') }}
+                </button>
+              </div>
+            </div>
+            <!-- Réponses SOUS la question, en bloc -->
+            <div v-if="question.answers && question.answers.length > 0" class="answers-section below">
               <h4>{{ $t('community.answers') }} ({{ question.answers.length }})</h4>
-              <div v-for="answer in question.answers" :key="answer.id" class="answer-card">
-                <div class="answer-content">
-                  <p>{{ answer.content }}</p>
-                  <div class="answer-meta">
-                    <div class="answer-author">
-                      <img 
-                        :src="answer.user?.avatar || '/default-avatar.svg'" 
-                        :alt="getUserName(answer.user)"
-                        class="author-avatar-small"
-                        @error="handleAvatarError"
-                      />
-                      <span class="author-name">{{ getUserName(answer.user) }}</span>
-                      <span class="answer-date">{{ formatDate(answer.createdAt) }}</span>
-                    </div>
-                    <button 
-                      @click="toggleAnswerLike(answer.id)"
-                      class="like-btn small"
-                      :class="{ liked: isAnswerLiked(answer.id) }"
-                    >
-                      <i class="fas fa-heart"></i>
-                      <span>{{ answer.likes?.length || 0 }}</span>
-                    </button>
+              <div v-for="answer in question.answers" :key="answer.id" class="answer-card small block">
+                <div class="answer-author-block">
+                  <img 
+                    :src="answer.user?.avatar || '/default-avatar.svg'" 
+                    :alt="getUserName(answer.user)"
+                    class="author-avatar-small"
+                    @error="handleAvatarError"
+                  />
+                  <div class="answer-author-info">
+                    <span class="author-name">{{ getUserName(answer.user) }}</span>
+                    <span class="answer-date">{{ formatDate(answer.createdAt) }}</span>
                   </div>
+                </div>
+                <div class="answer-content-block">
+                  <p>{{ answer.content }}</p>
+                </div>
+                <div class="answer-actions">
+                  <button 
+                    @click="toggleAnswerLike(answer.id)"
+                    class="like-btn small"
+                    :class="{ liked: isAnswerLiked(answer.id) }"
+                  >
+                    <i class="fas fa-heart"></i>
+                    <span>{{ answer.likes?.length || 0 }}</span>
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Formulaire de réponse -->
-        <div class="answer-form" v-if="showAnswerForQuestion">
-          <h4>{{ $t('community.yourAnswer') }}</h4>
-          <textarea 
-            v-model="newAnswer.content" 
-            :placeholder="$t('community.answerPlaceholder')"
-            rows="4"
-          ></textarea>
-          <div class="form-actions">
-            <button @click="cancelAnswer" class="btn-cancel">
-              {{ $t('common.cancel') }}
-            </button>
-            <button @click="submitAnswer" class="btn-submit" :disabled="isSubmittingAnswer">
-              {{ isSubmittingAnswer ? $t('common.submitting') : $t('community.publishAnswer') }}
-            </button>
           </div>
         </div>
       </main>
@@ -334,7 +324,11 @@ function formatCategory(category) {
 
 function getUserName(user) {
   if (!user) return 'Utilisateur'
-  return `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Utilisateur'
+  if (user.firstName || user.lastName) {
+    return `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Utilisateur'
+  }
+  if (user.name) return user.name
+  return 'Utilisateur'
 }
 
 function handleAvatarError(event) {
@@ -1011,182 +1005,172 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.question-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s, box-shadow 0.3s;
+.question-card.vertical {
   display: flex;
-  justify-content: space-between;
-  gap: 1.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 4px 16px rgba(52, 152, 219, 0.07);
+  border: 1px solid #e0e6ed;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  margin-bottom: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  position: relative;
 }
 
-.question-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.question-card.answered {
-  border-left: 4px solid #2ecc71;
-}
-
-.question-card.featured {
-  border-left: 4px solid #f39c12;
-}
-
-.question-main {
-  flex: 1;
-}
-
-.question-meta {
+.question-meta-row {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
   margin-bottom: 0.5rem;
+}
+
+.question-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: #1a3557;
+}
+
+.question-author-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+
+.question-author-row .author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e0e6ed;
+}
+
+.question-author-row .author-name {
+  font-size: 1rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.question-author-row .author-role {
   font-size: 0.85rem;
   color: #7f8c8d;
 }
 
-.category-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.category-badge.meteo {
-  background: #e1f0fa;
-  color: #2980b9;
-}
-
-.category-badge.climat {
-  background: #e1f7eb;
-  color: #27ae60;
-}
-
-.category-badge.instruments {
-  background: #f5eef8;
-  color: #8e44ad;
-}
-
-.category-badge.agriculture {
-  background: #fef5e7;
-  color: #e67e22;
-}
-
-.question-title {
-  font-size: 1.25rem;
-  color: #2c3e50;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
-}
-
 .question-content {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  font-size: 1.08rem;
+  color: #34495e;
+  margin-bottom: 1.2rem;
   line-height: 1.6;
 }
 
-.question-author {
+.question-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.2rem;
+  margin-top: 0.5rem;
 }
 
-.question-author i {
-  font-size: 2rem;
-  color: #b0bec5;
+.answers-count {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
-.author-info {
+.answers-section.below {
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid #e0e6ed;
+  width: 100%;
+}
+
+.answer-card.small.block {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background: #f7fafd;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+  border-left: 3px solid #3498db;
+  font-size: 0.97rem;
+  opacity: 0.98;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.04);
+}
+
+.answer-author-block {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin-right: 1rem;
+  min-width: 60px;
 }
 
-.author-info .name {
-  font-weight: 500;
+.answer-author-block .author-avatar-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e0e6ed;
+  margin-bottom: 0.2rem;
+}
+
+.answer-author-info {
+  text-align: center;
+}
+
+.answer-author-info .author-name {
+  font-size: 0.95rem;
   color: #2c3e50;
+  font-weight: 500;
 }
 
-.author-info .role {
+.answer-author-info .answer-date {
   font-size: 0.8rem;
   color: #7f8c8d;
 }
 
-.question-stats {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: space-between;
-  min-width: 120px;
+.answer-content-block {
+  flex: 1;
+  padding-top: 0.1rem;
 }
 
-.stat {
+.answer-content-block p {
+  font-size: 0.98em;
+  color: #2c3e50;
+  margin-bottom: 0.2rem;
+}
+
+.answer-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: #7f8c8d;
+  margin-left: 1rem;
+  margin-top: 0.2rem;
 }
 
-.stat i {
-  color: #3498db;
-}
-
-.btn-answer {
-  background: #f1f5f9;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  color: #2c3e50;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s;
-}
-
-.btn-answer:hover {
-  background: #3498db;
-  color: white;
-}
-
-.btn-answer i {
-  color: inherit;
-}
-
-/* Formulaire de réponse */
-.answer-form {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  margin-top: 1rem;
-}
-
-.answer-form h4 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-}
-
-.answer-form textarea {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #e0e6ed;
-  border-radius: 6px;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  resize: vertical;
-  min-height: 100px;
-}
-
-.answer-form textarea:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+@media (max-width: 768px) {
+  .question-card.vertical {
+    padding: 1.2rem 0.7rem;
+  }
+  .answer-card.small.block {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.7rem 0.5rem;
+  }
+  .answer-author-block {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 0.7rem;
+    min-width: 0;
+    margin-bottom: 0.3rem;
+  }
+  .answer-author-info {
+    text-align: left;
+    margin-left: 0.5rem;
+  }
 }
 
 /* Sidebar */
@@ -1312,6 +1296,39 @@ onMounted(() => {
   .floating-help {
     top: 1rem;
     right: 1rem;
+  }
+}
+
+.answers-section.below {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e6ed;
+  width: 100%;
+}
+.answer-card.small {
+  background: #f4f6fa;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.7rem;
+  border-left: 3px solid #3498db;
+  font-size: 0.92rem;
+  opacity: 0.95;
+}
+.answer-card.small .answer-content p {
+  font-size: 0.98em;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+.answer-card.small .answer-meta {
+  font-size: 0.85em;
+}
+@media (max-width: 768px) {
+  .answers-section.below {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .answer-card.small {
+    padding: 0.5rem 0.7rem;
   }
 }
 </style>

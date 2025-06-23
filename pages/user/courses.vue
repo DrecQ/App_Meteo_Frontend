@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useRouter } from 'vue-router'
 
@@ -97,30 +97,13 @@ const router = useRouter()
 const isSidebarOpen = ref(false)
 const searchQuery = ref('')
 const statusFilter = ref('')
-
-// Données des cours (à remplacer par un appel API)
-const userCourses = ref([
-  {
-    id: 'introduction-meteo',
-    title: 'Introduction à la Météorologie',
-    duration: '20 minutes',
-    level: 'Débutant',
-    image: '/images/courses/ciel.jpg',
-    progress: 75
-  },
-  {
-    id: 'secrets-du-ciel',
-    title: 'Les Secrets du Ciel',
-    duration: '30 minutes',
-    level: 'Débutant',
-    image: '/images/courses/ciel.jpg',
-    progress: 0
-  }
-])
+const courses = ref([])
+const loading = ref(true)
+const activeTab = ref('all')
 
 // Filtrage des cours
 const filteredCourses = computed(() => {
-  return userCourses.value.filter(course => {
+  return courses.value.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
                          course.duration.toLowerCase().includes(searchQuery.value.toLowerCase())
     const matchesStatus = !statusFilter.value || course.progress > 0
@@ -158,6 +141,22 @@ const handleLogout = () => {
   authStore.logout()
   router.push('/login')
 }
+
+watch(() => authStore.user, (newUser) => {
+  if (newUser?.id) {
+    loading.value = true
+    $fetch(`/api/user/${newUser.id}/stats`)
+      .then(data => {
+        courses.value = data.coursesFollowed || []
+      })
+      .catch(error => {
+        console.error("Erreur lors de la récupération des cours de l'utilisateur:", error)
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }
+}, { immediate: true })
 
 // Nettoyer les classes lors du démontage du composant
 onUnmounted(() => {

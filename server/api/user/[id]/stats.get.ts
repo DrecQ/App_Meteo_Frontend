@@ -34,11 +34,35 @@ export default defineEventHandler(async (event) => {
       ? quizResults.reduce((acc, curr) => acc + (curr.score / curr.maxScore) * 100, 0) / quizResults.length
       : 0
 
+    // Liste des cours suivis avec progression
+    const userCourses = await prisma.userCourse.findMany({
+      where: { userId: userId },
+      include: {
+        course: {
+          select: { id: true, title: true, slug: true, duration: true, level: true, createdAt: true }
+        }
+      },
+      orderBy: { startedAt: 'desc' }
+    });
+
+    const coursesFollowed = userCourses.map(uc => ({
+      id: uc.course.id,
+      title: uc.course.title,
+      slug: uc.course.slug,
+      duration: uc.course.duration,
+      level: uc.course.level,
+      startedAt: uc.startedAt,
+      completedAt: uc.completedAt,
+      completed: uc.completed,
+      progress: uc.progress
+    }));
+
     return {
       coursesStarted,
       coursesCompleted,
       certificatesCount,
       averageScore: Math.round(averageScore),
+      coursesFollowed
     }
   } catch (error) {
     console.error(`Error fetching stats for user ${userId}:`, error)

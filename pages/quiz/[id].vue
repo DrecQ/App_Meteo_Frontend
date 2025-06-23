@@ -103,31 +103,7 @@
 
             <!-- Réponse utilisateur -->
             <div v-if="!iaAnswered" class="user-answer-section">
-              <div class="answer-input">
-              <textarea
-                v-model="iaUserAnswer"
-                :placeholder="$t('quizPage.question.textAnswer')"
-                  rows="2"
-                  class="text-input"
-              ></textarea>
-                <div class="voice-controls">
-                <button
-                  @click="startSpeechToText"
-                  class="voice-btn"
-                  :class="{ active: isListening }"
-                >
-                  <i class="fas fa-microphone"></i>
-                  {{ isListening ? $t('quizPage.question.listening') : $t('quizPage.question.voiceAnswer') }}
-                </button>
-                <button
-                    @click="submitAnswer"
-                  class="submit-btn"
-                    :disabled="!canSubmit"
-                >
-                  {{ $t('quizPage.question.validate') }}
-                </button>
-                </div>
-              </div>
+              <!-- SUPPRIMÉ : champ texte et vocal -->
             </div>
 
             <!-- Feedback IA -->
@@ -140,10 +116,29 @@
               </div>
               <div class="feedback-content">
                 <p>{{ iaFeedback }}</p>
-                <button @click="nextIaQuestion" class="next-btn">
-                  {{ isLastIaQuestion ? $t('quizPage.question.seeResults') : $t('quizPage.question.nextQuestion') }}
-                  <i class="fas fa-arrow-right"></i>
-                </button>
+                <div class="ask-ia-section">
+                  <div class="ask-ia-title">Vous n'avez pas compris ? Posez une question à l'IA :</div>
+                  <textarea
+                    v-model="iaUserQuestion"
+                    placeholder="Posez votre question ici..."
+                    rows="2"
+                    class="text-input"
+                    :disabled="isListeningIaQuestion"
+                  ></textarea>
+                  <div class="ask-ia-actions">
+                    <button @click="startSpeechToTextIaQuestion" class="voice-btn" :class="{ active: isListeningIaQuestion }" :disabled="isListeningIaQuestion">
+                      <i class="fas fa-microphone"></i> Note vocale
+                    </button>
+                    <button @click="askIaQuestion" class="ask-ia-btn" :disabled="!iaUserQuestion.trim() || isListeningIaQuestion">
+                      Demander une explication à l'IA
+                    </button>
+                    <span v-if="isListeningIaQuestion" class="voice-listening">Enregistrement en cours...</span>
+                    <span v-if="iaVoiceResult && !isListeningIaQuestion" class="voice-result">{{ iaVoiceResult }}</span>
+                  </div>
+                  <div v-if="iaUserQuestionResponse" class="ia-user-question-response">
+                    <strong>IA :</strong> {{ iaUserQuestionResponse }}
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -233,6 +228,20 @@
                   <span class="option-text">{{ option.text }}</span>
                 </button>
               </div>
+              <!-- Bouton de réponse vocale pour le quiz classique -->
+              <div class="voice-controls-classic">
+                <button
+                  @click="startSpeechToTextClassic"
+                  class="voice-btn"
+                  :class="{ active: isListeningClassic }"
+                  :disabled="classicUserAnswers[currentClassicQuestionIndex] !== undefined"
+                >
+                  <i class="fas fa-microphone"></i>
+                  {{ isListeningClassic ? $t('quizPage.question.listening') : $t('quizPage.question.voiceAnswer') }}
+                </button>
+                <span v-if="classicVoiceResult" class="voice-result">{{ classicVoiceResult }}</span>
+                <span v-if="classicVoiceError" class="voice-error">{{ classicVoiceError }}</span>
+              </div>
               <div v-if="classicUserAnswers[currentClassicQuestionIndex] !== undefined" class="next-section">
                 <button @click="nextClassicQuestion" class="next-btn-large" >
                   {{ isLastClassicQuestion ? 'Voir les résultats' : 'Question Suivante' }}
@@ -319,6 +328,9 @@ const classicUserAnswers = ref([])
 const classicScore = ref(0)
 const classicQuizFinished = ref(false)
 const classicResultsDetails = ref(null)
+const isListeningClassic = ref(false)
+const classicVoiceResult = ref('')
+const classicVoiceError = ref('')
 
 // Données des cours (copiées depuis pages/course/[id].vue)
 const coursesData = {
@@ -975,6 +987,116 @@ function restartClassicQuiz() {
   }
   classicScore.value = 0
   classicResultsDetails.value = null
+}
+
+function normalize(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[ -]/g, '')
+    .replace(/[^a-z0-9 ]/gi, '')
+}
+
+function startSpeechToTextClassic() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('La reconnaissance vocale n\'est pas supportée sur ce navigateur.')
+    return
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  const recognition = new SpeechRecognition()
+  recognition.lang = 'fr-FR'
+  recognition.interimResults = false
+  recognition.maxAlternatives = 1
+  isListeningClassic.value = true
+  classicVoiceResult.value = ''
+  classicVoiceError.value = ''
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim().toUpperCase()
+    classicVoiceResult.value = transcript
+    let idx = -1
+    // Lettres et variantes orales
+    const letters = ['A', 'B', 'C', 'D']
+    const oralVariants = ['A', 'B', 'C', 'D', 'BE', 'BÉ', 'CE', 'CÉ', 'DE', 'DÉ']
+    const oralToIndex = { 'A':0, 'B':1, 'BÉ':1, 'BE':1, 'C':2, 'CÉ':2, 'CE':2, 'D':3, 'DÉ':3, 'DE':3 }
+    if (oralToIndex[transcript]) {
+      idx = oralToIndex[transcript]
+    } else {
+      // Cherche si le texte correspond à une option (tolérant)
+      if (currentClassicQuestion.value) {
+        const normTranscript = normalize(transcript)
+        idx = currentClassicQuestion.value.options.findIndex(opt => {
+          return normalize(opt.text).includes(normTranscript) || normTranscript.includes(normalize(opt.text))
+        })
+      }
+    }
+    if (idx !== -1 && currentClassicQuestion.value && currentClassicQuestion.value.options[idx]) {
+      selectClassicAnswer(idx)
+      classicVoiceError.value = ''
+    } else {
+      classicVoiceError.value = 'Réponse non reconnue. Veuillez réessayer.'
+    }
+    isListeningClassic.value = false
+  }
+  recognition.onerror = () => {
+    isListeningClassic.value = false
+    classicVoiceResult.value = ''
+    classicVoiceError.value = 'Erreur de reconnaissance vocale.'
+  }
+  recognition.onend = () => {
+    isListeningClassic.value = false
+  }
+  recognition.start()
+}
+
+const iaUserQuestion = ref('')
+const iaUserQuestionResponse = ref('')
+const isListeningIaQuestion = ref(false)
+const iaVoiceResult = ref('')
+
+function startSpeechToTextIaQuestion() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('La reconnaissance vocale n\'est pas supportée sur ce navigateur.')
+    return
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  const recognition = new SpeechRecognition()
+  recognition.lang = 'fr-FR'
+  recognition.interimResults = false
+  recognition.maxAlternatives = 1
+  isListeningIaQuestion.value = true
+  iaVoiceResult.value = ''
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim()
+    iaVoiceResult.value = transcript
+    iaUserQuestion.value = transcript
+    isListeningIaQuestion.value = false
+  }
+  recognition.onerror = () => {
+    isListeningIaQuestion.value = false
+    iaVoiceResult.value = ''
+  }
+  recognition.onend = () => {
+    isListeningIaQuestion.value = false
+  }
+  recognition.start()
+}
+
+async function askIaQuestion() {
+  if (!iaUserQuestion.value.trim()) return
+  iaUserQuestionResponse.value = 'Réponse de l\'IA en cours...'
+  try {
+    const response = await $fetch('/api/quiz-ia-stream', {
+      method: 'POST',
+      body: {
+        question: iaUserQuestion.value,
+        context: iaFeedback.value || '',
+        courseId: courseId
+      }
+    })
+    iaUserQuestionResponse.value = response.answer || "L'IA n'a pas pu répondre pour le moment. Réessaie plus tard."
+  } catch (e) {
+    iaUserQuestionResponse.value = "L'IA n'a pas pu répondre pour le moment. Réessaie plus tard."
+  }
 }
 
 // Initialisation
@@ -1875,5 +1997,85 @@ onMounted(() => {
   justify-content: center;
   gap: 1rem;
   margin-top: 3rem;
+}
+
+.voice-controls-classic {
+  margin-top: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.voice-btn.active {
+  background: #4caf50;
+  color: #fff;
+}
+.voice-result {
+  font-size: 0.95rem;
+  color: #1976d2;
+  margin-left: 0.5rem;
+}
+.voice-error {
+  font-size: 0.95rem;
+  color: #e74c3c;
+  margin-left: 0.5rem;
+}
+
+.ask-ia-section {
+  margin-top: 1.5rem;
+  background: #f8fafd;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.ask-ia-btn {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.2s;
+}
+.ask-ia-btn:disabled {
+  background: #b0bec5;
+  cursor: not-allowed;
+}
+.ia-user-question-response {
+  margin-top: 0.5rem;
+  background: #e3f2fd;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  color: #1976d2;
+  font-size: 1rem;
+}
+.ask-ia-title {
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 0.3rem;
+  font-size: 1.08rem;
+}
+.ask-ia-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.voice-btn.active {
+  background: #4caf50;
+  color: #fff;
+}
+.voice-listening {
+  color: #e67e22;
+  font-size: 0.98rem;
+}
+.voice-result {
+  color: #1976d2;
+  font-size: 0.98rem;
 }
 </style>  

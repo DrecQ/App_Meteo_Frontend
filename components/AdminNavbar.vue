@@ -1,7 +1,6 @@
 <template>
   <nav class="admin-navbar">
     <div class="navbar-header">
-      <i class="fas fa-cloud-sun-rain logo-icon"></i>
       <h1>METEO-BENIN</h1>
     </div>
 
@@ -70,11 +69,6 @@ const route = useRoute();
   align-items: center;
   gap: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo-icon {
-  font-size: 2rem;
-  color: #3498db;
 }
 
 .navbar-header h1 {

@@ -90,12 +90,12 @@
 
         <!-- Cours récents -->
         <div class="recent-courses">
-          <h2>Cours récents</h2>
+          <h2>Mes cours suivis</h2>
           <div class="courses-grid">
-            <div v-for="course in recentCourses" :key="course.title" class="course-card">
+            <div v-for="course in (stats?.coursesFollowed?.filter(c => c.progress > 0 || !c.completed) || [])" :key="course.id" class="course-card">
               <div class="course-card-header">
                 <h4 class="course-title">{{ course.title }}</h4>
-                <span class="course-date">{{ course.date }}</span>
+                <span class="course-date">{{ formatDate(course.startedAt) }}</span>
               </div>
               <div class="course-progress-bar">
                 <div class="progress-bar-bg">
@@ -103,7 +103,10 @@
                 </div>
                 <span class="progress-label">{{ course.progress }}% complété</span>
               </div>
-              <button class="btn-primary" style="margin-top: 1rem;" @click="router.push(`/user/course/${course.id}`)">Accéder au cours</button>
+              <span class="course-status" :class="{ completed: course.completed }">
+                {{ course.completed ? 'Terminé' : 'En cours' }}
+              </span>
+              <button class="btn-primary" style="margin-top: 1rem;" @click="router.push(`/course/${course.slug}`)">Accéder au cours</button>
             </div>
           </div>
         </div>
