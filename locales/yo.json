@@ -29,9 +29,10 @@
     "start": "Bẹrẹ"
   },
   "home": {
-    "heroTitle": "Kọ ẹ̀kọ́ láti gbogbo igun",
+    "heroTitle1": "Ìsọ̀kan Ojú-ọjọ́",
+    "heroTitle2": "lórí ayélujára rẹ",
     "heroSubtitle": "Pẹpẹ ẹ̀kọ́ ori ayelujara tó ń bá ìpele rẹ lọ, bí ojú-ọjọ́ ṣe ń yípo.",
-    "exploreCourses": "Ṣàwárí ẹ̀kọ́",
+    "exploreCourses": "Ṣàwárí àwọn kóòsì",
     "startNow": "Bẹrẹ nísinsin yìí",
     "whyTitle": "Kí ló dé tó fi yẹ kí o yan pẹpẹ wa?",
     "whySubtitle": "Ṣàwárí àǹfààní tó yàtọ̀ síi",

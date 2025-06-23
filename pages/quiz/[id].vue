@@ -116,28 +116,25 @@
               </div>
               <div class="feedback-content">
                 <p>{{ iaFeedback }}</p>
-                <div class="ask-ia-section">
-                  <div class="ask-ia-title">Vous n'avez pas compris ? Posez une question à l'IA :</div>
-                  <textarea
-                    v-model="iaUserQuestion"
-                    placeholder="Posez votre question ici..."
-                    rows="2"
-                    class="text-input"
-                    :disabled="isListeningIaQuestion"
-                  ></textarea>
-                  <div class="ask-ia-actions">
-                    <button @click="startSpeechToTextIaQuestion" class="voice-btn" :class="{ active: isListeningIaQuestion }" :disabled="isListeningIaQuestion">
-                      <i class="fas fa-microphone"></i> Note vocale
-                    </button>
-                    <button @click="askIaQuestion" class="ask-ia-btn" :disabled="!iaUserQuestion.trim() || isListeningIaQuestion">
-                      Demander une explication à l'IA
-                    </button>
-                    <span v-if="isListeningIaQuestion" class="voice-listening">Enregistrement en cours...</span>
-                    <span v-if="iaVoiceResult && !isListeningIaQuestion" class="voice-result">{{ iaVoiceResult }}</span>
-                  </div>
-                  <div v-if="iaUserQuestionResponse" class="ia-user-question-response">
-                    <strong>IA :</strong> {{ iaUserQuestionResponse }}
-                  </div>
+                <button @click="nextIaQuestion" class="next-btn">
+                  {{ isLastIaQuestion ? $t('quizPage.question.seeResults') : $t('quizPage.question.nextQuestion') }}
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+              <!-- Champ pour poser une question à l'IA après la correction -->
+              <div class="ask-ia-section">
+                <div class="ask-ia-title">Vous n'avez pas compris ? Posez une question à l'IA :</div>
+                <textarea
+                  v-model="iaUserQuestion"
+                  placeholder="Posez votre question ici..."
+                  rows="2"
+                  class="text-input"
+                ></textarea>
+                <button @click="askIaQuestion" class="ask-ia-btn" :disabled="!iaUserQuestion.trim()">
+                  Demander une explication à l'IA
+                </button>
+                <div v-if="iaUserQuestionResponse" class="ia-user-question-response">
+                  <strong>IA :</strong> {{ iaUserQuestionResponse }}
                 </div>
               </div>
             </div>
@@ -1050,37 +1047,6 @@ function startSpeechToTextClassic() {
 
 const iaUserQuestion = ref('')
 const iaUserQuestionResponse = ref('')
-const isListeningIaQuestion = ref(false)
-const iaVoiceResult = ref('')
-
-function startSpeechToTextIaQuestion() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('La reconnaissance vocale n\'est pas supportée sur ce navigateur.')
-    return
-  }
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-  const recognition = new SpeechRecognition()
-  recognition.lang = 'fr-FR'
-  recognition.interimResults = false
-  recognition.maxAlternatives = 1
-  isListeningIaQuestion.value = true
-  iaVoiceResult.value = ''
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript.trim()
-    iaVoiceResult.value = transcript
-    iaUserQuestion.value = transcript
-    isListeningIaQuestion.value = false
-  }
-  recognition.onerror = () => {
-    isListeningIaQuestion.value = false
-    iaVoiceResult.value = ''
-  }
-  recognition.onend = () => {
-    isListeningIaQuestion.value = false
-  }
-  recognition.start()
-}
-
 async function askIaQuestion() {
   if (!iaUserQuestion.value.trim()) return
   iaUserQuestionResponse.value = 'Réponse de l\'IA en cours...'
@@ -2059,23 +2025,5 @@ onMounted(() => {
   color: #2563eb;
   margin-bottom: 0.3rem;
   font-size: 1.08rem;
-}
-.ask-ia-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-.voice-btn.active {
-  background: #4caf50;
-  color: #fff;
-}
-.voice-listening {
-  color: #e67e22;
-  font-size: 0.98rem;
-}
-.voice-result {
-  color: #1976d2;
-  font-size: 0.98rem;
 }
 </style>  

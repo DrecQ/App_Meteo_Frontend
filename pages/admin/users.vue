@@ -74,16 +74,16 @@ async function onDeleteUser(user) {
     if (data.success) {
       fetchUsers();
     } else {
-      alert("Erreur lors de la suppression de l'utilisateur.");
+      alert(data.statusMessage || "Erreur lors de la suppression de l'utilisateur.");
     }
   } catch (e) {
-    alert("Erreur lors de la suppression de l'utilisateur.");
+    alert(e?.message || "Erreur lors de la suppression de l'utilisateur.");
   }
 }
 
 async function onEditUser(user) {
-  const newRole = prompt(`Nouveau rôle pour ${user.email} (admin/user) :`, user.role);
-  if (!newRole || (newRole !== 'admin' && newRole !== 'user')) {
+  const newRole = prompt(`Nouveau rôle pour ${user.email} (ADMIN/USER/EXPERT) :`, (user.role || '').toUpperCase());
+  if (!newRole || !['ADMIN','USER','EXPERT'].includes(newRole.toUpperCase())) {
     alert('Rôle invalide.');
     return;
   }
@@ -91,15 +91,16 @@ async function onEditUser(user) {
     const res = await fetch(`/api/admin/users/${user.id}/role`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: newRole })
+      body: JSON.stringify({ role: newRole.toUpperCase() })
     });
     if (res.ok) {
       fetchUsers();
     } else {
-      alert("Erreur lors de la modification du rôle.");
+      const data = await res.json();
+      alert(data.statusMessage || "Erreur lors de la modification du rôle.");
     }
   } catch (e) {
-    alert("Erreur lors de la modification du rôle.");
+    alert(e?.message || "Erreur lors de la modification du rôle.");
   }
 }
 

@@ -44,23 +44,17 @@ const createRain = () => {
 </script>
 
 <template>
-  <header class="hero-section" :style="{ backgroundImage: `url(${currentImage})` }">
+  <header class="hero-section">
     <div class="hero-overlay"></div>
+    <!-- Animation météo -->
+    <div class="weather-animation">
+      <div class="sun"></div>
+      <div class="cloud cloud1"></div>
+      <div class="cloud cloud2"></div>
+      <div class="rain-container" ref="rainContainer"></div>
+    </div>
     <div class="hero-content">
-
-      <!-- Affichage du bulletin météo -->
-      <div v-if="bulletin" class="weather-bulletin">
-        <i class="fas fa-bullhorn"></i>
-        <div class="bulletin-text">
-          <span class="bulletin-title">{{ bulletin.title }}</span>
-          <p class="bulletin-content">{{ bulletin.content }}</p>
-        </div>
-      </div>
-
-      <h1 class="hero-title">
-        <span>La Météo</span>
-        <span>à votre portée</span>
-      </h1>
+      <h1 class="hero-title">{{ $t('home.heroTitle1') }}</h1>
       <p class="hero-subtitle">{{ $t('home.heroSubtitle') }}</p>
       <div class="cta-buttons">
         <nuxt-link to="/courses" class="btn-primary">{{ $t('home.exploreCourses') }}</nuxt-link>

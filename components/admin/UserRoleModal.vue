@@ -56,12 +56,12 @@ const submitForm = async () => {
   try {
     await $fetch(`/api/admin/users/${props.user.id}/role`, {
       method: 'PUT',
-      body: { role: selectedRole.value }
+      body: { role: selectedRole.value.toUpperCase() }
     });
     emit('saved');
   } catch (err) {
     console.error("Erreur lors de la mise à jour du rôle", err);
-    error.value = err.data?.message || 'Une erreur est survenue.';
+    error.value = err.data?.statusMessage || err.data?.message || 'Une erreur est survenue.';
   } finally {
     isSaving.value = false;
   }
